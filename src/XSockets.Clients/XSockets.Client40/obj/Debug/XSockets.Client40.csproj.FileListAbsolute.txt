@@ -1,0 +1,7 @@
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\obj\Debug\XSockets.Client40.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\bin\Debug\XSockets.Client40.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\bin\Debug\XSockets.Client40.pdb
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\obj\Debug\XSockets.Client40.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.Client40\obj\Debug\XSockets.Client40.pdb

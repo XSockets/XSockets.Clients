@@ -1,0 +1,14 @@
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\XSockets.ClientAndroid.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\XSockets.ClientAndroid.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\XSockets.ClientAndroid.pdb
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\XSockets.ClientAndroid.dll.mdb
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\XSockets.ClientAndroid.apk
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\XSockets.ClientAndroid-Signed.apk
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\XSockets.ClientAndroid.dll
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\XSockets.ClientAndroid.pdb
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\android\bin\XSockets.ClientAndroid.apk
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\res\values\strings.xml
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\R.cs.flag
+C:\Users\Uffe\Desktop\XSockets.Clients\XSockets.ClientAndroid\obj\Debug\uploadflags.txt
