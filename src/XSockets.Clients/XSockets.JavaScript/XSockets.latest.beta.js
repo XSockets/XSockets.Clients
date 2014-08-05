@@ -612,6 +612,11 @@ XSockets.WebSocket = (function () {
             arrControllers.forEach(function (ctrl) {
                 if (self.hasOwnProperty(ctrl)) delete self[ctrl];
                
+                var ctrlIdx = self.controllerInstances.indexOf(ctrl);
+                if (ctrlIdx != -1) {
+                    self.controllerInstances.splice(ctrlIdx, 1);
+                }
+
                 self.controllerInstances.push(ctrl);
                 self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
                
