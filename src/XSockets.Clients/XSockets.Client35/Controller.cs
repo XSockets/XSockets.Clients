@@ -188,6 +188,7 @@ namespace XSockets.Client35
         {
             this.ClientInfo = this.XSocketClient.Serializer.DeserializeFromString<ClientInfo>(message.Data);
             this.ClientInfo.Controller = message.Controller;
+            this.XSocketClient.PersistentId = this.ClientInfo.PersistentId;
             FireOpened();
         }
 

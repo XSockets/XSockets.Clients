@@ -63,19 +63,6 @@ namespace XSockets.Client40
             }
         }
 
-        //protected virtual void FireOnOpen()
-        //{
-        //    if (this.OnOpen != null) this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
-        //}
-
-        //protected virtual void FireOnClose()
-        //{
-        //    //TODO: this.Close should be used when we want to close the connection completely
-        //    //this.Close();
-        //    //TODO: Borde slänag onDisconnected
-        //    if (this.OnClose != null) this.OnClose.Invoke(this, null);
-        //}        
-
         /// <summary>
         /// A message was received
         /// </summary>
@@ -189,6 +176,7 @@ namespace XSockets.Client40
         {
             this.ClientInfo = this.XSocketClient.Serializer.DeserializeFromString<ClientInfo>(message.Data);
             this.ClientInfo.Controller = message.Controller;
+            this.XSocketClient.PersistentId = this.ClientInfo.PersistentId;
             FireOpened();
         }
 
