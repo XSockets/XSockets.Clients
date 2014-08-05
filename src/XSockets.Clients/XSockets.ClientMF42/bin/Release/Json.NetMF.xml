@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Json.NetMF</name>
+    </assembly>
+    <members>
+        <member name="M:Json.NETMF.DateTimeExtensions.FromIso8601(System.String)">
+            <summary>
+            Converts an ISO 8601 time/date format string, which is used by JSON and others,
+            into a DateTime object.
+            </summary>
+            <param name="date"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Json.NETMF.DateTimeExtensions.ToIso8601(System.DateTime)">
+            <summary>
+            Converts a DateTime object into an ISO 8601 string.  This version
+            always returns the string in UTC format.
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Json.NETMF.DateTimeExtensions.TwoDigits(System.Int32)">
+            <summary>
+            Ensures a two-digit number with leading zero if necessary.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Json.NETMF.DateTimeExtensions.ThreeDigits(System.Int32)">
+            <summary>
+            Ensures a three-digit number with leading zeros if necessary.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Json.NETMF.DateTimeExtensions.ToASPNetAjax(System.DateTime)">
+            <summary>
+            The ASP.NET Ajax team made up their own time date format for JSON strings, and it's
+            explained in this article: http://msdn.microsoft.com/en-us/library/bb299886.aspx
+            Converts a DateTime to the ASP.NET Ajax JSON format.
+            </summary>
+            <param name="dt"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Json.NETMF.DateTimeExtensions.FromASPNetAjax(System.String)">
+            <summary>
+            Converts an ASP.NET Ajax JSON string to DateTime
+            </summary>
+            <param name="ajax"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Json.NETMF.JsonParser">
+            <summary>
+            Parses JSON strings into a Hashtable.  The Hashtable contains one or more key/value pairs
+            (DictionaryEntry objects).  Each key is the name of a property that (hopefully) exists
+            in the class object that it represents.  Each value is one of the following:
+              Hastable - Another list of one or more DictionaryEntry objects, essentially representing
+                         a property that is another class.
+              ArrayList - An array of one or more objects, which themselves can be one of the items
+                          enumerated in this list.
+              Value Type - an actual value, such as a string, int, bool, Guid, DateTime, etc
+            </summary>
+        </member>
+        <member name="M:Json.NETMF.JsonParser.JsonDecode(System.String)">
+            <summary>
+            Parses the string json into a value
+            </summary>
+            <param name="json">A JSON string.</param>
+            <returns>An ArrayList, a Hashtable, a double, long, a string, null, true, or false</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonParser.JsonDecode(System.String,System.Boolean@)">
+            <summary>
+            Parses the string json into a value; and fills 'success' with the successfullness of the parse.
+            </summary>
+            <param name="json">A JSON string.</param>
+            <param name="success">Successful parse?</param>
+            <returns>An ArrayList, a Hashtable, a double, a long, a string, null, true, or false</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonParser.ParseNumber(System.Char[],System.Int32@,System.Boolean@)">
+            <summary>
+            Determines the type of number (int, double, etc) and returns an object
+            containing that value.
+            </summary>
+            <param name="json"></param>
+            <param name="index"></param>
+            <param name="success"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Json.NETMF.JsonSerializer">
+            <summary>
+            JSON.NetMF - JSON Serialization and Deserialization library for .NET Micro Framework
+            </summary>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.Serialize(System.Object)">
+            <summary>
+            Convert an object to a JSON string.
+            </summary>
+            <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+            <returns>The JSON object as a string or null when the value type is not supported.</returns>
+            <remarks>For objects, only public properties with getters are converted.</remarks>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.Deserialize(System.String)">
+            <summary>
+            Desrializes a Json string into an object.
+            </summary>
+            <param name="json"></param>
+            <returns>An ArrayList, a Hashtable, a double, a long, a string, null, true, or false</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.DeserializeString(System.String)">
+            <summary>
+            Deserializes a Json string into an object.
+            </summary>
+            <param name="json"></param>
+            <returns>An ArrayList, a Hashtable, a double, a long, a string, null, true, or false</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.SerializeObject(System.Object,Json.NETMF.DateTimeFormat)">
+            <summary>
+            Convert an object to a JSON string.
+            </summary>
+            <param name="o">The value to convert. Supported types are: Boolean, String, Byte, (U)Int16, (U)Int32, Float, Double, Decimal, Array, IDictionary, IEnumerable, Guid, Datetime, DictionaryEntry, Object and null.</param>
+            <returns>The JSON object as a string or null when the value type is not supported.</returns>
+            <remarks>For objects, only public properties with getters are converted.</remarks>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.SerializeIEnumerable(System.Collections.IEnumerable,Json.NETMF.DateTimeFormat)">
+            <summary>
+            Convert an IEnumerable to a JSON string.
+            </summary>
+            <param name="enumerable">The value to convert.</param>
+            <returns>The JSON object as a string or null when the value type is not supported.</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.SerializeIDictionary(System.Collections.IDictionary,Json.NETMF.DateTimeFormat)">
+            <summary>
+            Convert an IDictionary to a JSON string.
+            </summary>
+            <param name="dictionary">The value to convert.</param>
+            <returns>The JSON object as a string or null when the value type is not supported.</returns>
+        </member>
+        <member name="M:Json.NETMF.JsonSerializer.SerializeString(System.String)">
+            <summary>
+            Safely serialize a String into a JSON string value, escaping all backslash and quote characters.
+            </summary>
+            <param name="str">The string to serialize.</param>
+            <returns>The serialized JSON string.</returns>
+        </member>
+        <member name="P:Json.NETMF.JsonSerializer.DateFormat">
+            <summary>
+            Gets/Sets the format that will be used to display
+            and parse dates in the Json data.
+            </summary>
+        </member>
+        <member name="T:Json.NETMF.DateTimeFormat">
+            <summary>
+            Enumeration of the popular formats of time and date
+            within Json.  It's not a standard, so you have to
+            know which on you're using.
+            </summary>
+        </member>
+        <member name="M:Json.NETMF.CharExtensions.ConvertFromUtf32(System.Int32)">
+            <summary>
+            Converts a Unicode character to a string of its ASCII equivalent.
+            Very simple, it works only on ordinary characters.
+            </summary>
+            <param name="p"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
