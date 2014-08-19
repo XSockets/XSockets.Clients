@@ -7,7 +7,7 @@ using XSockets.Client40.Model;
 
 namespace XSockets.Client40.Helpers
 {    
-    public static partial class XSocketHelper
+    public static class XSocketHelper
     {
         #region "Transformation Methods - XSocketEvents & JSON"
 

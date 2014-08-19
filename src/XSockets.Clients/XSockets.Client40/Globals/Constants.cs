@@ -6,7 +6,7 @@
         {
             public static class Parameters
             {
-                public const string XSocketsClientStorageGuid = "XSocketsClientStorageGuid";                
+                public const string PersistentId = "PersistentId";                
             }            
         }
 

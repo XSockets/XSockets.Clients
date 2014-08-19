@@ -35,7 +35,10 @@ namespace XSockets.Client35.Model
                 var m = this.serializer.DeserializeFromString<Message>(this.Data);
                 return this.serializer.DeserializeFromString<T>(m.Data);
             }
-            
+
+            //if (typeof (T).IsBuiltIn())
+            //    return (dynamic)this.Data;
+
             return this.serializer.DeserializeFromString<T>(this.Data);
         }
 
@@ -52,16 +55,16 @@ namespace XSockets.Client35.Model
         /// <summary>
         /// For newtonsoft.json
         /// </summary>
-        public Message(){}
+        public Message() { }
 
         public Message(IList<byte> blob, MessageType messageType, string controller = "")
         {
             if (messageType == MessageType.Text)
             {
                 var data = this.serializer.DeserializeFromString<Message>(Encoding.UTF8.GetString(blob.ToArray()));
-                this.Controller = data.Controller;
+                this.Controller = data.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
-                    this.Controller = controller;
+                    this.Controller = controller.ToLower();
                 this.Topic = data.Topic;
                 this.Data = data.Data;
                 this.MessageType = messageType;
@@ -75,24 +78,24 @@ namespace XSockets.Client35.Model
                 this.Blob = blob.Skip(payloadLength + 8).Take(bufferLength).ToList();
                 this.Data = Encoding.UTF8.GetString(blob.Skip(8).Take(payloadLength).ToArray());
                 var eventInfo = this.serializer.DeserializeFromString<Message>(this.Data);
-                this.Controller = eventInfo.Controller;
+                this.Controller = eventInfo.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
-                    this.Controller = controller;
+                    this.Controller = controller.ToLower();
                 this.Topic = eventInfo.Topic;
                 this.MessageType = messageType;
             }
             else if (messageType == MessageType.Ping)
             {
                 this.Blob = blob;
-                this.MessageType = messageType;                
+                this.MessageType = messageType;
             }
             else if (messageType == MessageType.Pong)
             {
                 this.Blob = blob;
                 this.MessageType = messageType;
             }
-        }        
-        
+        }
+
         /// <summary>
         /// Ctor for Blob + Object
         /// </summary>
@@ -114,18 +117,16 @@ namespace XSockets.Client35.Model
 
             ////Set the metadata as header in the binary message
             var ms = new List<byte>();
-            
-            var header = BitConverter.GetBytes((Int64)this.Data.Length);
-            ms.AddRange(header);
-            ms.AddRange(Encoding.UTF8.GetBytes(this.Data));
             ms.AddRange(blob);
 
             this.Blob = ms;
             this.Topic = topic;
             this.MessageType = MessageType.Binary;
+
+            this.Controller = controller.ToLower();
         }
 
-        public Message(IList<byte> blob, string topic, string controller):this(blob,topic,controller,new XSocketJsonSerializer()){}
+        public Message(IList<byte> blob, string topic, string controller) : this(blob, topic, controller, new XSocketJsonSerializer()) { }
         public Message(IList<byte> blob, string topic, string controller, IXSocketJsonSerializer serializer)
         {
             this._serializer = serializer;
@@ -138,15 +139,11 @@ namespace XSockets.Client35.Model
 
             ////Set the metadata as header in the binary message
             var ms = new List<byte>();
-            //var payload = json;
-            var header = BitConverter.GetBytes((Int64)this.Data.Length);
-            ms.AddRange(header);
-            ms.AddRange(Encoding.UTF8.GetBytes(this.Data));
             ms.AddRange(blob);
 
             this.Blob = ms;
 
-            this.Controller = controller;
+            this.Controller = controller.ToLower();
             this.Topic = topic;
             this.MessageType = MessageType.Binary;
         }
@@ -164,7 +161,7 @@ namespace XSockets.Client35.Model
             this._serializer = serializer;
             this.Data = _serializer.SerializeToString(obj);
             this.Topic = topic.ToLower();
-            this.Controller = controller;
+            this.Controller = controller.ToLower();
             this.MessageType = MessageType.Text;
         }
 
@@ -173,7 +170,7 @@ namespace XSockets.Client35.Model
             this.Blob = null;
             this.Data = json;
             this.Topic = topic.ToLower();
-            this.Controller = controller;
+            this.Controller = controller.ToLower();
             this.MessageType = MessageType.Text;
         }
 

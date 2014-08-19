@@ -116,11 +116,7 @@ namespace XSockets.Client40.Model
             this.Data = this.serializer.SerializeToString(new Message(jsonMeta, topic, controller));
 
             ////Set the metadata as header in the binary message
-            var ms = new List<byte>();
-            
-            var header = BitConverter.GetBytes((Int64)this.Data.Length);
-            ms.AddRange(header);
-            ms.AddRange(Encoding.UTF8.GetBytes(this.Data));
+            var ms = new List<byte>();            
             ms.AddRange(blob);
 
             this.Blob = ms;
@@ -143,10 +139,6 @@ namespace XSockets.Client40.Model
 
             ////Set the metadata as header in the binary message
             var ms = new List<byte>();
-            //var payload = json;
-            var header = BitConverter.GetBytes((Int64)this.Data.Length);
-            ms.AddRange(header);
-            ms.AddRange(Encoding.UTF8.GetBytes(this.Data));
             ms.AddRange(blob);
 
             this.Blob = ms;

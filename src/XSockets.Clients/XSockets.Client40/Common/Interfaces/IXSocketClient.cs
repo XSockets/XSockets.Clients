@@ -2,7 +2,6 @@
 using System.Collections.Specialized;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
 using XSockets.Client40.Model;
 using XSockets.Client40.Utility.Storage;

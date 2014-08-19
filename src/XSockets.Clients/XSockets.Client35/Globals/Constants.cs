@@ -1,4 +1,6 @@
-﻿namespace XSockets.Client35.Globals
+﻿using System;
+
+namespace XSockets.Client35.Globals
 {
     public static class Constants
     {
@@ -6,7 +8,7 @@
         {
             public static class Parameters
             {
-                public const string XSocketsClientStorageGuid = "XSocketsClientStorageGuid";                
+                public const string PersistentId = "PersistentId";                
             }            
         }
 

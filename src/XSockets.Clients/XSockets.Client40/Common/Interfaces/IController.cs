@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
 using XSockets.Client40.Model;
 

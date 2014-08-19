@@ -39,24 +39,36 @@ namespace XSockets.Client35
             {
                 var @event = (message.Controller == null) ? message.Topic : message.Controller + "." + message.Topic;
 
-                //Get binding
+                var fired = false;
+
+                //PUB/SUB & RPC
                 var binding = this.Subscriptions.GetById(@event);
+                var listener = this.Listeners.GetById(@event);
 
                 if (binding == null)
                     binding = this.Subscriptions.GetById(message.Topic);
 
-                //Fire subscription or else fire onmessage
+                if (listener == null)
+                    listener = this.Listeners.GetById(message.Topic);
+
                 if (binding != null)
                 {
                     this.FireBoundMethod(binding, message);
-                    return;
+                    fired = true;
+                }
+                if (listener != null)
+                {
+                    this.FireBoundMethod(listener, message);
+                    fired = true;
                 }
 
-                //fire onblob since there was no binding
+                if (fired) return;
+
+                //fire onmessage since there was no binding
                 if (this.OnMessage != null) this.OnMessage.Invoke(this, message as Message);
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(ex));
             }

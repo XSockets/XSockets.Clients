@@ -221,7 +221,7 @@ namespace XSockets.ClientIOS
 
             if (this.PersistentId != Guid.Empty)
             {
-                this.QueryString.Add(Constants.Connection.Parameters.XSocketsClientStorageGuid, this.PersistentId.ToString());
+                this.QueryString.Add(Constants.Connection.Parameters.PersistentId, this.PersistentId.ToString());
             }
 
             connectionstring += this.QueryString.ConstructQueryString();
