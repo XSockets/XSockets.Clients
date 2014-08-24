@@ -208,7 +208,10 @@ namespace XSockets.ClientAndroid
             var r = DoSynchronHandshake(handshake).Result;
 
             if (r)
+            {
+                IsHandshakeDone = true;
                 this.Connected();
+            }                
             else
                 throw new Exception("Could not connect to server");
 

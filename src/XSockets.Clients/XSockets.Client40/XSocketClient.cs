@@ -194,8 +194,8 @@ namespace XSockets.Client40
 
         public void Open()
         {
-            if (this.IsConnected) return;
 
+            if (this.IsConnected) return;
 
             var connectionstring = GetConnectionstring();
 
@@ -208,7 +208,10 @@ namespace XSockets.Client40
             var r = DoSynchronHandshake(handshake).Result;
 
             if (r)
+            {
+                IsHandshakeDone = true;
                 this.Connected();
+            }                
             else
                 throw new Exception("Could not connect to server");
 
@@ -299,7 +302,6 @@ namespace XSockets.Client40
                     working = false;
                 }, err => FireOnDisconnected()),
                             err => FireOnDisconnected());
-
 
                 while (working)
                 {

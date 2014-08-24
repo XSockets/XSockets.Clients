@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
 using XSockets.Client40.Model;
 
@@ -91,12 +92,12 @@ namespace XSockets.Client40.Common.Interfaces
         void Invoke(string target, IList<byte> data);
         void Invoke(string target, byte[] data);
         void Invoke(string target, IList<byte> data, object metadata);
-        T Invoke<T>(string target, int timeoutMilliseconds = 2000);
-        T Invoke<T>(string target, object data, int timeoutMilliseconds = 2000);
-        T Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 2000);
-        T Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000);
-        T Invoke<T>(string target, IList<byte> blob, object metadata, int timeoutMilliseconds = 2000);
-        T Invoke<T>(string target, byte[] blob, object metadata, int timeoutMilliseconds = 2000);
+        Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000);
+        Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000);
+        Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000);
+        Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 30000);
+        Task<T> Invoke<T>(string target, IList<byte> blob, object metadata, int timeoutMilliseconds = 30000);
+        Task<T> Invoke<T>(string target, byte[] blob, object metadata, int timeoutMilliseconds = 30000);
         IListener On<T>(string target, Action<T> action);
         IListener On(string target, Action<dynamic> action);
         IListener On(string target, Action action);

@@ -1,4 +1,3 @@
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\XSockets.ClientMF42.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\bin\Release\le\XSockets.ClientMF42.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\bin\Release\be\XSockets.ClientMF42.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\bin\Release\le\XSockets.ClientMF42.pdb
@@ -22,4 +21,5 @@ C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Cl
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\le\XSockets.ClientMF42.pdbx
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\XSockets.ClientMF42.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\XSockets.ClientMF42.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\XSockets.ClientMF42.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF42\obj\Release\TinyCLR_DebugReferences.cache

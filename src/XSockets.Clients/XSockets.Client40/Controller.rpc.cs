@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
@@ -11,16 +10,15 @@ namespace XSockets.Client40
 {
     public partial class Controller : IController
     {
-        private Task<T> _Target<T>(IMessage m, int timeoutMilliseconds)
+        private Task<T> _Target<T>(IMessage m, int timeoutMilliseconds = 30000)
         {
-            return new Task<T>(() =>
+            var t = new Task<T>(() =>
             {
                 var data = default(T);
                 var working = true;
                 var listener = new Listener(m.Topic,
                     message =>
-                    {
-                        Console.WriteLine(message.Data);
+                    {                        
                         data = this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data);
                         working = false;
                     },
@@ -40,12 +38,14 @@ namespace XSockets.Client40
 
                 return data;
             });
+            t.Start();
+            return t;
         }
 
-        private Task<T> _Target<T>(string s, int timeoutMilliseconds)
+        private Task<T> _Target<T>(string s, int timeoutMilliseconds = 30000)
         {
             s = s.ToLower();
-            return new Task<T>(() =>
+            var t = new Task<T>(() =>
             {
                 var data = default(T);
                 var working = true;
@@ -70,6 +70,8 @@ namespace XSockets.Client40
 
                 return data;
             });
+            t.Start();
+            return t;
         }
 
         public void Invoke(IMessage payload)
@@ -96,62 +98,40 @@ namespace XSockets.Client40
             this.Invoke(new Message(blob, MessageType.Binary));
         }
 
-        public T Invoke<T>(string target, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000)
         {
-            var waiter = _Target<T>(target, timeoutMilliseconds);
-            waiter.Start();
-            
-            return TaskCompletionHandlerResult<T>(waiter);
+            return _Target<T>(target, timeoutMilliseconds);        
         }
 
-        public T Invoke<T>(IMessage message, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(IMessage message, int timeoutMilliseconds = 30000)
         {
-            var waiter = _Target<T>(message, timeoutMilliseconds);
-            waiter.Start();
-            return TaskCompletionHandlerResult<T>(waiter);
+            return _Target<T>(message, timeoutMilliseconds);           
         }
-        public T Invoke<T>(string target, object data, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000)
         {
-            var waiter = _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);
-            waiter.Start();
-            return TaskCompletionHandlerResult<T>(waiter);
+            return _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);            
         }
 
-        public T Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000)
         {
             return this.Invoke<T>(target, new Message(data, MessageType.Binary), timeoutMilliseconds);
         }
 
-        public T Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000)
         {
             return this.Invoke<T>(target, new Message(data, target, this.ClientInfo.Controller), timeoutMilliseconds);
         }
 
-        public T Invoke<T>(string target, IList<byte> data, object metadata, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, IList<byte> data, object metadata, int timeoutMilliseconds = 30000)
         {
             return this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
         }
 
-        public T Invoke<T>(string target, byte[] data, object metadata, int timeoutMilliseconds = 2000)
+        public Task<T> Invoke<T>(string target, byte[] data, object metadata, int timeoutMilliseconds = 30000)
         {
             return this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
         }
-
-        private static T TaskCompletionHandlerResult<T>(Task<T> waiter)
-        {
-            var tcs = new TaskCompletionSource<T>();
-
-            waiter.ContinueWith(t => t.Exception.Handle(ex =>
-            {
-                tcs.TrySetException(ex);
-                return false;
-            }), TaskContinuationOptions.OnlyOnFaulted);
-
-            waiter.ContinueWith(task => { tcs.SetResult(waiter.Result); }, TaskContinuationOptions.OnlyOnRanToCompletion);
-
-            return tcs.Task.Result;
-        }
-
+        
         public IListener On<T>(string target, Action<T> action)
         {
             if (typeof(T) == typeof(IMessage))
@@ -195,7 +175,6 @@ namespace XSockets.Client40
         {
             this.Listeners.Remove(listener.Topic);
         }
-
 
         public void Invoke(string target, byte[] data)
         {
