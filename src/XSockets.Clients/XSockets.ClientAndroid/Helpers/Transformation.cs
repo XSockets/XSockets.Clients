@@ -7,7 +7,7 @@ using XSockets.ClientAndroid.Model;
 
 namespace XSockets.ClientAndroid.Helpers
 {    
-    public static partial class XSocketHelper
+    public static class XSocketHelper
     {
         #region "Transformation Methods - XSocketEvents & JSON"
 

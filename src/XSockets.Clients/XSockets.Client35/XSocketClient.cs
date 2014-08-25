@@ -21,7 +21,7 @@ using XSockets.Client35.Wrapper;
 namespace XSockets.Client35
 {
     /// <summary>
-    /// A client for communicating with XSockets over pub/sub
+    /// A client for communicating with XSockets over pub/sub and rpc
     /// </summary>
     public partial class XSocketClient : IXSocketClient
     {
@@ -30,6 +30,8 @@ namespace XSockets.Client35
         public RepositoryInstance<string, IController> Controllers { get; set; }
 
         public Guid PersistentId { get; set; }
+
+        private event EventHandler OnHandshakeCompleted;
 
         public event EventHandler OnConnected;
         public event EventHandler OnDisconnected;
@@ -87,14 +89,16 @@ namespace XSockets.Client35
             temp.Disconnect(true);
             this._proxySocket = temp;
         }
-        
-        public XSocketClient(string url, string origin , params string[] controllers)
+
+        public XSocketClient(string url, string origin, params string[] controllers)
         {
             this.Headers = new NameValueCollection();
             this.QueryString = new NameValueCollection();
             this.Cookies = new CookieCollection();
 
             this.OnConnected += OnSocketConnected;
+
+            this.OnHandshakeCompleted += XSocketClient_OnHandshakeCompleted;
             
             var uri = new Uri(url);
             var instanceController = uri.AbsolutePath.Remove(0, 1).ToLower();
@@ -115,7 +119,16 @@ namespace XSockets.Client35
             foreach (var controller in controllers)
             {
                 this.Controllers.AddOrUpdate(controller.ToLower(), new Controller(this, controller));
-            }         
+            }
+        }
+
+        void XSocketClient_OnHandshakeCompleted(object sender, EventArgs e)
+        {
+            IsHandshakeDone = true;
+            foreach (var ctrl in this.Controllers.GetAll())
+            {
+                ctrl.BindUnboundSubscriptions();
+            }
         }
 
         public void AddClientCertificate(X509Certificate2 certificate)
@@ -184,7 +197,7 @@ namespace XSockets.Client35
         public void Disconnect()
         {
             var frame = GetDataFrame(FrameType.Close, Encoding.UTF8.GetBytes(""));
-            Socket.Send(frame.ToBytes(), () => this.FireOnDisconnected(), err => { });            
+            Socket.Send(frame.ToBytes(), () => this.FireOnDisconnected(), err => { });
         }
 
         public void Reconnect()
@@ -194,6 +207,7 @@ namespace XSockets.Client35
 
         public void Open()
         {
+
             if (this.IsConnected) return;
 
             var connectionstring = GetConnectionstring();
@@ -210,9 +224,10 @@ namespace XSockets.Client35
             {
                 IsHandshakeDone = true;
                 this.Connected();
-            }
+            }                
             else
                 throw new Exception("Could not connect to server");
+
         }
 
         private string GetConnectionstring()
@@ -221,7 +236,7 @@ namespace XSockets.Client35
 
             if (this.PersistentId != Guid.Empty)
             {
-                this.QueryString.Add(Constants.Connection.Parameters.PersistentId,this.PersistentId.ToString());
+                this.QueryString.Add(Constants.Connection.Parameters.PersistentId, this.PersistentId.ToString());
             }
 
             connectionstring += this.QueryString.ConstructQueryString();
@@ -271,7 +286,6 @@ namespace XSockets.Client35
             }
         }
 
-
         private Task<bool> DoSynchronHandshake(Rfc6455Handshake handshake)
         {
             var waiter = DoHandshake(handshake);
@@ -282,37 +296,38 @@ namespace XSockets.Client35
         {
 
             return new Task<bool>(() =>
-            {                
+            {
                 var cts = new CancellationTokenSource();
                 var token = cts.Token;
 
                 var working = true;
 
-                var buffer = new byte[1024];
-                Socket.Send(Encoding.UTF8.GetBytes(handshake.ToString()), () => Socket.Receive(buffer, r =>
+
+                Socket.Send(Encoding.UTF8.GetBytes(handshake.ToString()), () =>
                 {
-                    Receive();
-                    IsHandshakeDone = true;
+                    StartReceiving();
+                    //IsHandshakeDone = true;
+                    //foreach (var ctrl in this.Controllers.GetAll())
+                    //{
+                    //    ctrl.BindUnboundSubscriptions();
+                    //}
+                    //working = false;
+                }
+                , exception =>
+                {
 
-                    foreach (var ctrl in this.Controllers.GetAll())
-                    {
-                        ctrl.BindUnboundSubscriptions();
-                    }
-                    working = false;                    
-                }, err => FireOnDisconnected()),
-                            err => FireOnDisconnected());
+                });
 
 
-                while (working)
+                while (!IsHandshakeDone)
                 {
                     if (token.IsCancellationRequested)
                         return false;
                     Thread.Sleep(1);
                 }
+
                 return true;
             });
-
-
         }
 
         private void Connected()
@@ -337,7 +352,7 @@ namespace XSockets.Client35
         {
             try
             {
-                var controller = this.Controllers.GetById(message.Controller);
+                var controller = this.Controllers.GetById(message.Controller.ToLower());
                 controller.FireOnBlob(message);
             }
             catch (Exception ex)

@@ -82,6 +82,7 @@
     <Compile Include="Protocol\IFrameHandler.cs" />
     <Compile Include="Protocol\IReadState.cs" />
     <Compile Include="Protocol\Readers\ReadState.cs" />
+    <Compile Include="Protocol\Readers\Rfc6455FrameHandler.cs" />
     <Compile Include="Protocol\Readers\XFrameHandler.cs" />
     <Compile Include="Utility\Observables\XSocketsObserverPool.cs" />
     <Compile Include="Utility\Storage\Repository.cs" />

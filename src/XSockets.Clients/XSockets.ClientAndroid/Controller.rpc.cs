@@ -18,7 +18,7 @@ namespace XSockets.ClientAndroid
                 var working = true;
                 var listener = new Listener(m.Topic,
                     message =>
-                    {
+                    {                        
                         data = this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data);
                         working = false;
                     },
@@ -100,16 +100,16 @@ namespace XSockets.ClientAndroid
 
         public Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(target, timeoutMilliseconds);
+            return _Target<T>(target, timeoutMilliseconds);        
         }
 
         public Task<T> Invoke<T>(IMessage message, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(message, timeoutMilliseconds);
+            return _Target<T>(message, timeoutMilliseconds);           
         }
         public Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);
+            return _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);            
         }
 
         public Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000)
@@ -131,7 +131,7 @@ namespace XSockets.ClientAndroid
         {
             return this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
         }
-
+        
         public IListener On<T>(string target, Action<T> action)
         {
             if (typeof(T) == typeof(IMessage))

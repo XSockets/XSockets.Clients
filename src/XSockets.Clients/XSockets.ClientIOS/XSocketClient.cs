@@ -8,7 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using XSockets.ClientIOS.Common.Interfaces;
 using XSockets.ClientIOS.Common.Event.Arguments;
 using XSockets.ClientIOS.Common.Interfaces;
 using XSockets.ClientIOS.Globals;
@@ -22,7 +21,7 @@ using XSockets.ClientIOS.Wrapper;
 namespace XSockets.ClientIOS
 {
     /// <summary>
-    /// A client for communicating with XSockets over pub/sub
+    /// A client for communicating with XSockets over pub/sub and rpc
     /// </summary>
     public partial class XSocketClient : IXSocketClient
     {
@@ -31,6 +30,8 @@ namespace XSockets.ClientIOS
         public RepositoryInstance<string, IController> Controllers { get; set; }
 
         public Guid PersistentId { get; set; }
+
+        private event EventHandler OnHandshakeCompleted;
 
         public event EventHandler OnConnected;
         public event EventHandler OnDisconnected;
@@ -97,6 +98,8 @@ namespace XSockets.ClientIOS
 
             this.OnConnected += OnSocketConnected;
 
+            this.OnHandshakeCompleted += XSocketClient_OnHandshakeCompleted;
+            
             var uri = new Uri(url);
             var instanceController = uri.AbsolutePath.Remove(0, 1).ToLower();
 
@@ -116,6 +119,15 @@ namespace XSockets.ClientIOS
             foreach (var controller in controllers)
             {
                 this.Controllers.AddOrUpdate(controller.ToLower(), new Controller(this, controller));
+            }
+        }
+
+        void XSocketClient_OnHandshakeCompleted(object sender, EventArgs e)
+        {
+            IsHandshakeDone = true;
+            foreach (var ctrl in this.Controllers.GetAll())
+            {
+                ctrl.BindUnboundSubscriptions();
             }
         }
 
@@ -195,8 +207,8 @@ namespace XSockets.ClientIOS
 
         public void Open()
         {
-            if (this.IsConnected) return;
 
+            if (this.IsConnected) return;
 
             var connectionstring = GetConnectionstring();
 
@@ -212,9 +224,10 @@ namespace XSockets.ClientIOS
             {
                 IsHandshakeDone = true;
                 this.Connected();
-            }
+            }                
             else
                 throw new Exception("Could not connect to server");
+
         }
 
         private string GetConnectionstring()
@@ -289,31 +302,32 @@ namespace XSockets.ClientIOS
 
                 var working = true;
 
-                var buffer = new byte[1024];
-                Socket.Send(Encoding.UTF8.GetBytes(handshake.ToString()), () => Socket.Receive(buffer, r =>
+
+                Socket.Send(Encoding.UTF8.GetBytes(handshake.ToString()), () =>
                 {
-                    Receive();
-                    IsHandshakeDone = true;
+                    StartReceiving();
+                    //IsHandshakeDone = true;
+                    //foreach (var ctrl in this.Controllers.GetAll())
+                    //{
+                    //    ctrl.BindUnboundSubscriptions();
+                    //}
+                    //working = false;
+                }
+                , exception =>
+                {
 
-                    foreach (var ctrl in this.Controllers.GetAll())
-                    {
-                        ctrl.BindUnboundSubscriptions();
-                    }
-                    working = false;
-                }, err => FireOnDisconnected()),
-                            err => FireOnDisconnected());
+                });
 
 
-                while (working)
+                while (!IsHandshakeDone)
                 {
                     if (token.IsCancellationRequested)
                         return false;
                     Thread.Sleep(1);
                 }
+
                 return true;
             });
-
-
         }
 
         private void Connected()
@@ -338,7 +352,7 @@ namespace XSockets.ClientIOS
         {
             try
             {
-                var controller = this.Controllers.GetById(message.Controller);
+                var controller = this.Controllers.GetById(message.Controller.ToLower());
                 controller.FireOnBlob(message);
             }
             catch (Exception ex)

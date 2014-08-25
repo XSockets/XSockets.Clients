@@ -38,7 +38,7 @@ namespace XSockets.ClientIOS.Model
 
             //if (typeof (T).IsBuiltIn())
             //    return (dynamic)this.Data;
-
+            
             return this.serializer.DeserializeFromString<T>(this.Data);
         }
 
@@ -55,7 +55,7 @@ namespace XSockets.ClientIOS.Model
         /// <summary>
         /// For newtonsoft.json
         /// </summary>
-        public Message() { }
+        public Message(){}
 
         public Message(IList<byte> blob, MessageType messageType, string controller = "")
         {
@@ -87,15 +87,15 @@ namespace XSockets.ClientIOS.Model
             else if (messageType == MessageType.Ping)
             {
                 this.Blob = blob;
-                this.MessageType = messageType;
+                this.MessageType = messageType;                
             }
             else if (messageType == MessageType.Pong)
             {
                 this.Blob = blob;
                 this.MessageType = messageType;
             }
-        }
-
+        }        
+        
         /// <summary>
         /// Ctor for Blob + Object
         /// </summary>
@@ -116,7 +116,7 @@ namespace XSockets.ClientIOS.Model
             this.Data = this.serializer.SerializeToString(new Message(jsonMeta, topic, controller));
 
             ////Set the metadata as header in the binary message
-            var ms = new List<byte>();
+            var ms = new List<byte>();            
             ms.AddRange(blob);
 
             this.Blob = ms;
@@ -126,7 +126,7 @@ namespace XSockets.ClientIOS.Model
             this.Controller = controller.ToLower();
         }
 
-        public Message(IList<byte> blob, string topic, string controller) : this(blob, topic, controller, new XSocketJsonSerializer()) { }
+        public Message(IList<byte> blob, string topic, string controller):this(blob,topic,controller,new XSocketJsonSerializer()){}
         public Message(IList<byte> blob, string topic, string controller, IXSocketJsonSerializer serializer)
         {
             this._serializer = serializer;

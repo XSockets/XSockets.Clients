@@ -16,6 +16,8 @@ namespace XSockets.ClientAndroid
     /// </summary>
     public partial class XSocketClient
     {
+        private const int ReadSize = 1024;
+        
         //Receive & Frame methods
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
         {
@@ -29,7 +31,7 @@ namespace XSockets.ClientAndroid
             };
             return frame;
         }
-        
+
         private void ReceiveData(List<byte> data, IReadState readState, Action<FrameType, byte[]> processFrame)
         {
             while (data.Count >= 2)
@@ -37,6 +39,15 @@ namespace XSockets.ClientAndroid
                 bool isFinal = (data[0] & 128) != 0;
                 var frameType = (FrameType)(data[0] & 15);
                 int length = (data[1] & 127);
+
+                var reservedBits = (data[0] & 112);
+
+                if (reservedBits != 0)
+                {
+                    //TODO: Validate that this is ok with all protocols
+                    return;
+                }
+
                 int index = 2;
                 int payloadLength;
                 if (length == 127)
@@ -77,6 +88,7 @@ namespace XSockets.ClientAndroid
                 readState.Clear();
                 processFrame(stateFrameType.Value, stateData);
             }
+
         }
 
         private void ProcessFrame(FrameType frameType, IEnumerable<byte> data, Action<List<byte>, FrameType> completed)
@@ -84,34 +96,34 @@ namespace XSockets.ClientAndroid
             completed(data.ToList(), frameType);
         }
 
-        private void Receive()
+        private IXFrameHandler CreateFrameHandler()
         {
-            _frameHandler = Create((payload, op) =>
+
+            return Create((payload, op) =>
+            {
+                switch (op)
                 {
-                    switch (op)
-                    {
-                        case FrameType.Text:
-                            FireOnMessage(this.Deserialize<Message>(Encoding.UTF8.GetString(payload.ToArray())));
-                            break;
-                        case FrameType.Binary:
-                            FireOnBlob(new Message(payload, MessageType.Binary));
-                            break;
-                        case FrameType.Ping:
-                            SendControlFrame(FrameType.Pong, payload.ToArray());
-                            if (this.OnPing != null)
-                                this.OnPing(this, new Message(payload,MessageType.Ping));
-                            break;
-                        case FrameType.Pong:
-                            SendControlFrame(FrameType.Ping, payload.ToArray());
-                            if (this.OnPong != null)
-                                this.OnPong(this, new Message(payload,MessageType.Pong));
-                            break;
-                        case FrameType.Close:
-                            FireOnDisconnected();
-                            break;
-                    }                    
-                });
-            Read(new byte[1024]);
+                    case FrameType.Text:
+                        FireOnMessage(this.Deserialize<Message>(Encoding.UTF8.GetString(payload.ToArray())));
+                        break;
+                    case FrameType.Binary:
+                        FireOnBlob(new Message(payload, MessageType.Binary));
+                        break;
+                    case FrameType.Ping:
+                        SendControlFrame(FrameType.Pong, payload.ToArray());
+                        if (this.OnPing != null)
+                            this.OnPing(this, new Message(payload, MessageType.Ping));
+                        break;
+                    case FrameType.Pong:
+                        SendControlFrame(FrameType.Ping, payload.ToArray());
+                        if (this.OnPong != null)
+                            this.OnPong(this, new Message(payload, MessageType.Pong));
+                        break;
+                    case FrameType.Close:
+                        FireOnDisconnected();
+                        break;
+                }
+            });
         }
 
         private IXFrameHandler Create(Action<List<byte>, FrameType> onCompleted)
@@ -123,18 +135,44 @@ namespace XSockets.ClientAndroid
                     d => ReceiveData(d, readState, (op, data) => ProcessFrame(op, data, onCompleted))
             };
         }
-
-        private void Read(byte[] buffer)
-        {
-            Socket.Receive(buffer, result =>
-                {
-                    if (result <= 0)
-                    {
-                        return;
-                    }
-                    _frameHandler.Receive(buffer.Take(result));
-                    Read(buffer);
-                }, ex => FireOnDisconnected());
+        
+        public void StartReceiving()
+        {            
+            _frameHandler = CreateFrameHandler();
+            var data = new List<byte>(ReadSize);
+            var buffer = new byte[ReadSize];
+            ReadHandshake(data, buffer);
         }
+
+        private void Read(List<byte> data, byte[] buffer)
+        {
+            Socket.Receive(buffer, r =>
+            {
+                if (r <= 0) return;
+                var p = buffer.Take(r);
+                data.AddRange(p);
+                _frameHandler.Data.AddRange(p);
+                _frameHandler.Receive();
+                Read(data, new byte[ReadSize]);
+            }, FireError);
+        }
+
+        private void ReadHandshake(List<byte> data, byte[] buffer)
+        {
+            Socket.Receive(buffer, r =>
+            {
+
+                data.AddRange(buffer.Take(r));
+                if (data.Count > 2)
+                {                    
+                    this.OnHandshakeCompleted.Invoke(this, new EventArgs());
+                    Read(new List<byte>(), new byte[ReadSize]);
+                }
+                else
+                {
+                    ReadHandshake(data, buffer);
+                }
+            }, FireError);
+        }        
     }
 }

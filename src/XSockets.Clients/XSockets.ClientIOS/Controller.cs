@@ -68,7 +68,7 @@ namespace XSockets.ClientIOS
                 if (this.OnMessage != null) this.OnMessage.Invoke(this, message as Message);
 
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(ex));
             }
@@ -217,11 +217,10 @@ namespace XSockets.ClientIOS
         }
         private void FireClosed()
         {
-            lock (locker)
-            {
-                if (this.ClientInfo.ConnectionId == Guid.Empty) return;
-
-
+            lock(locker){
+               if (this.ClientInfo.ConnectionId == Guid.Empty) return;
+         
+                
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));
                 this.ClientInfo.ConnectionId = Guid.Empty;
@@ -229,8 +228,8 @@ namespace XSockets.ClientIOS
             }
         }
         public void Close()
-        {
-            this.Invoke(Globals.Constants.Events.Controller.Closed);
+        {         
+            this.Invoke(Globals.Constants.Events.Controller.Closed);            
         }        
 
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
@@ -254,7 +253,7 @@ namespace XSockets.ClientIOS
         {
             if (message.MessageType == MessageType.Text)
                 return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(message.ToString()));
-            return GetDataFrame(FrameType.Binary, message.ToBytes());//return GetDataFrame(FrameType.Binary, Encoding.UTF8.GetBytes(message.ToString()));
+            return GetDataFrame(FrameType.Binary, message.ToBytes());// Encoding.UTF8.GetBytes(message.ToString())); //return GetDataFrame(FrameType.Binary, message.Blob.ToArray());
         }
 
 

@@ -5,18 +5,18 @@ namespace XSockets.ClientAndroid.Protocol.Readers
 {
     public abstract class XFrameHandler : IXFrameHandler
     {
-        private readonly List<byte> _data = new List<byte>();
+        public List<byte> Data { get; set; }
 
         public Action<List<byte>> ReceiveData = delegate { };
 
-        public void Receive(IEnumerable<byte> data)
+        public void Receive()
         {
-            _data.AddRange(data);
-            ReceiveData(_data);
+            ReceiveData(Data);
         }
-    }
 
-    public class Rfc6455FrameHandler : XFrameHandler
-    {
+        protected XFrameHandler()
+        {
+            this.Data = new List<byte>();
+        }
     }
 }

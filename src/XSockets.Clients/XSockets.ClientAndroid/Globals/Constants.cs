@@ -27,17 +27,6 @@
                 public const string Init = "0xcc";
             }
 
-            //public static class Connections
-            //{
-            //    //public const string Opened = "0xc8";
-            //    ////public const string OnClientConnect = "0xc9";
-            //    ////public const string OnClientDisconnect = "0xca";
-            //    //public const string Closed = "0xcb";
-            //    //public const string Connected = "0xcc";
-            //    public const string Init = "0xcc";
-
-            //}
-
             public static class Storage
             {
                 public const string Set = "0x190";

@@ -4,6 +4,7 @@ namespace XSockets.ClientIOS.Protocol
 {
     public interface IXFrameHandler
     {
-        void Receive(IEnumerable<byte> data);
+        void Receive();
+        List<byte> Data { get; set; }
     }
 }
