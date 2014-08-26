@@ -13,3 +13,4 @@ We currently have clients for:
 - .NET Microframework 4.2
 - .NET Microframework 4.3
 - JavaScript
+- Dart (Dartlang)
