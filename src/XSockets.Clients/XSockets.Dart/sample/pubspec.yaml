@@ -1,0 +1,5 @@
+name: XSockets_Dart_Sample_1
+description: A sample web application
+dependencies:
+  XSockets.dart: any
+  browser: any
