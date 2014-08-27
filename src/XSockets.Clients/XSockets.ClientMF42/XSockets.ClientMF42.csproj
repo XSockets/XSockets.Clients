@@ -33,6 +33,9 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Event\Arguments\Interfaces\IMessage.cs" />
     <Compile Include="Event\Arguments\MessageType.cs" />
     <Compile Include="Event\Constants.cs" />

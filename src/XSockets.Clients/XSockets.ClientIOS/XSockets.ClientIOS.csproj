@@ -34,6 +34,9 @@
     <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ClientPool.cs" />
     <Compile Include="Common\Event\Arguments\MessageType.cs" />
     <Compile Include="Common\Event\Arguments\OnClientConnectArgs.cs" />
