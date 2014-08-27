@@ -1,4 +1,4 @@
-## XSocekts.Arduino
+## XSockets.Arduino
 We have written a very very simple client for the Arduino.
 
 ###Client Setup
