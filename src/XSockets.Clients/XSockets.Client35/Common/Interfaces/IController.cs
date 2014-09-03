@@ -98,8 +98,7 @@ namespace XSockets.Client35.Common.Interfaces
         Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 30000);
         Task<T> Invoke<T>(string target, IList<byte> blob, object metadata, int timeoutMilliseconds = 30000);
         Task<T> Invoke<T>(string target, byte[] blob, object metadata, int timeoutMilliseconds = 30000);
-        IListener On<T>(string target, Action<T> action);
-        //IListener On(string target, Action<dynamic> action);
+        IListener On<T>(string target, Action<T> action);        
         IListener On(string target, Action action);
         void DisposeListener(IListener listener);
     }

@@ -53,15 +53,12 @@
     <Compile Include="Common\Event\Arguments\OnClientConnectArgs.cs" />
     <Compile Include="Common\Event\Arguments\OnClientDisconnectArgs.cs" />
     <Compile Include="Common\Event\Arguments\OnErrorArgs.cs" />
-    <Compile Include="Common\Event\Arguments\OnHandshakeCompleteArgs.cs" />
-    <Compile Include="Common\Event\Arguments\OnHandshakeInvalidArgs.cs" />
     <Compile Include="Common\Interfaces\IClientInfo.cs" />
     <Compile Include="Common\Interfaces\IController.cs" />
     <Compile Include="Common\Interfaces\IMessage.cs" />
     <Compile Include="Common\Interfaces\ISocketWrapper.cs" />
     <Compile Include="Common\Interfaces\ISubscription.cs" />
     <Compile Include="Common\Interfaces\IXSocketClient.cs" />
-    <Compile Include="Common\Interfaces\IXSocketController.cs" />
     <Compile Include="Common\Interfaces\IXSocketJsonSerializer.cs" />
     <Compile Include="Common\Interfaces\IXSocketObservable.cs" />
     <Compile Include="Common\Interfaces\IXSocketObserver.cs" />

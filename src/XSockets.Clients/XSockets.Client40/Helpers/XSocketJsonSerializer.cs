@@ -32,7 +32,7 @@ namespace XSockets.Client40.Helpers
         }
 
         public dynamic DeserializeFromString(string json)
-        {
+        {            
             return JObject.Parse(json);            
         }
     }

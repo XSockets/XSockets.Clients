@@ -153,15 +153,6 @@ namespace XSockets.ClientIOS
 
         }
 
-        //public IListener On(string target, Action<dynamic> action)
-        //{
-        //    var listener = new Listener(target, message => action(this.XSocketClient.Serializer.DeserializeFromString(message.Data)))
-        //    {
-        //        Controller = this
-        //    };
-        //    return this.Listeners.AddOrUpdate(listener.Topic, listener);
-        //}
-
         public IListener On(string target, Action action)
         {
             var listener = new Listener(target, message => action())
