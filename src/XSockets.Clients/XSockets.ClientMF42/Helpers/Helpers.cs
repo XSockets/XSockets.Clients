@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using Microsoft.SPOT;
 using XSockets.ClientMF42.Event.Arguments.Interfaces;
 using XSockets.ClientMF42.Interfaces;
 using XSockets.ClientMF42.Model;
@@ -64,7 +65,7 @@ namespace XSockets.ClientMF42.Helpers
             var o = constructor.Invoke(null);
 
             foreach (var k in h.Keys)
-            {                
+            {
                 t.GetMethod("set_" + k).Invoke(o, new object[] { h[k] });
             }
 

@@ -168,16 +168,38 @@ namespace XSockets.ClientMF43
         
         public void Recieve()
         {
-            var buffer = new byte[BufferSize];
-            var result = this.Socket.Receive(buffer);
-            if (result < 0)
-                this.Close();
-            if (this.OnMessage != null)
+            var buffer = new byte[1];
+            var i = 0;
+            var r = this.Socket.Receive(buffer, 1, SocketFlags.None);
+
+            if (r < 0)
             {
-                var m = this.ToMessage(buffer);
-                if(m != null)
-                    this.OnMessage.Invoke(this, m);
+                this.Close();
+                return;
             }
+
+            if (buffer[0] == 0x00)
+            {
+                byte[] result = new byte[BufferSize];
+                bool endReached = false;
+                while (!endReached)
+                {
+                    this.Socket.Receive(buffer, 1, SocketFlags.None);
+                    endReached = buffer[0] == 0xff;
+                    if (!endReached)
+                    {
+                        result[i] = buffer[0];
+                        i++;
+                    }
+                }
+                if (this.OnMessage != null)
+                {
+                    var m = this.ToMessage(result);
+                    if (m != null)
+                        this.OnMessage.Invoke(this, m);
+                }
+            }
+
             Recieve();
         }         
        
