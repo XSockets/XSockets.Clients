@@ -48,7 +48,8 @@ namespace XSockets.Client35
                     x._websocket.OnDisconnected += (sender, args) =>
                     {
                         Repository<string, ClientPool>.Remove(x._conn);
-                    };                    
+                    };
+                    x._websocket.Open();
                     Repository<string, ClientPool>.AddOrUpdate(conn, x);
                 }
             }

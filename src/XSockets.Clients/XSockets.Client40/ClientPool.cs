@@ -45,7 +45,8 @@ namespace XSockets.Client40
                             Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller).Publish(v);
                         }
                     });
-                    x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);                    
+                    x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);
+                    x._websocket.Open();
                     Repository<string, ClientPool>.AddOrUpdate(conn, x);
                 }
             }
