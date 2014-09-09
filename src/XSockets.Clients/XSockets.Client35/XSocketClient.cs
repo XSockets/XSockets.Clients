@@ -292,41 +292,21 @@ namespace XSockets.Client35
             waiter.Start();
             return waiter;
         }
+
         private Task<bool> DoHandshake(Rfc6455Handshake handshake)
         {
-
             return new Task<bool>(() =>
             {
-                var cts = new CancellationTokenSource();
-                var token = cts.Token;
-
-                var working = true;
-
-
                 Socket.Send(Encoding.UTF8.GetBytes(handshake.ToString()), () =>
                 {
                     StartReceiving();
-                    //IsHandshakeDone = true;
-                    //foreach (var ctrl in this.Controllers.GetAll())
-                    //{
-                    //    ctrl.BindUnboundSubscriptions();
-                    //}
-                    //working = false;
                 }
                 , exception =>
                 {
 
                 });
 
-
-                while (!IsHandshakeDone)
-                {
-                    if (token.IsCancellationRequested)
-                        return false;
-                    Thread.Sleep(1);
-                }
-
-                return true;
+                return SpinWait.SpinUntil(() => IsHandshakeDone, 3000);
             });
         }
 

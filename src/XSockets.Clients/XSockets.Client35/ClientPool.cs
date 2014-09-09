@@ -45,10 +45,7 @@ namespace XSockets.Client35
                             Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller).Publish(v);
                         }
                     });
-                    x._websocket.OnDisconnected += (sender, args) =>
-                    {
-                        Repository<string, ClientPool>.Remove(x._conn);
-                    };
+                    x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);
                     x._websocket.Open();
                     Repository<string, ClientPool>.AddOrUpdate(conn, x);
                 }
@@ -57,7 +54,7 @@ namespace XSockets.Client35
         }
 
         /// <summary>
-        /// Send prepared ITextArgs
+        /// Send prepared IMessage
         /// </summary>
         /// <param name="message"></param>
         public void Send(IMessage message)
@@ -66,7 +63,7 @@ namespace XSockets.Client35
         }
 
         /// <summary>
-        /// Send any object, with an eventname... will be transformed into a ITextArgs
+        /// Send any object, with an eventname... will be transformed into a IMessage
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="eventname"></param>

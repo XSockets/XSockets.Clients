@@ -106,6 +106,7 @@ namespace XSockets.ClientAndroid
         /// <param name="topic"></param>
         public void Unsubscribe(string topic)
         {
+            topic = topic.ToLower();
             ISubscription subscription = this.Subscriptions.GetById(topic);
 
             if (subscription == null)

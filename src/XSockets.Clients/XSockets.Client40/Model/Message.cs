@@ -35,9 +35,6 @@ namespace XSockets.Client40.Model
                 var m = this.serializer.DeserializeFromString<Message>(this.Data);
                 return this.serializer.DeserializeFromString<T>(m.Data);
             }
-
-            //if (typeof (T).IsBuiltIn())
-            //    return (dynamic)this.Data;
             
             return this.serializer.DeserializeFromString<T>(this.Data);
         }
@@ -65,7 +62,7 @@ namespace XSockets.Client40.Model
                 this.Controller = data.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
                     this.Controller = controller.ToLower();
-                this.Topic = data.Topic;
+                this.Topic = data.Topic.ToLower();
                 this.Data = data.Data;
                 this.MessageType = messageType;
                 this.Blob = null;
@@ -81,7 +78,7 @@ namespace XSockets.Client40.Model
                 this.Controller = eventInfo.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
                     this.Controller = controller.ToLower();
-                this.Topic = eventInfo.Topic;
+                this.Topic = eventInfo.Topic.ToLower();
                 this.MessageType = messageType;
             }
             else if (messageType == MessageType.Ping)
@@ -120,7 +117,7 @@ namespace XSockets.Client40.Model
             ms.AddRange(blob);
 
             this.Blob = ms;
-            this.Topic = topic;
+            this.Topic = topic.ToLower();
             this.MessageType = MessageType.Binary;
 
             this.Controller = controller.ToLower();
@@ -144,7 +141,7 @@ namespace XSockets.Client40.Model
             this.Blob = ms;
 
             this.Controller = controller.ToLower();
-            this.Topic = topic;
+            this.Topic = topic.ToLower();
             this.MessageType = MessageType.Binary;
         }
 

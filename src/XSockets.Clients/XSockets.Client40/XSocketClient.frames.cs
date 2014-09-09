@@ -12,7 +12,7 @@ using XSockets.Client40.Protocol.Readers;
 namespace XSockets.Client40
 {
     /// <summary>
-    /// A client for communicating with XSockets over pub/sub
+    /// A client for communicating with XSockets over pub/sub & rpc
     /// </summary>
     public partial class XSocketClient
     {
@@ -43,8 +43,7 @@ namespace XSockets.Client40
                 var reservedBits = (data[0] & 112);
 
                 if (reservedBits != 0)
-                {
-                    //TODO: Validate that this is ok with all protocols
+                {                    
                     return;
                 }
 

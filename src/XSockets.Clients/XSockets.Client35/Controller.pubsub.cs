@@ -106,6 +106,7 @@ namespace XSockets.Client35
         /// <param name="topic"></param>
         public void Unsubscribe(string topic)
         {
+            topic = topic.ToLower();
             ISubscription subscription = this.Subscriptions.GetById(topic);
 
             if (subscription == null)
@@ -136,7 +137,7 @@ namespace XSockets.Client35
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription
                 {
-                    Topic = topic.ToLower()
+                    Topic = subscription.Topic
                 }), () => { subscription.IsBound = true; });
             }
         }
@@ -158,7 +159,7 @@ namespace XSockets.Client35
             var subscription = new Subscription(topic, callback, subscriptionType, limit, true);
             this.Subscriptions.AddOrUpdate(topic, subscription);
 
-            AddConfirmCallback(confirmCallback, subscription.Topic);
+            AddConfirmCallback(confirmCallback, topic);
             if (this.XSocketClient.IsConnected)
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = true, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
@@ -178,8 +179,8 @@ namespace XSockets.Client35
         public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class
         {
             var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit, true);
-            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
-            AddConfirmCallback(confirmCallback, subscription.Topic);
+            this.Subscriptions.AddOrUpdate(topic, subscription);
+            AddConfirmCallback(confirmCallback, topic);
             if (this.XSocketClient.IsConnected)
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = true, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
@@ -209,7 +210,7 @@ namespace XSockets.Client35
         public void Publish(string payload, Action callback)
         {
             if (!this.XSocketClient.IsConnected)
-                throw new Exception("You cant send messages when not conencted to the server");
+                throw new Exception("You cant send messages when not connected to the server");
 
             var frame = GetDataFrame(payload);
             this.XSocketClient.Socket.Send(frame.ToBytes(), callback.Invoke, err => FireClosed());
@@ -219,7 +220,7 @@ namespace XSockets.Client35
         {
 
             if (!this.XSocketClient.IsConnected)
-                throw new Exception("You cant send messages when not conencted to the server");            
+                throw new Exception("You cant send messages when not connected to the server");            
             payload.Controller = this.ClientInfo.Controller;
             var frame = GetDataFrame(payload);
             this.XSocketClient.Socket.Send(frame.ToBytes(), () => { }, err => FireClosed());

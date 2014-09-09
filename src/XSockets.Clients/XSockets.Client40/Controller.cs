@@ -176,11 +176,9 @@ namespace XSockets.Client40
             listener.Counter++;
             if (listener.SubscriptionType == SubscriptionType.One)
                 this.Listeners.Remove(listener.Topic);
-//                this.Unsubscribe(listener.Topic);
             else if (listener.SubscriptionType == SubscriptionType.Many && listener.Counter == listener.Limit)
             {
                 this.Listeners.Remove(listener.Topic);
-                //this.Unsubscribe(listener.Topic);
             }
         }
 

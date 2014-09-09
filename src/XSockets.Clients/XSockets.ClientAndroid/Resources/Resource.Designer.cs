@@ -11,7 +11,7 @@
 
 [assembly: global::Android.Runtime.ResourceDesignerAttribute("XSockets.ClientAndroid.Resource", IsApplication=false)]
 
-namespace XSockets.ClientAndroid
+namespace XSockets.ClientAndroid.Resources
 {
 	
 	

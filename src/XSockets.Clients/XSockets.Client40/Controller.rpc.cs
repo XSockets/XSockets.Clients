@@ -164,7 +164,7 @@ namespace XSockets.Client40
 
         public void DisposeListener(IListener listener)
         {
-            this.Listeners.Remove(listener.Topic);
+            this.Listeners.Remove(listener.Topic.ToLower());
         }
 
         public void Invoke(string target, byte[] data)

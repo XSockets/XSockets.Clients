@@ -68,24 +68,11 @@ namespace XSockets.Client35
                 if (this.OnMessage != null) this.OnMessage.Invoke(this, message as Message);
 
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(ex));
             }
         }
-
-        //protected virtual void FireOnOpen()
-        //{
-        //    if (this.OnOpen != null) this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
-        //}
-
-        //protected virtual void FireOnClose()
-        //{
-        //    //TODO: this.Close should be used when we want to close the connection completely
-        //    //this.Close();
-        //    //TODO: Borde slänag onDisconnected
-        //    if (this.OnClose != null) this.OnClose.Invoke(this, null);
-        //}        
 
         /// <summary>
         /// A message was received
@@ -188,11 +175,9 @@ namespace XSockets.Client35
             listener.Counter++;
             if (listener.SubscriptionType == SubscriptionType.One)
                 this.Listeners.Remove(listener.Topic);
-                //this.Unsubscribe(listener.Topic);
             else if (listener.SubscriptionType == SubscriptionType.Many && listener.Counter == listener.Limit)
             {
                 this.Listeners.Remove(listener.Topic);
-                //this.Unsubscribe(listener.Topic);
             }
         }
 
@@ -205,7 +190,8 @@ namespace XSockets.Client35
         }
 
         private void Closed(IMessage message)
-        {            
+        {
+            
             FireClosed();
         }
 
@@ -229,11 +215,10 @@ namespace XSockets.Client35
         }
         private void FireClosed()
         {
-            lock (locker)
-            {
-                if (this.ClientInfo.ConnectionId == Guid.Empty) return;
-
-
+            lock(locker){
+               if (this.ClientInfo.ConnectionId == Guid.Empty) return;
+         
+                
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));
                 this.ClientInfo.ConnectionId = Guid.Empty;
@@ -241,9 +226,9 @@ namespace XSockets.Client35
             }
         }
         public void Close()
-        {
-            this.Invoke(Globals.Constants.Events.Controller.Closed);
-        }       
+        {         
+            this.Invoke(Globals.Constants.Events.Controller.Closed);            
+        }        
 
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
         {
@@ -266,7 +251,7 @@ namespace XSockets.Client35
         {
             if (message.MessageType == MessageType.Text)
                 return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(message.ToString()));
-            return GetDataFrame(FrameType.Binary, message.ToBytes());  //return GetDataFrame(FrameType.Binary, Encoding.UTF8.GetBytes(message.ToString()));
+            return GetDataFrame(FrameType.Binary, message.ToBytes());// Encoding.UTF8.GetBytes(message.ToString())); //return GetDataFrame(FrameType.Binary, message.Blob.ToArray());
         }
 
 
