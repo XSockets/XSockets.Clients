@@ -148,6 +148,7 @@ namespace XSockets.ClientMF42
             var objJson = this.Serializer.Serialize(data);
             var json = this.Serializer.Serialize(new Model.Message(objJson, topic, controller));
             this.Socket.Send(new XDataFrame(json).ToBytes());
+            
         }
         
         public void Subscribe(string @event, string controller)
@@ -198,7 +199,7 @@ namespace XSockets.ClientMF42
                         this.OnMessage.Invoke(this, m);
                 }
             }
-
+            
             Recieve();
         }         
        

@@ -161,7 +161,6 @@ namespace XSockets.Client40
         {
             Socket.Receive(buffer, r =>
             {
-
                 data.AddRange(buffer.Take(r));
                 if (data.Count > 2)
                 {                    
