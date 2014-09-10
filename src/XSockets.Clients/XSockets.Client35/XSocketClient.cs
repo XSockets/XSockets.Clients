@@ -164,7 +164,7 @@ namespace XSockets.Client35
         {
             foreach (var ctrl in this.Controllers.GetAll())
             {
-                ctrl.Invoke(Constants.Events.Controller.Init, new { Init = true });
+                ((Controller)ctrl).OpenController();                
             }
         }
 
@@ -292,7 +292,6 @@ namespace XSockets.Client35
             waiter.Start();
             return waiter;
         }
-
         private Task<bool> DoHandshake(Rfc6455Handshake handshake)
         {
             return new Task<bool>(() =>

@@ -72,15 +72,23 @@ namespace XSockets.ClientAndroid
             });
             t.Start();
             return t;
-        }
+        }        
 
         public void Invoke(IMessage payload)
         {
             if (!this.XSocketClient.IsConnected)
                 throw new Exception("You cant send messages when not connected to the server");
+
             payload.Controller = this.ClientInfo.Controller;
-            var frame = GetDataFrame(payload);
-            this.XSocketClient.Socket.Send(frame.ToBytes(), () => { }, err => FireClosed());
+            var frame = GetDataFrame(payload).ToBytes();  
+            //If controller not yet open... Queue message
+            if (this.ClientInfo.ConnectionId == Guid.Empty)
+            {
+                this.queuedFrames.Add(frame);
+                return;
+            }
+
+            this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());            
         }
 
         public void Invoke(string target)

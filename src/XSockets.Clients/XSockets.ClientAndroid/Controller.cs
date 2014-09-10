@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using XSockets.ClientAndroid.Common.Event.Arguments;
 using XSockets.ClientAndroid.Common.Interfaces;
+using XSockets.ClientAndroid.Globals;
 using XSockets.ClientAndroid.Model;
 using XSockets.ClientAndroid.Protocol;
 using XSockets.ClientAndroid.Protocol.FrameBuilders;
@@ -23,9 +25,12 @@ namespace XSockets.ClientAndroid
 
         private RepositoryInstance<string, ISubscription> Subscriptions;
         private RepositoryInstance<string, IListener> Listeners;
+
+        private IList<byte[]> queuedFrames; 
         
         public Controller(IXSocketClient client, string controller)
         {
+            this.queuedFrames = new List<byte[]>();
             this.Subscriptions = new RepositoryInstance<string, ISubscription>();
             this.Listeners = new RepositoryInstance<string, IListener>();
             this.AddDefaultSubscriptions();
@@ -181,6 +186,13 @@ namespace XSockets.ClientAndroid
             }
         }
 
+        internal void OpenController()
+        {
+            var m = new Message(new { Init = true }, Constants.Events.Controller.Init, this.ClientInfo.Controller);
+            var f = GetDataFrame(m).ToBytes();
+            this.XSocketClient.Socket.Send(f, () => { }, err => FireClosed());
+        }
+
         private void Opened(IMessage message)
         {
             this.ClientInfo = this.XSocketClient.Serializer.DeserializeFromString<ClientInfo>(message.Data);
@@ -212,6 +224,12 @@ namespace XSockets.ClientAndroid
         {
             if (this.OnOpen != null)
                 this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
+
+            foreach (var frame in this.queuedFrames)
+            {
+                this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed()); 
+            }
+            this.queuedFrames.Clear();
         }
         private void FireClosed()
         {

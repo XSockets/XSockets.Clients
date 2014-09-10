@@ -164,7 +164,7 @@ namespace XSockets.Client40
         {
             foreach (var ctrl in this.Controllers.GetAll())
             {
-                ctrl.Invoke(Constants.Events.Controller.Init, new { Init = true });
+                ((Controller)ctrl).OpenController();                
             }
         }
 

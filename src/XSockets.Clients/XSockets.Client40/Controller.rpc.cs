@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
 using XSockets.Client40.Common.Interfaces;
+using XSockets.Client40.Globals;
 using XSockets.Client40.Model;
 
 namespace XSockets.Client40
@@ -72,15 +74,23 @@ namespace XSockets.Client40
             });
             t.Start();
             return t;
-        }
+        }        
 
         public void Invoke(IMessage payload)
         {
             if (!this.XSocketClient.IsConnected)
                 throw new Exception("You cant send messages when not connected to the server");
+
             payload.Controller = this.ClientInfo.Controller;
-            var frame = GetDataFrame(payload);
-            this.XSocketClient.Socket.Send(frame.ToBytes(), () => { }, err => FireClosed());
+            var frame = GetDataFrame(payload).ToBytes();  
+            //If controller not yet open... Queue message
+            if (this.ClientInfo.ConnectionId == Guid.Empty)
+            {
+                this.queuedFrames.Add(frame);
+                return;
+            }
+
+            this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());            
         }
 
         public void Invoke(string target)
