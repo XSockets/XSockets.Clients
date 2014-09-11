@@ -26,11 +26,11 @@ namespace XSockets.ClientIOS
         private RepositoryInstance<string, ISubscription> Subscriptions;
         private RepositoryInstance<string, IListener> Listeners;
 
-        private IList<byte[]> queuedFrames; 
+        private List<byte> queuedFrames; 
         
         public Controller(IXSocketClient client, string controller)
         {
-            this.queuedFrames = new List<byte[]>();
+            this.queuedFrames = new List<byte>();
             this.Subscriptions = new RepositoryInstance<string, ISubscription>();
             this.Listeners = new RepositoryInstance<string, IListener>();
             this.AddDefaultSubscriptions();
@@ -225,17 +225,14 @@ namespace XSockets.ClientIOS
             if (this.OnOpen != null)
                 this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
 
-            foreach (var frame in this.queuedFrames)
-            {
-                this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed()); 
-            }
+            
+            this.XSocketClient.Socket.Send(queuedFrames.ToArray(), () => { }, err => FireClosed());             
             this.queuedFrames.Clear();
         }
         private void FireClosed()
         {
             lock(locker){
-               if (this.ClientInfo.ConnectionId == Guid.Empty) return;
-         
+               if (this.ClientInfo.ConnectionId == Guid.Empty) return;         
                 
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));

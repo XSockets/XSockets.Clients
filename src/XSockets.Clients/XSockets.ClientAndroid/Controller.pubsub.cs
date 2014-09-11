@@ -203,7 +203,7 @@ namespace XSockets.ClientAndroid
             //If controller not yet open... Queue message
             if (this.ClientInfo.ConnectionId == Guid.Empty)
             {
-                this.queuedFrames.Add(frame);
+                this.queuedFrames.AddRange(frame);
                 return;
             }
 
@@ -224,7 +224,7 @@ namespace XSockets.ClientAndroid
             //If controller not yet open... Queue message
             if (this.ClientInfo.ConnectionId == Guid.Empty)
             {
-                this.queuedFrames.Add(frame);
+                this.queuedFrames.AddRange(frame);
                 return;
             }
             this.XSocketClient.Socket.Send(frame, callback.Invoke, err => FireClosed());
@@ -240,7 +240,7 @@ namespace XSockets.ClientAndroid
             //If controller not yet open... Queue message
             if (this.ClientInfo.ConnectionId == Guid.Empty)
             {
-                this.queuedFrames.Add(frame);
+                this.queuedFrames.AddRange(frame);
                 return;
             }
 
