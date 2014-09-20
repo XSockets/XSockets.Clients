@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using XSockets.ClientAndroid.Common.Interfaces;
 
 namespace XSockets.ClientAndroid.Model
@@ -25,16 +24,16 @@ namespace XSockets.ClientAndroid.Model
             this.Confirm = confirm;
         }
 
-        public Listener(string topic, MethodInfo action, Type parameter, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
-        {
-            this.Topic = topic.ToLower();
-            this.mi = action;
-            this.Type = parameter;
-            this.SubscriptionType = subscriptionType;
-            this.Counter = 0;
-            this.Limit = limit;
-            this.Confirm = confirm;
-        }
+        //public Listener(string topic, MethodInfo action, Type parameter, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
+        //{
+        //    this.Topic = topic.ToLower();
+        //    this.mi = action;
+        //    this.Type = parameter;
+        //    this.SubscriptionType = subscriptionType;
+        //    this.Counter = 0;
+        //    this.Limit = limit;
+        //    this.Confirm = confirm;
+        //}
 
         public string Topic { get; set; }
         public bool IsPrimitive { get; set; }
@@ -42,18 +41,18 @@ namespace XSockets.ClientAndroid.Model
         public bool Confirm { get; set; }
         public uint Counter { get; set; }
         public uint Limit { get; set; }
-        public bool IsStorageObject { get; set; }
+        //public bool IsStorageObject { get; set; }
 
         public SubscriptionType SubscriptionType { get; set; }
         public Action<IMessage> Callback { get; set; }
         public Type Type { get; private set; }
-        private MethodInfo mi;
+        //private MethodInfo mi;
         public IController Controller { get; set; }
-        public void Execute(params object[] param)
-        {
-            var actionT = typeof(Action<>).MakeGenericType(this.Type);
-            Delegate.CreateDelegate(actionT, this.mi).DynamicInvoke(param);
-        }
+        //public void Execute(params object[] param)
+        //{
+        //    var actionT = typeof(Action<>).MakeGenericType(this.Type);
+        //    Delegate.CreateDelegate(actionT, this.mi).DynamicInvoke(param);
+        //}
 
         public void Dispose()
         {

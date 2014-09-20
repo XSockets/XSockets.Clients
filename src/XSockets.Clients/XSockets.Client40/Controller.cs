@@ -125,21 +125,9 @@ namespace XSockets.Client40
 
         private void FireBoundMethod(ISubscription binding, IMessage message)
         {
-            if (binding.Callback == null)
-            {
-                if (message.MessageType == MessageType.Text)
-                {                   
-                    binding.Execute(this.XSocketClient.Serializer.DeserializeFromString(message.Data, binding.Type));                   
-                }
-                else
-                {
-                    binding.Execute(message);
-                }
-            }
-            else
-            {
+            if (binding.Callback != null)
                 binding.Callback(message);
-            }
+            
             binding.Counter++;
             if (binding.SubscriptionType == SubscriptionType.One)
                 this.Unsubscribe(binding.Topic);
@@ -151,32 +139,9 @@ namespace XSockets.Client40
 
         private void FireBoundMethod(IListener listener, IMessage message)
         {
-            if (listener.Callback == null)
-            {
-                if (message.MessageType == MessageType.Text)
-                {
-                    if (listener.IsStorageObject)
-                    {
-                        var xs = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data);
-                        if (xs.Value == null)
-                            listener.Execute(Activator.CreateInstance(listener.Type));
-                        else
-                            listener.Execute(this.XSocketClient.Serializer.DeserializeFromString(xs.Value.ToString(), listener.Type));
-                    }
-                    else
-                    {
-                        listener.Execute(this.XSocketClient.Serializer.DeserializeFromString(message.Data, listener.Type));
-                    }
-                }
-                else
-                {
-                    listener.Execute(message);
-                }
-            }
-            else
-            {
+            if (listener.Callback != null)
                 listener.Callback(message);
-            }
+            
             listener.Counter++;
             if (listener.SubscriptionType == SubscriptionType.One)
                 this.Listeners.Remove(listener.Topic);
@@ -190,7 +155,6 @@ namespace XSockets.Client40
         {
             var m = new Message(new { Init = true }, Constants.Events.Controller.Init, this.ClientInfo.Controller);
             var f = GetDataFrame(m).ToBytes();
-           
             this.XSocketClient.Socket.Send(f, () => { }, err => FireClosed());
         }
 
@@ -226,15 +190,14 @@ namespace XSockets.Client40
             if (this.OnOpen != null)
                 this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
 
-            this.XSocketClient.Socket.Send(queuedFrames.ToArray(), () => { }, err => FireClosed()); 
             
+            this.XSocketClient.Socket.Send(queuedFrames.ToArray(), () => { }, err => FireClosed());             
             this.queuedFrames.Clear();
         }
         private void FireClosed()
         {
             lock(locker){
-               if (this.ClientInfo.ConnectionId == Guid.Empty) return;
-         
+               if (this.ClientInfo.ConnectionId == Guid.Empty) return;         
                 
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));
@@ -268,7 +231,7 @@ namespace XSockets.Client40
         {
             if (message.MessageType == MessageType.Text)
                 return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(message.ToString()));
-            return GetDataFrame(FrameType.Binary, message.ToBytes());// Encoding.UTF8.GetBytes(message.ToString())); //return GetDataFrame(FrameType.Binary, message.Blob.ToArray());
+            return GetDataFrame(FrameType.Binary, message.ToBytes());
         }
 
 

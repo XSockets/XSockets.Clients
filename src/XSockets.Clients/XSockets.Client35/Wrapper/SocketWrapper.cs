@@ -62,8 +62,6 @@ namespace XSockets.Client35.Wrapper
                     return true;
                 }
 
-                // if (errors == SslPolicyErrors.None)
-                //return true;
                 return true;
             }, null);
 
@@ -103,8 +101,7 @@ namespace XSockets.Client35.Wrapper
         {
             if (_tokenSource.IsCancellationRequested || !this.Connected)
                 return null;
-
-
+            
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => Stream.BeginRead(buffer, offset, buffer.Length, cb, s);
 
@@ -139,7 +136,7 @@ namespace XSockets.Client35.Wrapper
             _tokenSource.Cancel();           
             _tokenSource.Dispose();
             if (Stream != null) Stream.Dispose();
-            //if (Socket != null) Socket.Dispose();
+            //if (Socket != null) Socket.Dispose();            
         }
 
         public virtual void Close()
@@ -175,6 +172,7 @@ namespace XSockets.Client35.Wrapper
                         catch (IOException)
                         {
                             _tokenSource.Cancel();
+                            
                             return null;
                         }
                     };

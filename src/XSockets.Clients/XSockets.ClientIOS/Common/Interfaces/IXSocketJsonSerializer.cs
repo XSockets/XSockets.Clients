@@ -8,8 +8,7 @@ namespace XSockets.ClientIOS.Common.Interfaces
         string SerializeToString<T>(T obj);
         string SerializeToString(object obj, Type type);
 
-        //Deserialization
-        dynamic DeserializeFromString(string json);
+        //Deserialization        
         T DeserializeFromString<T>(string json);
         object DeserializeFromString(string json, Type type);
     }

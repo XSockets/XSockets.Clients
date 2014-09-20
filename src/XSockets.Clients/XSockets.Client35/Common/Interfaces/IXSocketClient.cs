@@ -19,7 +19,7 @@ namespace XSockets.Client35.Common.Interfaces
         NameValueCollection QueryString { get; set; }
         NameValueCollection Headers { get; set; }
         CookieCollection Cookies { get; set; }
-
+        
         IXSocketJsonSerializer Serializer { get; set; }
         Guid PersistentId { get; set; }
 

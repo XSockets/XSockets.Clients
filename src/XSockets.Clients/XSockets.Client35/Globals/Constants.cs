@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XSockets.Client35.Globals
+﻿namespace XSockets.Client35.Globals
 {
     public static class Constants
     {
@@ -28,17 +26,6 @@ namespace XSockets.Client35.Globals
                 public const string Closed = "0x15";
                 public const string Init = "0xcc";
             }
-
-            //public static class Connections
-            //{
-            //    //public const string Opened = "0xc8";
-            //    ////public const string OnClientConnect = "0xc9";
-            //    ////public const string OnClientDisconnect = "0xca";
-            //    //public const string Closed = "0xcb";
-            //    //public const string Connected = "0xcc";
-            //    public const string Init = "0xcc";
-
-            //}
 
             public static class Storage
             {

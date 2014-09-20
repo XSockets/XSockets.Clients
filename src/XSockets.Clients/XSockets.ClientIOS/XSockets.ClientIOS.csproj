@@ -56,6 +56,7 @@
     <Compile Include="Controller.rpc.cs" />
     <Compile Include="Controller.storage.cs" />
     <Compile Include="Globals\Constants.cs" />
+    <Compile Include="Helpers\CertificateHelpers.cs" />
     <Compile Include="Helpers\Endian.cs" />
     <Compile Include="Helpers\Transformation.cs" />
     <Compile Include="Helpers\XSocketJsonSerializer.cs" />

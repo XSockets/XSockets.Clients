@@ -147,13 +147,13 @@ namespace XSockets.Client40
         {
             Socket.Receive(buffer, r =>
             {
-                if (r <= 0) return;
+                if (r <= 0) this.FireOnDisconnected();
                 var p = buffer.Take(r);
                 data.AddRange(p);
                 _frameHandler.Data.AddRange(p);
                 _frameHandler.Receive();
                 Read(data, new byte[ReadSize]);
-            }, FireError);
+            }, (ex)=> this.FireOnDisconnected());
         }
 
         private void ReadHandshake(List<byte> data, byte[] buffer)

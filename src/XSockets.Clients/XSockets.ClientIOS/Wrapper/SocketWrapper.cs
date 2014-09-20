@@ -61,8 +61,6 @@ namespace XSockets.ClientIOS.Wrapper
                     return true;
                 }
 
-                // if (errors == SslPolicyErrors.None)
-                //return true;
                 return true;
             }, null);
 
@@ -102,8 +100,7 @@ namespace XSockets.ClientIOS.Wrapper
         {
             if (_tokenSource.IsCancellationRequested || !this.Connected)
                 return null;
-
-
+            
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => Stream.BeginRead(buffer, offset, buffer.Length, cb, s);
 

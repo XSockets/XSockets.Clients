@@ -6,3 +6,4 @@ C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Cl
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client35\bin\Release\System.Threading.xml
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client35\obj\Release\XSockets.Client35.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client35\obj\Release\XSockets.Client35.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client35\obj\Release\XSockets.Client35.csprojResolveAssemblyReference.cache

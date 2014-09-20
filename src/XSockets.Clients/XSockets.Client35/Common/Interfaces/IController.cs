@@ -31,22 +31,22 @@ namespace XSockets.Client35.Common.Interfaces
 
         //STORAGE
         T StorageGet<T>(string key);
-        void StorageSet<T>(string key, T value) where T : class;
-        IListener StorageOnSet<T>(string key, Action<T> action) where T : class;
-        IListener StorageOnRemove<T>(string key, Action<T> action) where T : class;
+        void StorageSet<T>(string key, T value); //where T : class;
+        IListener StorageOnSet<T>(string key, Action<T> action); // where T : class;
+        IListener StorageOnRemove<T>(string key, Action<T> action); // where T : class;
         void StorageRemove(string key);
         void StorageClear();
 
 
         //PUBSUB
         void One(string topic, Action<IMessage> callback);
-        void One<T>(string topic, Action<T> callback) where T : class;
+        void One<T>(string topic, Action<T> callback); //where T : class;
         void One(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback);
-        void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback) where T : class;
+        void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback); //where T : class;
         void Many(string topic, uint limit, Action<IMessage> callback);
-        void Many<T>(string topic, uint limit, Action<T> callback) where T : class;
+        void Many<T>(string topic, uint limit, Action<T> callback);// where T : class;
         void Many(string topic, uint limit, Action<IMessage> callback, Action<IMessage> confirmCallback);
-        void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback) where T : class;
+        void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback);// where T : class;
 
         /// <summary>
         /// Remove the subscription from the list
@@ -58,8 +58,12 @@ namespace XSockets.Client35.Common.Interfaces
         void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0);
         void Subscribe(string topic, Action<IMessage> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0);
         void Subscribe(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0);
-        void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class;
-        void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class;
+
+        void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All,
+            uint limit = 0);// where T : class;
+
+        void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback,
+            SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0);// where T : class;
 
         /// <summary>
         ///     Send message
@@ -79,9 +83,10 @@ namespace XSockets.Client35.Common.Interfaces
         void Publish(string topic, List<byte> data);
         void Publish(string topic, byte[] data);
 
-        void Publish(string payload);
-        void Publish(string payload, Action callback);
+        //void Publish(string payload);
+        void Publish(string payload, Action callback);        
         void Publish(IMessage payload);
+        void Publish(string topic); 
         void Publish(string topic, object obj);
         void Publish(string topic, object obj, Action callback);        
 
@@ -98,7 +103,8 @@ namespace XSockets.Client35.Common.Interfaces
         Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 30000);
         Task<T> Invoke<T>(string target, IList<byte> blob, object metadata, int timeoutMilliseconds = 30000);
         Task<T> Invoke<T>(string target, byte[] blob, object metadata, int timeoutMilliseconds = 30000);
-        IListener On<T>(string target, Action<T> action);        
+        IListener On<T>(string target, Action<T> action);
+        //IListener On(string target, Action<dynamic> action);
         IListener On(string target, Action action);
         void DisposeListener(IListener listener);
     }

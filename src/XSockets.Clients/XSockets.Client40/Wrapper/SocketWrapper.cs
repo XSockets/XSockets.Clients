@@ -5,8 +5,8 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using XSockets.Client40.Common.Interfaces;
 
 namespace XSockets.Client40.Wrapper
@@ -61,8 +61,6 @@ namespace XSockets.Client40.Wrapper
                     return true;
                 }
 
-                // if (errors == SslPolicyErrors.None)
-                //return true;
                 return true;
             }, null);
 
@@ -102,8 +100,7 @@ namespace XSockets.Client40.Wrapper
         {
             if (_tokenSource.IsCancellationRequested || !this.Connected)
                 return null;
-
-
+            
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => Stream.BeginRead(buffer, offset, buffer.Length, cb, s);
 

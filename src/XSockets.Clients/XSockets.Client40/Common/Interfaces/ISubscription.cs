@@ -10,14 +10,14 @@ namespace XSockets.Client40.Common.Interfaces
         uint Limit { get; set; }
         SubscriptionType SubscriptionType { get; set; }
         Action<IMessage> Callback { get; set; }
-        void Execute(params object[] param);
+        //void Execute(params object[] param);
         Type Type { get; }
         
     }
 
     public interface IListener : IDispatcher, IDisposable
     {
-        bool IsStorageObject { get; set; }
+        //bool IsStorageObject { get; set; }
         IController Controller { get; set; }
     }
     public interface ISubscription: IDispatcher

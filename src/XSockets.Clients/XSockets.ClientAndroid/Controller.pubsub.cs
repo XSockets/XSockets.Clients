@@ -49,7 +49,7 @@ namespace XSockets.ClientAndroid
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback) where T : class
+        public void One<T>(string topic, Action<T> callback) //where T : class
         {
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
@@ -59,7 +59,7 @@ namespace XSockets.ClientAndroid
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback) where T : class
+        public void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback) //where T : class
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
@@ -69,7 +69,7 @@ namespace XSockets.ClientAndroid
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback) where T : class
+        public void Many<T>(string topic, uint limit, Action<T> callback) //where T : class
         {
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
@@ -79,7 +79,7 @@ namespace XSockets.ClientAndroid
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback) where T : class
+        public void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback) //where T : class
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
@@ -128,6 +128,17 @@ namespace XSockets.ClientAndroid
             this.Subscribe(topic, SubscriptionType.All);
         }
 
+        //public void Subscribe(string topic, Action callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
+        //{
+        //    var subscription = new Subscription(topic, callback.Method, typeof(IMessage), subscriptionType, limit);
+        //    this.Subscriptions.AddOrUpdate(topic, subscription);
+        //    if (this.XSocketClient.IsConnected)
+        //    {
+        //        Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = false, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
+        //    }
+        //}
+
+
         public void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0)
         {
             var subscription = new Subscription(topic, subscriptionType, limit);
@@ -166,9 +177,11 @@ namespace XSockets.ClientAndroid
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class
+        public void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {
-            var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit);
+            //message => action(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data))
+            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);
+            //var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit);
             this.Subscriptions.AddOrUpdate(topic, subscription);
             if (this.XSocketClient.IsConnected)
             {
@@ -176,9 +189,12 @@ namespace XSockets.ClientAndroid
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class
+        public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {
-            var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit, true);
+            //message => action(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data))
+            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);            
+
+            //var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit, true);
             this.Subscriptions.AddOrUpdate(topic, subscription);
             AddConfirmCallback(confirmCallback, topic);
             if (this.XSocketClient.IsConnected)
@@ -209,11 +225,11 @@ namespace XSockets.ClientAndroid
 
             this.XSocketClient.Socket.Send(frame, callback.Invoke, err => FireClosed());
         }
-        
-        public void Publish(string payload)
-        {
-            this.Publish(payload, () => { });            
-        }
+
+        //protected void Publish(string payload)
+        //{
+        //    this.Publish(payload, () => { });            
+        //}
 
         public void Publish(string payload, Action callback)
         {
@@ -245,6 +261,11 @@ namespace XSockets.ClientAndroid
             }
 
             this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());
+        }
+
+        public void Publish(string topic)
+        {
+            this.Publish(this.AsMessage(topic,null));
         }
 
         public void Publish(string topic, object obj)

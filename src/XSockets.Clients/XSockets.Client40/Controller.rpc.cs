@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XSockets.Client40.Common.Event.Arguments;
 using XSockets.Client40.Common.Interfaces;
-using XSockets.Client40.Globals;
 using XSockets.Client40.Model;
 
 namespace XSockets.Client40
@@ -85,10 +83,11 @@ namespace XSockets.Client40
             var frame = GetDataFrame(payload).ToBytes();  
             //If controller not yet open... Queue message
             if (this.ClientInfo.ConnectionId == Guid.Empty)
-            {             
+            {
                 this.queuedFrames.AddRange(frame);
                 return;
-            }            
+            }
+
             this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());            
         }
 

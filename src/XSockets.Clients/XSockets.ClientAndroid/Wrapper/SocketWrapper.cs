@@ -102,8 +102,7 @@ namespace XSockets.ClientAndroid.Wrapper
         {
             if (_tokenSource.IsCancellationRequested || !this.Connected)
                 return null;
-
-
+            
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => Stream.BeginRead(buffer, offset, buffer.Length, cb, s);
 

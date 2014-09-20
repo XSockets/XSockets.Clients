@@ -1,8 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace XSockets.Client40.Common.Interfaces
 {

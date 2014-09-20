@@ -13,22 +13,48 @@ namespace XSockets.ClientIOS
         {
             return new Task<XStorage>(() =>
             {
-                var token = cts.Token;
+                //var token = cts.Token;
+                //var data = default(XStorage);
+                //var topic = (s + ":" + o.Key).ToLower();
+
+                //var listener = new Listener(topic, message => { data = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data); }, SubscriptionType.One);
+
+                //this.Listeners.AddOrUpdate(topic, listener);
+
+                //this.Invoke(s, o);
+
+                //while (data == null)
+                //{
+                //    if (token.IsCancellationRequested)
+                //        return data;
+                //    Thread.Sleep(1);
+                //}
+                //return data;
+
+
                 var data = default(XStorage);
                 var topic = (s + ":" + o.Key).ToLower();
-
-                var listener = new Listener(topic, message => { data = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data); }, SubscriptionType.One);
+                var working = true;
+                var listener = new Listener(topic,
+                    message =>
+                    {
+                        data = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data);
+                        working = false;
+                    },
+                    SubscriptionType.One);
 
                 this.Listeners.AddOrUpdate(topic, listener);
 
-                this.Publish(s, o);
+                this.Invoke(s,o);
+                var r = SpinWait.SpinUntil(() => working == false, 60000);
 
-                while (data == null)
+                if (r == false)
                 {
-                    if (token.IsCancellationRequested)
-                        return data;
-                    Thread.Sleep(1);
+                    this.DisposeListener(listener);
+                    throw new TimeoutException("The server did not respond in the given time frame");
                 }
+
+
                 return data;
             });
         }
@@ -40,20 +66,29 @@ namespace XSockets.ClientIOS
             return waiter;
         }
 
-        public void StorageSet<T>(string key, T value) where T : class
+        public void StorageSet<T>(string key, T value)
         {
             this.Invoke(Constants.Events.Storage.Set, new XStorage { Key = key, Value = this.XSocketClient.Serializer.SerializeToString(value) });
         }
 
-        public IListener StorageOnSet<T>(string key, Action<T> action) where T : class
+        public IListener StorageOnSet<T>(string key, Action<T> action)
         {
             var topic = (Constants.Events.Storage.Set + ":" + key).ToLower();
-            IListener listener = new Listener(topic, action.Method, typeof(T)) { IsStorageObject = true, Controller = this};
+            IListener listener = new Listener(topic, message =>
+            {
+                var xs = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data);
+                if (xs.Value == null)
+                    action(default(T));
+                else
+                    action(this.XSocketClient.Serializer.DeserializeFromString<T>(xs.Value.ToString()));
+            }) { Controller = this };
             return this.Listeners.AddOrUpdate(topic, listener);
         }
 
         public T StorageGet<T>(string key)
         {
+            //var v = this.Invoke<XStorage>(Constants.Events.Storage.Get, new XStorage {Key = key}).Result;
+            //return this.XSocketClient.Serializer.DeserializeFromString<T>(v.Value.ToString());
             var result = this.StorageWaitFor(Constants.Events.Storage.Get, new XStorage { Key = key }, new CancellationTokenSource()).Result;
             if (result.Value == null)
             {
@@ -61,11 +96,17 @@ namespace XSockets.ClientIOS
             }
             return this.XSocketClient.Serializer.DeserializeFromString<T>(result.Value.ToString());
         }
-        
-        public IListener StorageOnRemove<T>(string key, Action<T> action) where T : class
+
+        public IListener StorageOnRemove<T>(string key, Action<T> action) 
         {
             var topic = (Constants.Events.Storage.Remove + ":" + key).ToLower();
-            IListener listener = new Listener(topic, action.Method, typeof(T)){ IsStorageObject = true,Controller = this};
+            IListener listener = new Listener(topic, message => {
+                var xs = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data);
+                if (xs.Value == null)
+                    action(default(T));
+                else
+                    action(this.XSocketClient.Serializer.DeserializeFromString<T>(xs.Value.ToString()));
+            }) { Controller = this };
             return this.Listeners.AddOrUpdate(topic, listener);
         }
 

@@ -182,12 +182,13 @@ namespace XSockets.Client40
             {
                 if (!this.IsHandshakeDone) return;
                 this.IsHandshakeDone = false;
+                if (this.OnDisconnected != null)
+                    this.OnDisconnected.Invoke(this, null);
                 foreach (var controller in this.Controllers.GetAll())
                 {
                     controller.Close();
                 }
-                if (this.OnDisconnected != null)
-                    this.OnDisconnected.Invoke(this, null);
+
 
                 if (this.Socket != null)
                     this.Socket.Dispose();

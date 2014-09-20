@@ -22,7 +22,7 @@ namespace XSockets.Client35.Helpers
         }
 
         public T DeserializeFromString<T>(string json)
-        {
+        {           
             return JsonConvert.DeserializeObject<T>(json);
         }
 
@@ -31,9 +31,9 @@ namespace XSockets.Client35.Helpers
             return JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings());
         }
 
-        public object DeserializeFromString(string json)
-        {
-            return JObject.Parse(json);
-        }
+        //public dynamic DeserializeFromString(string json)
+        //{
+        //    return JObject.Parse(json);            
+        //}
     }
 }

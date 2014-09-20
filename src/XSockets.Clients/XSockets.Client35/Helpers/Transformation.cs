@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using XSockets.Client35.Common.Interfaces;
@@ -6,7 +7,7 @@ using XSockets.Client35.Model;
 
 namespace XSockets.Client35.Helpers
 {    
-    public static partial class XSocketHelper
+    public static class XSocketHelper
     {
         #region "Transformation Methods - XSocketEvents & JSON"
 
@@ -108,6 +109,24 @@ namespace XSockets.Client35.Helpers
         public static string UrlEncode(this string s)
         {
             return Uri.EscapeDataString(s).Replace("%20", "+");
+        }
+
+        private static readonly ConcurrentDictionary<string, bool> TypeDictionary = new ConcurrentDictionary<string, bool>(); 
+
+        internal static bool IsBuiltIn(this Type type)
+        {
+            var typename = type.FullName;
+            if (TypeDictionary.ContainsKey(typename)) return TypeDictionary[typename];
+
+            if (type.IsGenericType) return false;
+
+            if (type.Namespace != null && (type.Namespace.StartsWith("System") && (type.Module.ScopeName == "CommonLanguageRuntimeLibrary" || type.Module.ScopeName == "mscorlib.dll")))
+            {
+                TypeDictionary.TryAdd(typename, true);
+                return true;
+            }
+            TypeDictionary.TryAdd(typename, false);
+            return false;
         }
     }
 }

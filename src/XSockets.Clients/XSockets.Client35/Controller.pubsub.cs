@@ -49,7 +49,7 @@ namespace XSockets.Client35
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback) where T : class
+        public void One<T>(string topic, Action<T> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
@@ -59,7 +59,7 @@ namespace XSockets.Client35
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback) where T : class
+        public void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
@@ -69,7 +69,7 @@ namespace XSockets.Client35
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback) where T : class
+        public void Many<T>(string topic, uint limit, Action<T> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
@@ -79,7 +79,7 @@ namespace XSockets.Client35
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback) where T : class
+        public void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
@@ -126,7 +126,7 @@ namespace XSockets.Client35
         public void Subscribe(string topic)
         {
             this.Subscribe(topic, SubscriptionType.All);
-        }
+        }        
 
         public void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0)
         {
@@ -166,9 +166,10 @@ namespace XSockets.Client35
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class
+        public void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {
-            var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit);
+            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);
+            
             this.Subscriptions.AddOrUpdate(topic, subscription);
             if (this.XSocketClient.IsConnected)
             {
@@ -176,9 +177,10 @@ namespace XSockets.Client35
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) where T : class
-        {
-            var subscription = new Subscription(topic, callback.Method, typeof(T), subscriptionType, limit, true);
+        public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
+        {            
+            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);            
+            
             this.Subscriptions.AddOrUpdate(topic, subscription);
             AddConfirmCallback(confirmCallback, topic);
             if (this.XSocketClient.IsConnected)
@@ -208,11 +210,6 @@ namespace XSockets.Client35
             }
 
             this.XSocketClient.Socket.Send(frame, callback.Invoke, err => FireClosed());
-        }
-        
-        public void Publish(string payload)
-        {
-            this.Publish(payload, () => { });            
         }
 
         public void Publish(string payload, Action callback)
@@ -245,6 +242,11 @@ namespace XSockets.Client35
             }
 
             this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());
+        }
+
+        public void Publish(string topic)
+        {
+            this.Publish(this.AsMessage(topic,null));
         }
 
         public void Publish(string topic, object obj)

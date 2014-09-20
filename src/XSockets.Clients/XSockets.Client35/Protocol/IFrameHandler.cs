@@ -4,7 +4,7 @@ namespace XSockets.Client35.Protocol
 {
     public interface IXFrameHandler
     {
-        List<byte> Data { get; set; }
         void Receive();
+        List<byte> Data { get; set; }
     }
 }

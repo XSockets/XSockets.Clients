@@ -1,11 +1,11 @@
-﻿using System;
-using XSockets.Client40.Common.Interfaces;
+using System;
+using XSockets.Client35.Common.Interfaces;
 
-namespace XSockets.Client40.Model
+namespace XSockets.Client35.Model
 {
-    public class Subscription : ISubscription
+    public class Listener : IListener
     {
-        public Subscription(string topic, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
+        public Listener(string topic, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
         {
             this.Topic = topic.ToLower();
             this.SubscriptionType = subscriptionType;
@@ -14,7 +14,7 @@ namespace XSockets.Client40.Model
             this.IsPrimitive = true;
             this.Confirm = confirm;
         }
-        public Subscription(string topic, Action<IMessage> action, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
+        public Listener(string topic, Action<IMessage> action, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
         {
             this.Topic = topic.ToLower();
             this.Callback = action;
@@ -24,11 +24,11 @@ namespace XSockets.Client40.Model
             this.Confirm = confirm;
         }
 
-        //public Subscription(string topic, MethodInfo action, Type parameter, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
+        //public Listener(string topic, MethodInfo action, Type parameter, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0, bool confirm = false)
         //{
         //    this.Topic = topic.ToLower();
         //    this.mi = action;
-        //    this.Type = parameter;            
+        //    this.Type = parameter;
         //    this.SubscriptionType = subscriptionType;
         //    this.Counter = 0;
         //    this.Limit = limit;
@@ -42,17 +42,24 @@ namespace XSockets.Client40.Model
         public uint Counter { get; set; }
         public uint Limit { get; set; }
         //public bool IsStorageObject { get; set; }
-        
+
         public SubscriptionType SubscriptionType { get; set; }
         public Action<IMessage> Callback { get; set; }
         public Type Type { get; private set; }
         //private MethodInfo mi;
-        
+        public IController Controller { get; set; }
         //public void Execute(params object[] param)
         //{
-        //    //var actionT = typeof(Action<>).MakeGenericType(this.Type);
-        //    //Delegate.CreateDelegate(actionT, this.mi).DynamicInvoke(param);
+        //    var actionT = typeof(Action<>).MakeGenericType(this.Type);
+        //    Delegate.CreateDelegate(actionT, this.mi).DynamicInvoke(param);
         //}
 
+        public void Dispose()
+        {
+            if (this.Controller != null)
+            {
+                this.Controller.DisposeListener(this);
+            }
+        }
     }
 }
