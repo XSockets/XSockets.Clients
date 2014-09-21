@@ -147,7 +147,8 @@ namespace XSockets.ClientMF43
         {
             var objJson = this.Serializer.Serialize(data);
             var json = this.Serializer.Serialize(new Model.Message(objJson, topic, controller));
-            this.Socket.Send(Encoding.UTF8.GetBytes(json));
+            this.Socket.Send(new XDataFrame(json).ToBytes());
+            
         }
         
         public void Subscribe(string @event, string controller)
@@ -155,7 +156,7 @@ namespace XSockets.ClientMF43
             var sub = new XSubscription {Event = @event, Confirm = false};
             var jsonSub = this.Serializer.Serialize(sub);
             var json = this.Serializer.Serialize(new Model.Message(jsonSub, Constants.PubSub.Subscribe, controller));
-            this.Socket.Send(Encoding.UTF8.GetBytes(json));         
+            this.Socket.Send(new XDataFrame(json).ToBytes());         
         }
 
         public void Unsubscribe(string @event, string controller)
@@ -163,7 +164,7 @@ namespace XSockets.ClientMF43
             var sub = new XSubscription { Event = @event, Confirm = false };
             var jsonSub = this.Serializer.Serialize(sub);
             var json = this.Serializer.Serialize(new Model.Message(jsonSub, Constants.PubSub.Unsubscribe, controller));
-            this.Socket.Send(Encoding.UTF8.GetBytes(json));
+            this.Socket.Send(new XDataFrame(json).ToBytes());
         }
         
         public void Recieve()
@@ -172,8 +173,7 @@ namespace XSockets.ClientMF43
             var i = 0;
             var r = this.Socket.Receive(buffer, 1, SocketFlags.None);
 
-            if (r < 0)
-            {
+            if (r < 0){
                 this.Close();
                 return;
             }
@@ -199,7 +199,7 @@ namespace XSockets.ClientMF43
                         this.OnMessage.Invoke(this, m);
                 }
             }
-
+            
             Recieve();
         }         
        

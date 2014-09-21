@@ -64,7 +64,7 @@ namespace XSockets.ClientMF43.Helpers
             var o = constructor.Invoke(null);
 
             foreach (var k in h.Keys)
-            {                
+            {
                 t.GetMethod("set_" + k).Invoke(o, new object[] { h[k] });
             }
 
