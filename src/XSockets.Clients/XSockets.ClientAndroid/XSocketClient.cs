@@ -182,16 +182,17 @@ namespace XSockets.ClientAndroid
             {
                 if (!this.IsHandshakeDone) return;
                 this.IsHandshakeDone = false;
-                if (this.OnDisconnected != null)
-                    this.OnDisconnected.Invoke(this, null);
+
                 foreach (var controller in this.Controllers.GetAll())
                 {
                     controller.Close();
                 }
 
-
                 if (this.Socket != null)
                     this.Socket.Dispose();
+
+                if (this.OnDisconnected != null)
+                    this.OnDisconnected.Invoke(this, null);
             }
         }
 
@@ -237,6 +238,7 @@ namespace XSockets.ClientAndroid
 
             if (this.PersistentId != Guid.Empty)
             {
+                this.QueryString.Remove(Constants.Connection.Parameters.PersistentId);
                 this.QueryString.Add(Constants.Connection.Parameters.PersistentId, this.PersistentId.ToString());
             }
 

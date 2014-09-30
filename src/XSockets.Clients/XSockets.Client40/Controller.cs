@@ -167,8 +167,7 @@ namespace XSockets.Client40
         }
 
         private void Closed(IMessage message)
-        {
-            
+        {            
             FireClosed();
         }
 
@@ -206,8 +205,14 @@ namespace XSockets.Client40
             }
         }
         public void Close()
-        {         
-            this.Invoke(Globals.Constants.Events.Controller.Closed);            
+        {
+            try
+            {
+                this.Invoke(Constants.Events.Controller.Closed);
+            }
+            catch
+            {             
+            }
         }        
 
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)

@@ -182,16 +182,17 @@ namespace XSockets.Client40
             {
                 if (!this.IsHandshakeDone) return;
                 this.IsHandshakeDone = false;
-                if (this.OnDisconnected != null)
-                    this.OnDisconnected.Invoke(this, null);
+                
                 foreach (var controller in this.Controllers.GetAll())
                 {
                     controller.Close();
                 }
 
-
                 if (this.Socket != null)
                     this.Socket.Dispose();
+
+                if (this.OnDisconnected != null)
+                    this.OnDisconnected.Invoke(this, null);
             }
         }
 
@@ -212,7 +213,7 @@ namespace XSockets.Client40
             if (this.IsConnected) return;
 
             var connectionstring = GetConnectionstring();
-
+            Console.WriteLine(connectionstring);
             var handshake = new Rfc6455Handshake(connectionstring, _origin, this);
 
             SetRemoteEndpoint();
@@ -237,6 +238,7 @@ namespace XSockets.Client40
 
             if (this.PersistentId != Guid.Empty)
             {
+                this.QueryString.Remove(Constants.Connection.Parameters.PersistentId);
                 this.QueryString.Add(Constants.Connection.Parameters.PersistentId, this.PersistentId.ToString());
             }
 

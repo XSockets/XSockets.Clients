@@ -205,9 +205,16 @@ namespace XSockets.Client35
                 this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
             }
         }
+
         public void Close()
-        {         
-            this.Invoke(Globals.Constants.Events.Controller.Closed);            
+        {
+            try
+            {
+                this.Invoke(Constants.Events.Controller.Closed);
+            }
+            catch
+            {
+            }
         }        
 
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
