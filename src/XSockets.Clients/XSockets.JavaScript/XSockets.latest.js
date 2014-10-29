@@ -28,7 +28,6 @@ if (forceFallback === (("WebSocket" in window && window.WebSocket.CLOSED > 2 ? t
         WebSocket.prototype.listener = function (persistentId) {
             var that = this;
             this.http.post("/API/XSocketsWebApi?persistentId=" + persistentId, {}, function (result) {
-                console.log(result);
                 (JSON.parse(result) || []).forEach(function (message) {
                     that.onmessage(new that.MessageWrapper(message));
                 });
