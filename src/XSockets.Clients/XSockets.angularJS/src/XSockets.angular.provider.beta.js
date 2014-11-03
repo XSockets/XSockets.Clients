@@ -102,6 +102,13 @@ angular.module("xsockets.angularjs", []).provider('xsockets', [
                         return deferred.promise;
                     };
 
+                    var setEnum = function(name, value) {
+                        controllerInstance.setEnum(name, value);
+                    };
+
+                    var setProperty = function (name, value) {
+                        controllerInstance.setProperty(name, value);
+                    };
 
                     return {
                         on: on,
@@ -115,8 +122,9 @@ angular.module("xsockets.angularjs", []).provider('xsockets', [
                         clientInfo: clientInfo,
                         close: close,
                         one: one,
-                        many: many
-
+                        many: many,
+                        setEnum : setEnum,
+                        setProperty : setProperty
                 }
                 };
 

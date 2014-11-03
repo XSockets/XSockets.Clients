@@ -321,7 +321,10 @@ namespace XSockets.Client40
         protected virtual void FireOnMessage(IMessage message)
         {
             try
-            {
+            {                
+            //    if(message.Topic == Globals.Constants.Events.Error && message.Controller == string.Empty)
+            //        if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(this.Serializer.DeserializeFromString<Exception>(message.Data)));
+
                 var controller = this.Controllers.GetById(message.Controller);
                 controller.FireOnMessage(message);
             }
