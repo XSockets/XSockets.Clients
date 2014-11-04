@@ -18,6 +18,7 @@ class XSocketClient {
 		void send(String controller, String topic, String data);
 		void addListener(String controller, String topic);
 		void removeListener(String controller, String topic);
+		String getValueAtIx(String data, int index);
 	private:        
         void sendHandshake();
         EthernetClient _client;

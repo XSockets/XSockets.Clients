@@ -8,15 +8,12 @@ const String UNSUBSCRIBE = "0x12d";
 
 bool XSocketClient::connect(char hostname[], int port) {
 	bool result = false;
-
 	if (_client.connect(hostname, port)) {
 		sendHandshake();
 		result = readHandshake();
 	}
-
 	return result;
 }
-
 
 bool XSocketClient::connected() {
 	return _client.connected();
@@ -69,7 +66,7 @@ bool XSocketClient::readHandshake() {
 	}
 
 	line = readHandshakeLine();
-
+	Serial.println(line);
 	if(line != "Welcome to TextProtocol") {
 		_client.stop();
 		return false;
@@ -117,4 +114,19 @@ void XSocketClient::removeListener (String controller, String topic) {
 	_client.print("|");
 	_client.print(topic);
 	_client.print((char)255);
+}
+
+String XSocketClient::getValueAtIx(String data, int index){
+	int found = 0;
+	int strIndex[] = { 0, -1  };
+	int maxIndex = data.length()-1;
+
+	for(int i=0; i<=maxIndex && found<=index; i++){
+    		if(data.charAt(i)=='|' || i==maxIndex){
+      			found++;
+      			strIndex[0] = strIndex[1]+1;
+      			strIndex[1] = (i == maxIndex) ? i+1 : i;
+    		}
+  	}
+  	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
