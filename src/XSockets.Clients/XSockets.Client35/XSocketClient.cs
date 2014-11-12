@@ -26,6 +26,9 @@ namespace XSockets.Client35
     public partial class XSocketClient : IXSocketClient
     {
         private static object locker = new object();
+        public bool AutoReconnect { get; set; }
+        private int _autoReconnectTimeout;
+        private Uri _uri;
         public IXSocketJsonSerializer Serializer { get; set; }
         public RepositoryInstance<string, IController> Controllers { get; set; }
 
@@ -33,6 +36,7 @@ namespace XSockets.Client35
 
         private event EventHandler OnHandshakeCompleted;
 
+        public event EventHandler OnAutoReconnectFailed;
         public event EventHandler OnConnected;
         public event EventHandler OnDisconnected;
         public event EventHandler<OnErrorArgs> OnError;
@@ -99,7 +103,7 @@ namespace XSockets.Client35
             this.OnConnected += OnSocketConnected;
 
             this.OnHandshakeCompleted += XSocketClient_OnHandshakeCompleted;
-            
+
             var uri = new Uri(url);
             var instanceController = uri.AbsolutePath.Remove(0, 1).ToLower();
 
@@ -131,17 +135,17 @@ namespace XSockets.Client35
             }
         }
 
-        public void AddClientCertificate(X509Certificate2 certificate)
+        public virtual void AddClientCertificate(X509Certificate2 certificate)
         {
             this._isSecure = true;
             this._certificate = certificate;
         }
 
-        public void Pong(byte[] data)
+        public virtual void Pong(byte[] data)
         {
             this.SendControlFrame(FrameType.Pong, data);
         }
-        public void Ping(byte[] data)
+        public virtual void Ping(byte[] data)
         {
             this.SendControlFrame(FrameType.Ping, data);
         }
@@ -164,11 +168,11 @@ namespace XSockets.Client35
         {
             foreach (var ctrl in this.Controllers.GetAll())
             {
-                ((Controller)ctrl).OpenController();                
+                ((Controller)ctrl).OpenController();
             }
         }
 
-        public IController Controller(string controller)
+        public virtual IController Controller(string controller)
         {
             controller = controller.ToLower();
             if (!this.Controllers.ContainsKey(controller))
@@ -193,21 +197,56 @@ namespace XSockets.Client35
 
                 if (this.OnDisconnected != null)
                     this.OnDisconnected.Invoke(this, null);
+
+                if (this.AutoReconnect)
+                {
+                    Task.Factory.StartNew(() =>
+                    {
+                        while (!this.IsConnected && this.AutoReconnect)
+                        {
+                            Thread.Sleep(this._autoReconnectTimeout);
+                            try
+                            {
+                                this.Reconnect();
+                            }
+                            catch
+                            {
+                                if (this.OnAutoReconnectFailed != null)
+                                    this.OnAutoReconnectFailed.Invoke(this, null);
+                            }
+                        }
+                    });
+                }
             }
         }
 
-        public void Disconnect()
+        public virtual void Disconnect()
         {
             var frame = GetDataFrame(FrameType.Close, Encoding.UTF8.GetBytes(""));
-            Socket.Send(frame.ToBytes(), () => this.FireOnDisconnected(), err => { });
+            Socket.Send(frame.ToBytes(), this.FireOnDisconnected, err => { });
         }
 
-        public void Reconnect()
+
+        public virtual void SetAutoReconnect(int timeoutInMs = 5000)
+        {
+            if (timeoutInMs <= 0)
+            {
+                AutoReconnect = false;
+                _autoReconnectTimeout = 0;
+            }
+            else
+            {
+                AutoReconnect = true;
+                _autoReconnectTimeout = timeoutInMs;
+            }
+        }
+
+        public virtual void Reconnect()
         {
             this.Open();
         }
 
-        public void Open()
+        public virtual void Open()
         {
 
             if (this.IsConnected) return;
@@ -226,7 +265,7 @@ namespace XSockets.Client35
             {
                 IsHandshakeDone = true;
                 this.Connected();
-            }                
+            }
             else
                 throw new Exception("Could not connect to server");
 
@@ -249,17 +288,18 @@ namespace XSockets.Client35
 
         private void SetRemoteEndpoint()
         {
-            var url = new Uri(this.Url);
+            _uri = new Uri(this.Url);
+
             IPAddress ipAddress;
-            if (!IPAddress.TryParse(url.Host, out ipAddress))
+            if (!IPAddress.TryParse(_uri.Host, out ipAddress))
             {
-                var addr = Dns.GetHostAddresses(url.Host);
+                var addr = Dns.GetHostAddresses(_uri.Host);
                 if (addr.Any(p => p.AddressFamily == AddressFamily.InterNetwork))
-                    _remoteEndPoint = new IPEndPoint(addr.First(p => p.AddressFamily == AddressFamily.InterNetwork), url.Port);
+                    _remoteEndPoint = new IPEndPoint(addr.First(p => p.AddressFamily == AddressFamily.InterNetwork), _uri.Port);
             }
             else
             {
-                _remoteEndPoint = new IPEndPoint(ipAddress, url.Port);
+                _remoteEndPoint = new IPEndPoint(ipAddress, _uri.Port);
             }
         }
 
@@ -322,11 +362,19 @@ namespace XSockets.Client35
         {
             try
             {
+                if (message.Topic == Constants.Events.Error && message.Controller == string.Empty)
+                {
+                    if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(this.Serializer.DeserializeFromString<Exception>(message.Data)));
+                    return;
+                }
+
                 var controller = this.Controllers.GetById(message.Controller);
+
                 controller.FireOnMessage(message);
             }
             catch (Exception ex) // Will dispatch to OnError on exception
             {
+
                 if (this.OnError != null) this.OnError.Invoke(this, new OnErrorArgs(ex));
             }
         }

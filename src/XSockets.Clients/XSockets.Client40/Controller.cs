@@ -204,7 +204,7 @@ namespace XSockets.Client40
                 this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
             }
         }
-        public void Close()
+        public virtual void Close()
         {
             try
             {
@@ -240,12 +240,12 @@ namespace XSockets.Client40
         }
 
 
-        public void SetEnum(string propertyName, string value)
+        public virtual void SetEnum(string propertyName, string value)
         {
             this.Invoke("set_" + propertyName,value);
         }
 
-        public void SetProperty(string propertyName, object value)
+        public virtual void SetProperty(string propertyName, object value)
         {
             if(IsBuiltIn(value.GetType()))
                 this.Invoke("set_" + propertyName,new {value= value});
