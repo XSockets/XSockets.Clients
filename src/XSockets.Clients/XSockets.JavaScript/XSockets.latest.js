@@ -225,6 +225,7 @@ XSockets.BinaryMessage = (function () {
         return c.buffer;
     };
     binaryMessage.prototype.extractMessage = function (message, cb) {
+        if ((message instanceof ArrayBuffer) === false) throw "binaryType of the underlaying WebSocket must be set to arraybuffer.";
         var ab2str = function (buf) {
             return String.fromCharCode.apply(null, new Uint16Array(buf));
         }
@@ -247,7 +248,8 @@ XSockets.BinaryMessage = (function () {
     }
     binaryMessage.prototype.createBuffer = function (payload, buffer) {
         this.header = new Uint8Array(XSockets.Utils.longToByteArray(payload.length));
-        this.buffer = this.appendBuffer(this.appendBuffer(this.header, this.stringToBuffer(payload)), buffer);
+        var tmpBuffer = this.appendBuffer(this.header, this.stringToBuffer(payload));
+        this.buffer = this.appendBuffer(tmpBuffer, buffer);
         return this;
     };
     return binaryMessage;
@@ -509,9 +511,10 @@ XSockets.Controller = (function () {
     instance.prototype.onclose = undefined;
     instance.prototype.onmessage = undefined;
     instance.prototype.onerror = undefined;
-    instance.prototype.invokeBinary = function (topic, arrayBuffer, data) {
+    instance.prototype.invokeBinary = function (topic, ab, data) {
         topic = topic.toLowerCase();
-        var bm = new XSockets.BinaryMessage(new XSockets.Message(topic, data || {}, this.name), arrayBuffer);
+        var xm = new XSockets.Message(topic, data || {}, this.name);
+        var bm = new XSockets.BinaryMessage(xm, ab);
         this.publish(bm);
         return this;
     };
@@ -598,6 +601,11 @@ XSockets.WebSocket = (function () {
         this.uri = XSockets.Utils.parseUri(url);
         var params = XSockets.Utils.extend(self.uri.query, parameters ? parameters : {});
         this.settings = XSockets.Utils.extend({
+            autoReconnect: {
+                enabled: false,
+                timeOut: 5000,
+                interval: 0,
+            },
             parameters: params,
             subprotocol: "XSocketsNET",
             queryString: function () {
@@ -618,6 +626,7 @@ XSockets.WebSocket = (function () {
                     if (typeof messageEvent.data === "string") {
                         var msg = (new XSockets.Message()).parse(messageEvent.data);
                         if (msg.topic === XSockets.Events.onError) {
+                            if (msg.controller === "") self.onerror(msg.data);
                             self.dispatchMessage(XSockets.Events.onError, msg, msg.controller);
                         } else {
                             self.dispatchMessage(msg.topic, msg.data, msg.controller);
@@ -642,6 +651,12 @@ XSockets.WebSocket = (function () {
                 },
                 onclose: function (reason) {
                     if (self.ondisconnected) self.ondisconnected(reason);
+                    if (self.settings.autoReconnect.enabled && self.settings.autoReconnect.interval === 0) {
+                        self.settings.autoReconnect.interval = window.setTimeout(function () {
+                            self.settings.autoReconnect.interval = 0;
+                            self.reconnect();
+                        }, self.settings.autoReconnect.timeOut);
+                    };
                 },
                 onerror: function (error) {
                     if (self.onerror) self.onerror(error);
@@ -738,6 +753,16 @@ XSockets.WebSocket = (function () {
     }
     instance.prototype.onconnected = function () { }
     instance.prototype.onconnected = function () { }
+    instance.prototype.onerror = function () { };
+    instance.prototype.autoReconnect = function (isEnabled) {
+        this.settings.autoReconnect.enabled = isEnabled || !this.settings.autoReconnect.enabled;
+        return this;
+    };
+    instance.prototype.setAutoReconnect = function (timeout) {
+        this.settings.autoReconnect.timeOut = timeout || 5000;
+        this.settings.autoReconnect.enabled = true;
+        return this;
+    };
     return instance;
 })();
 XSockets.Promise = (function () {
