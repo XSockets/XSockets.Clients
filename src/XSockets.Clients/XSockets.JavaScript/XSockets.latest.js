@@ -1,5 +1,5 @@
-﻿var forceFallback = forceFallback || false;
-if (forceFallback === (("WebSocket" in window && window.WebSocket.CLOSED > 2 ? true : false))) {
+﻿var forceFallback = forceFallback || (window.WebSocket.CLOSED > 2 ? false : true);
+if (forceFallback === true) {
     window.WebSocket = (function () {
         function WebSocket(url, subprotocol, controllers) {
             var that = this;
@@ -75,7 +75,7 @@ if (forceFallback === (("WebSocket" in window && window.WebSocket.CLOSED > 2 ? t
     })();
 }
 var XSockets = {
-    Version: "4.0.1",
+    Version: "4.0.2",
     Events: {
         onError: "0x1f4",
         onOpen: "0xc8",
@@ -814,12 +814,24 @@ XSockets.Subscription = (function () {
     }
     return subscription;
 })();
-XSockets.HttpFallback = (function () {
+var fallbackBaseUrl = fallbackBaseUrl || "";
+XSockets.HttpFallback = (function (virtualPath) {
+    var baseUrl = virtualPath;
     var ajax = function () {
         var self = this;
+        if (baseUrl.length > 1)
+            baseUrl = baseUrl + "/";
+        if ("jQuery" in window) {
+
+            $.ajaxSetup({
+                beforeSend: function () {
+                    this.url = baseUrl + this.url;
+                }
+            });
+        };
         this.getJSON = "jQuery" in window ? jQuery.getJSON : function (url, data, cb) {
             var request = new XMLHttpRequest();
-            request.open("GET", url + self.createQueryString(data), true);
+            request.open("GET", baseUrl + url + self.createQueryString(data), true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onreadystatechange = function () {
                 if (request.status == 200 && request.readyState === 4) {
@@ -831,7 +843,7 @@ XSockets.HttpFallback = (function () {
         }
         this.post = "jQuery" in window ? jQuery.post : function (url, data, cb) {
             var request = new XMLHttpRequest();
-            request.open("POST", url, true);
+            request.open("POST", baseUrl + url, true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onreadystatechange = function () {
                 if (request.status == 200 && request.readyState === 4) {
@@ -852,4 +864,4 @@ XSockets.HttpFallback = (function () {
         this.onerror = function () { };
     };
     return ajax;
-})();
+})(fallbackBaseUrl);
