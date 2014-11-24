@@ -643,10 +643,9 @@ XSockets.WebSocket = (function () {
                 onopen: function (connection) {
                     if (self.onconnected) self.onconnected(connection);
                     self.controllerInstances.forEach(function (ctrl) {
-                        var json = new XSockets.Message(XSockets.Events.init, {
+                        self.webSocket.send(new XSockets.Message(XSockets.Events.init, {
                             init: true
-                        }, ctrl).toString();
-                        self.webSocket.send(json);
+                        }, ctrl).toString());
                     });
                 },
                 onclose: function (reason) {
@@ -683,6 +682,7 @@ XSockets.WebSocket = (function () {
                         self[ctrl].onerror = delagates[ctrl].onerror || new Function();
                     }
                 } else {
+
                     self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
                     self[ctrl].addListener(XSockets.Events.controller.onClose, function (connection) {
                         var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
@@ -727,9 +727,37 @@ XSockets.WebSocket = (function () {
             if (fn) fn();
         };
         this.controller = function (controller) {
-            var find = controller.toLowerCase();
-            if (!self.hasOwnProperty(find)) throw "The controller you specified '" + find + "',can not be found.";
-            return self[find];
+            var ctrl = controller.toLowerCase();
+            if (!self.hasOwnProperty(ctrl)) {
+
+                self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
+                self[ctrl].addListener(XSockets.Events.controller.onClose, function (connection) {
+                    var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                    if (self.hasOwnProperty(clientInfo.controller)) {
+                        if (self[clientInfo.controller].onclose) self[clientInfo.controller].onclose(clientInfo);
+                    }
+                }, ctrl);
+                self[ctrl].addListener(XSockets.Events.controller.onOpen, function (connection) {
+                    if (connection.hasOwnProperty("ClientInfo")) {
+                        connection = connection.ClientInfo;
+                    }
+                    var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                    self[ctrl].clientInfo = clientInfo;
+                    if (self.hasOwnProperty(clientInfo.controller)) {
+                        if (self[clientInfo.controller].onopen) self[clientInfo.controller].onopen(clientInfo);
+                    }
+                    localStorage.setItem(self.uri.absoluteUrl, clientInfo.persistentId);
+                }, ctrl);
+                self[ctrl].addListener(XSockets.Events.controller.onError, function (error) {
+                    if (self.hasOwnProperty(error.controller) && self[error.controller].onerror) {
+                        self[error.controller].onerror(error.data);
+                    }
+                    if (self.onerror) self.onerror(error);
+                }, ctrl);
+                self.controllerInstances.push(ctrl)
+            }
+
+            return self[ctrl];
         };
         this.dispatchMessage = function (eventName, message, controller) {
             if (!controller) return;
@@ -752,7 +780,7 @@ XSockets.WebSocket = (function () {
         registerContollers(controllers || [(this.uri.controller).toLowerCase()]);
     }
     instance.prototype.onconnected = function () { }
-    instance.prototype.onconnected = function () { }
+    instance.prototype.ondisconnected = function () { }
     instance.prototype.onerror = function () { };
     instance.prototype.autoReconnect = function (isEnabled) {
         this.settings.autoReconnect.enabled = isEnabled || !this.settings.autoReconnect.enabled;
