@@ -83,6 +83,7 @@
     <Compile Include="Wrapper\SslStreamWrapper.cs" />
     <Compile Include="XSocketClient.cs" />
     <Compile Include="XSocketClient.frames.cs" />
+    <Compile Include="XSocketClient.network.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

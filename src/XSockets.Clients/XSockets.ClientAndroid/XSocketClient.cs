@@ -189,8 +189,9 @@ namespace XSockets.ClientAndroid
 
                 foreach (var controller in this.Controllers.GetAll())
                 {
-                    controller.Close();
-                }
+                    controller.FireClosed();
+                    controller.Close();     
+                }                
 
                 if (this.Socket != null)
                     this.Socket.Dispose();

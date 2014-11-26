@@ -86,7 +86,6 @@
     <Compile Include="Protocol\Readers\ReadState.cs" />
     <Compile Include="Protocol\Readers\Rfc6455FrameHandler.cs" />
     <Compile Include="Protocol\Readers\XFrameHandler.cs" />
-    <Compile Include="Utility\Observables\XSocketsObserverPool.cs" />
     <Compile Include="Utility\Storage\Repository.cs" />
     <Compile Include="Utility\Storage\RepositoryInstance.cs" />
     <Compile Include="Wrapper\SocketWrapper.cs" />

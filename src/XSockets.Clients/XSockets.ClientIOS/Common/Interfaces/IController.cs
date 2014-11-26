@@ -22,6 +22,7 @@ namespace XSockets.ClientIOS.Common.Interfaces
 
         void FireOnMessage(IMessage message);
         void FireOnBlob(IMessage message);
+        void FireClosed();       
 
         IMessage AsMessage(string topic, object o);
 

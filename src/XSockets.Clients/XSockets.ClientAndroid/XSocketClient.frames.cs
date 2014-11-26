@@ -122,9 +122,6 @@ namespace XSockets.ClientAndroid
                         FireOnDisconnected();
                         break;
                 }
-
-                //GC.Collect();
-                //Console.WriteLine(GC.GetTotalMemory(false));
             });
         }
 

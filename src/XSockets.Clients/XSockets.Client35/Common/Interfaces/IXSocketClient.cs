@@ -20,12 +20,12 @@ namespace XSockets.Client35.Common.Interfaces
         NameValueCollection QueryString { get; set; }
         NameValueCollection Headers { get; set; }
         CookieCollection Cookies { get; set; }
-        
+
         IXSocketJsonSerializer Serializer { get; set; }
         Guid PersistentId { get; set; }
 
         RepositoryInstance<string, IController> Controllers { get; set; }
-        IController Controller(string controller);    
+        IController Controller(string controller);
 
         bool IsConnected { get; }
         bool IsHandshakeDone { get; }
@@ -33,7 +33,7 @@ namespace XSockets.Client35.Common.Interfaces
 
         ISocketWrapper Socket { get; }
         string Url { get; }
-                
+
 
         void Disconnect();
         void Open();

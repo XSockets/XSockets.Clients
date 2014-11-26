@@ -189,8 +189,9 @@ namespace XSockets.Client35
 
                 foreach (var controller in this.Controllers.GetAll())
                 {
+                    controller.FireClosed();
                     controller.Close();
-                }
+                }                
 
                 if (this.Socket != null)
                     this.Socket.Dispose();

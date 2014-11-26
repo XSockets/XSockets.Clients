@@ -61,8 +61,6 @@ namespace XSockets.ClientAndroid.Wrapper
                     return true;
                 }
 
-                // if (errors == SslPolicyErrors.None)
-                //return true;
                 return true;
             }, null);
 

@@ -136,7 +136,7 @@ namespace XSockets.Client35.Wrapper
             _tokenSource.Cancel();           
             _tokenSource.Dispose();
             if (Stream != null) Stream.Dispose();
-            //if (Socket != null) Socket.Dispose();            
+            //if (Socket != null) Socket.Dispose();
         }
 
         public virtual void Close()

@@ -167,8 +167,7 @@ namespace XSockets.Client35
         }
 
         private void Closed(IMessage message)
-        {
-            
+        {            
             FireClosed();
         }
 
@@ -190,11 +189,17 @@ namespace XSockets.Client35
             if (this.OnOpen != null)
                 this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
 
-            
+            foreach (var subscription in this.Subscriptions.GetAll())
+            {
+                if(subscription.Topic == Constants.Events.Error || subscription.Topic == Constants.Events.Controller.Closed || subscription.Topic == Constants.Events.Controller.Opened)continue;
+                var payload = new Message(new XSubscription { Topic = subscription.Topic, Ack = subscription.Confirm, Controller = this.ClientInfo.Controller }, Constants.Events.PubSub.Subscribe,this.ClientInfo.Controller);                
+                var frame = GetDataFrame(payload).ToBytes();
+                this.queuedFrames.AddRange(frame);
+            }
             this.XSocketClient.Socket.Send(queuedFrames.ToArray(), () => { }, err => FireClosed());             
             this.queuedFrames.Clear();
         }
-        private void FireClosed()
+        public void FireClosed()
         {
             lock(locker){
                if (this.ClientInfo.ConnectionId == Guid.Empty) return;         
@@ -202,18 +207,17 @@ namespace XSockets.Client35
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));
                 this.ClientInfo.ConnectionId = Guid.Empty;
-                this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
+                //this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
             }
         }
-
-        public void Close()
+        public virtual void Close()
         {
             try
             {
                 this.Invoke(Constants.Events.Controller.Closed);
             }
             catch
-            {
+            {             
             }
         }        
 
@@ -242,12 +246,12 @@ namespace XSockets.Client35
         }
 
 
-        public void SetEnum(string propertyName, string value)
+        public virtual void SetEnum(string propertyName, string value)
         {
             this.Invoke("set_" + propertyName,value);
         }
 
-        public void SetProperty(string propertyName, object value)
+        public virtual void SetProperty(string propertyName, object value)
         {
             if(IsBuiltIn(value.GetType()))
                 this.Invoke("set_" + propertyName,new {value= value});

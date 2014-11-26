@@ -20,7 +20,18 @@ namespace XSockets.ClientIOS
             this.Subscriptions.AddOrUpdate(Constants.Events.Controller.Closed, onClose);
         }
 
-        public void BindUnboundSubscriptions()
+        private void ResetSubscriptions()
+        {
+            foreach (var s in this.Subscriptions.GetAllWithKeys())
+            {
+                if(s.Key == Constants.Events.Controller.Closed || s.Key == Constants.Events.Controller.Opened || s.Key == Constants.Events.Error) continue;
+
+                s.Value.IsBound = false;
+                this.Subscriptions.AddOrUpdate(s.Key, s.Value);
+            }
+        }
+
+        public virtual void BindUnboundSubscriptions()
         {
             var unboundBindings = this.Subscriptions.Find(p => p.IsBound == false).ToList();
 
@@ -39,47 +50,47 @@ namespace XSockets.ClientIOS
             }
         }
 
-        public IMessage AsMessage(string topic, object o)
+        public virtual IMessage AsMessage(string topic, object o)
         {
             return new Message(o, topic);
         }
 
-        public void One(string topic, Action<IMessage> callback)
+        public virtual void One(string topic, Action<IMessage> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback)
+        public virtual void One<T>(string topic, Action<T> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.One);
         }
 
-        public void One(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback)
+        public virtual void One(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
 
-        public void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback)
+        public virtual void One<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.One);
         }
 
-        public void Many(string topic, uint limit, Action<IMessage> callback)
+        public virtual void Many(string topic, uint limit, Action<IMessage> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback)
+        public virtual void Many<T>(string topic, uint limit, Action<T> callback)
         {
             this.Subscribe(topic, callback, SubscriptionType.Many, limit);
         }
 
-        public void Many(string topic, uint limit, Action<IMessage> callback, Action<IMessage> confirmCallback)
+        public virtual void Many(string topic, uint limit, Action<IMessage> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
 
-        public void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback)
+        public virtual void Many<T>(string topic, uint limit, Action<T> callback, Action<IMessage> confirmCallback)
         {
             this.Subscribe(topic, callback, confirmCallback, SubscriptionType.Many, limit);
         }
@@ -104,7 +115,7 @@ namespace XSockets.ClientIOS
         /// Remove the subscription from the list
         /// </summary>
         /// <param name="topic"></param>
-        public void Unsubscribe(string topic)
+        public virtual void Unsubscribe(string topic)
         {
             topic = topic.ToLower();
             ISubscription subscription = this.Subscriptions.GetById(topic);
@@ -123,12 +134,12 @@ namespace XSockets.ClientIOS
             this.Subscriptions.Remove(topic);
         }
 
-        public void Subscribe(string topic)
+        public virtual void Subscribe(string topic)
         {
             this.Subscribe(topic, SubscriptionType.All);
-        }        
+        }
 
-        public void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0)
+        public virtual void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0)
         {
             var subscription = new Subscription(topic, subscriptionType, limit);
             this.Subscriptions.AddOrUpdate(topic, subscription);
@@ -141,7 +152,7 @@ namespace XSockets.ClientIOS
                 }), () => { subscription.IsBound = true; });
             }
         }
-        public void Subscribe(string topic, Action<IMessage> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
+        public virtual void Subscribe(string topic, Action<IMessage> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
         {
             var subscription = new Subscription(topic, callback, subscriptionType, limit);
             this.Subscriptions.AddOrUpdate(topic, subscription);
@@ -154,7 +165,7 @@ namespace XSockets.ClientIOS
                 }), () => { subscription.IsBound = true; });
             }
         }
-        public void Subscribe(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
+        public virtual void Subscribe(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
         {
             var subscription = new Subscription(topic, callback, subscriptionType, limit, true);
             this.Subscriptions.AddOrUpdate(topic, subscription);
@@ -166,7 +177,7 @@ namespace XSockets.ClientIOS
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
+        public virtual void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {
             var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);
             
@@ -177,7 +188,7 @@ namespace XSockets.ClientIOS
             }
         }
 
-        public void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
+        public virtual void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {            
             var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);            
             
@@ -195,7 +206,7 @@ namespace XSockets.ClientIOS
         /// </summary>
         /// <param name="payload">IMessage</param>
         /// <param name="callback"> </param>
-        public void Publish(IMessage payload, Action callback)
+        public virtual void Publish(IMessage payload, Action callback)
         {
             if (!this.XSocketClient.IsConnected)
                 throw new Exception("You cant send messages when not connected to the server");
@@ -212,7 +223,7 @@ namespace XSockets.ClientIOS
             this.XSocketClient.Socket.Send(frame, callback.Invoke, err => FireClosed());
         }
 
-        public void Publish(string payload, Action callback)
+        public virtual void Publish(string payload, Action callback)
         {
             if (!this.XSocketClient.IsConnected)
                 throw new Exception("You cant send messages when not connected to the server");
@@ -227,7 +238,7 @@ namespace XSockets.ClientIOS
             this.XSocketClient.Socket.Send(frame, callback.Invoke, err => FireClosed());
         }
 
-        public void Publish(IMessage payload)
+        public virtual void Publish(IMessage payload)
         {
             if (!this.XSocketClient.IsConnected)
                 throw new Exception("You cant send messages when not connected to the server");
@@ -244,34 +255,34 @@ namespace XSockets.ClientIOS
             this.XSocketClient.Socket.Send(frame, () => { }, err => FireClosed());
         }
 
-        public void Publish(string topic)
+        public virtual void Publish(string topic)
         {
             this.Publish(this.AsMessage(topic,null));
         }
 
-        public void Publish(string topic, object obj)
+        public virtual void Publish(string topic, object obj)
         {
             this.Publish(this.AsMessage(topic, obj));
         }
 
-        public void Publish(string topic, object obj, Action callback)
+        public virtual void Publish(string topic, object obj, Action callback)
         {
             this.Publish(this.AsMessage(topic, obj), callback);
         }
 
-        public void Publish(string topic, byte[] data, object metadata)
+        public virtual void Publish(string topic, byte[] data, object metadata)
         {
             this.Publish(topic, data.ToList(), metadata);
         }
-        public void Publish(string topic, List<byte> data, object metadata)
+        public virtual void Publish(string topic, List<byte> data, object metadata)
         {
             this.Publish(new Message(data, metadata, topic, this.ClientInfo.Controller));
         }
-        public void Publish(string topic, byte[] data)
+        public virtual void Publish(string topic, byte[] data)
         {
             this.Publish(topic, data.ToList());
         }
-        public void Publish(string topic, List<byte> data)
+        public virtual void Publish(string topic, List<byte> data)
         {
             this.Publish(new Message(data, topic, this.ClientInfo.Controller));
         }        

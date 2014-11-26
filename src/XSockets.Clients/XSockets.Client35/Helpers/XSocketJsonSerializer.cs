@@ -29,11 +29,6 @@ namespace XSockets.Client35.Helpers
         public object DeserializeFromString(string json, Type type)
         {
             return JsonConvert.DeserializeObject(json, type, new JsonSerializerSettings());
-        }
-
-        //public dynamic DeserializeFromString(string json)
-        //{
-        //    return JObject.Parse(json);            
-        //}
+        }        
     }
 }

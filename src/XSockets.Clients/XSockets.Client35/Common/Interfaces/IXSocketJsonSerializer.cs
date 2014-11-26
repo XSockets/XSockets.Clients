@@ -8,7 +8,7 @@ namespace XSockets.Client35.Common.Interfaces
         string SerializeToString<T>(T obj);
         string SerializeToString(object obj, Type type);
 
-        //Deserialization        
+        //Deserialization
         T DeserializeFromString<T>(string json);
         object DeserializeFromString(string json, Type type);
     }

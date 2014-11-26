@@ -127,21 +127,7 @@ namespace XSockets.ClientAndroid
         {
             if (binding.Callback != null)
                 binding.Callback(message);
-            //if (binding.Callback == null)
-            //{
-            //    if (message.MessageType == MessageType.Text)
-            //    {                   
-            //        binding.Execute(this.XSocketClient.Serializer.DeserializeFromString(message.Data, binding.Type));                   
-            //    }
-            //    else
-            //    {
-            //        binding.Execute(message);
-            //    }
-            //}
-            //else
-            //{
-            //    binding.Callback(message);
-            //}
+            
             binding.Counter++;
             if (binding.SubscriptionType == SubscriptionType.One)
                 this.Unsubscribe(binding.Topic);
@@ -155,32 +141,7 @@ namespace XSockets.ClientAndroid
         {
             if (listener.Callback != null)
                 listener.Callback(message);
-            //if (listener.Callback == null)
-            //{
-            //    if (message.MessageType == MessageType.Text)
-            //    {
-            //        if (listener.IsStorageObject)
-            //        {
-            //            var xs = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data);
-            //            if (xs.Value == null)
-            //                listener.Execute(Activator.CreateInstance(listener.Type));
-            //            else
-            //                listener.Execute(this.XSocketClient.Serializer.DeserializeFromString(xs.Value.ToString(), listener.Type));
-            //        }
-            //        else
-            //        {
-            //            listener.Execute(this.XSocketClient.Serializer.DeserializeFromString(message.Data, listener.Type));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        listener.Execute(message);
-            //    }
-            //}
-            //else
-            //{
-            //    listener.Callback(message);
-            //}
+            
             listener.Counter++;
             if (listener.SubscriptionType == SubscriptionType.One)
                 this.Listeners.Remove(listener.Topic);
@@ -206,8 +167,7 @@ namespace XSockets.ClientAndroid
         }
 
         private void Closed(IMessage message)
-        {
-            
+        {            
             FireClosed();
         }
 
@@ -229,11 +189,17 @@ namespace XSockets.ClientAndroid
             if (this.OnOpen != null)
                 this.OnOpen.Invoke(this, new OnClientConnectArgs(this.ClientInfo));
 
-            
+            foreach (var subscription in this.Subscriptions.GetAll())
+            {
+                if(subscription.Topic == Constants.Events.Error || subscription.Topic == Constants.Events.Controller.Closed || subscription.Topic == Constants.Events.Controller.Opened)continue;
+                var payload = new Message(new XSubscription { Topic = subscription.Topic, Ack = subscription.Confirm, Controller = this.ClientInfo.Controller }, Constants.Events.PubSub.Subscribe,this.ClientInfo.Controller);                
+                var frame = GetDataFrame(payload).ToBytes();
+                this.queuedFrames.AddRange(frame);
+            }
             this.XSocketClient.Socket.Send(queuedFrames.ToArray(), () => { }, err => FireClosed());             
             this.queuedFrames.Clear();
         }
-        private void FireClosed()
+        public void FireClosed()
         {
             lock(locker){
                if (this.ClientInfo.ConnectionId == Guid.Empty) return;         
@@ -241,20 +207,19 @@ namespace XSockets.ClientAndroid
                 if (this.OnClose != null)
                     this.OnClose.Invoke(this, new OnClientDisconnectArgs(this.ClientInfo));
                 this.ClientInfo.ConnectionId = Guid.Empty;
-                this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
+                //this.XSocketClient.Controllers.Remove(this.ClientInfo.Controller);
             }
         }
-
-        public void Close()
+        public virtual void Close()
         {
             try
             {
                 this.Invoke(Constants.Events.Controller.Closed);
             }
             catch
-            {
+            {             
             }
-        }
+        }        
 
         private Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
         {
@@ -277,16 +242,16 @@ namespace XSockets.ClientAndroid
         {
             if (message.MessageType == MessageType.Text)
                 return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(message.ToString()));
-            return GetDataFrame(FrameType.Binary, message.ToBytes());// Encoding.UTF8.GetBytes(message.ToString())); //return GetDataFrame(FrameType.Binary, message.Blob.ToArray());
+            return GetDataFrame(FrameType.Binary, message.ToBytes());
         }
 
 
-        public void SetEnum(string propertyName, string value)
+        public virtual void SetEnum(string propertyName, string value)
         {
             this.Invoke("set_" + propertyName,value);
         }
 
-        public void SetProperty(string propertyName, object value)
+        public virtual void SetProperty(string propertyName, object value)
         {
             if(IsBuiltIn(value.GetType()))
                 this.Invoke("set_" + propertyName,new {value= value});
