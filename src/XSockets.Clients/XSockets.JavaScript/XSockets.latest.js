@@ -893,3 +893,40 @@ XSockets.HttpFallback = (function (virtualPath) {
     };
     return ajax;
 })(fallbackBaseUrl);
+
+XSockets.ReadFile = (function () {
+    var file = function () {
+        this.read = function (f, fn) {
+            var reader = new FileReader();
+            reader.onload = (function (tf) {
+                return function (e) {
+                    fn(tf, e.target.result);
+                };
+            })(f);
+            reader.readAsArrayBuffer(f);
+        }
+        this.readChunks = function (f, chunkSize, fn) {
+            var reader = new FileReader();
+            var fileSize = (f.size);
+            var bytesRead = 0;
+            var chunks = Math.ceil(fileSize / chunkSize);
+            var nextChunk = (function (d, chunk) {
+                var start = chunk * chunkSize;
+                var end = start + chunkSize >= fileSize ? fileSize : start + chunkSize;
+                var blob = d.slice(start, end);
+                reader.onload = (function (tf) {
+                    return function (e) {
+                        bytesRead += e.total;
+                        fn(tf, e.target.result, bytesRead == tf.size, bytesRead);
+                        if (++chunk < chunks) {
+                            nextChunk(tf, chunk);
+                        }
+                    };
+                })(d);
+                reader.readAsArrayBuffer(blob);
+            });
+            nextChunk(f, 0);
+        };
+    }
+    return file;
+}());
