@@ -686,6 +686,7 @@ XSockets.WebSocket = (function () {
                     self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
                     self[ctrl].addListener(XSockets.Events.controller.onClose, function (connection) {
                         var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                        self.settings.parameters["persistentId"] = connection.PI;
                         if (self.hasOwnProperty(clientInfo.controller)) {
                             if (self[clientInfo.controller].onclose) self[clientInfo.controller].onclose(clientInfo);
                         }
@@ -695,6 +696,7 @@ XSockets.WebSocket = (function () {
                             connection = connection.ClientInfo;
                         }
                         var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                        self.settings.parameters["persistentId"] = connection.PI;
                         self[ctrl].clientInfo = clientInfo;
                         if (self.hasOwnProperty(clientInfo.controller)) {
                             if (self[clientInfo.controller].onopen) self[clientInfo.controller].onopen(clientInfo);
@@ -722,6 +724,7 @@ XSockets.WebSocket = (function () {
                     onerror: self[p].onerror
                 }
             });
+           
             self.webSocket = self.getInstace(this.uri.absoluteUrl + this.settings.queryString(), this.settings.subprotocol, true);
             registerContollers(self.controllerInstances, subscriptions, delegates);
             if (fn) fn();
@@ -754,7 +757,7 @@ XSockets.WebSocket = (function () {
                     }
                     if (self.onerror) self.onerror(error);
                 }, ctrl);
-                self.controllerInstances.push(ctrl)
+                self.controllerInstances.push(ctrl);
             }
 
             return self[ctrl];
