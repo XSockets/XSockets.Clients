@@ -21,3 +21,5 @@ C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Cl
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF43\obj\Release\le\XSockets.ClientMF43.pdbx
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF43\obj\Release\XSockets.ClientMF43.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF43\obj\Release\XSockets.ClientMF43.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF43\obj\Release\XSockets.ClientMF43.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientMF43\obj\Release\TinyCLR_DebugReferences.cache

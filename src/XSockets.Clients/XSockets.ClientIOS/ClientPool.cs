@@ -74,7 +74,8 @@ namespace XSockets.ClientIOS
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="eventname"></param>
-        public void Send(object obj, string eventname, string controller = null)
+        /// <param name="controller"></param>
+        public void Send(object obj, string eventname, string controller)
         {
             Send(new Message(obj, eventname, controller, _jsonSerializer));
         }

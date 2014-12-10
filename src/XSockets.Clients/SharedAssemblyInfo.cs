@@ -7,5 +7,5 @@
 [assembly: AssemblyCopyright("Copyright © Team XSockets Sweden AB 2010 - 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("4.0.1")]
-[assembly: AssemblyFileVersion("4.0.1")]
+[assembly: AssemblyVersion("4.0.2")]
+[assembly: AssemblyFileVersion("4.0.2")]
