@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using XSockets.Client40.Common.Interfaces;
 using XSockets.Client40.Helpers;
@@ -9,7 +11,7 @@ namespace XSockets.Client40
 {
     /// <summary>    
     /// Acts as a wrapper and abstraction for XSocketClient.
-    /// If you are only publishing this is the class to use
+    /// If you are only publishing/sending this is the class to use
     /// </summary>
     public class ClientPool
     {
@@ -42,9 +44,16 @@ namespace XSockets.Client40
                         //Will send messages to the XSockets server as soon as there is messages in the queue.
                         foreach (var v in x._textQueue.GetConsumingEnumerable())
                         {
-                            Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller).Publish(v);
+                            var ctrl =
+                                Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller);
+                            if (ctrl.ClientInfo.ConnectionId == Guid.Empty)
+                            {
+                                ctrl.ClientInfo.ConnectionId = Guid.NewGuid();
+                            }
+                            ctrl.Publish(v);
                         }
                     });
+                    
                     x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);
                     x._websocket.Open();
                     Repository<string, ClientPool>.AddOrUpdate(conn, x);

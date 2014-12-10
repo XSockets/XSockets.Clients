@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using XSockets.ClientIOS.Common.Interfaces;
 using XSockets.ClientIOS.Helpers;
@@ -42,7 +43,13 @@ namespace XSockets.ClientIOS
                         //Will send messages to the XSockets server as soon as there is messages in the queue.
                         foreach (var v in x._textQueue.GetConsumingEnumerable())
                         {
-                            Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller).Publish(v);
+                            var ctrl =
+    Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller);
+                            if (ctrl.ClientInfo.ConnectionId == Guid.Empty)
+                            {
+                                ctrl.ClientInfo.ConnectionId = Guid.NewGuid();
+                            }
+                            ctrl.Publish(v);
                         }
                     });
                     x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);
