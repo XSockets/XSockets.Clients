@@ -1,0 +1,24 @@
+{
+  "name": "XSockets.NET",
+  "version": "4.0.2",
+  "authors": [
+    "Magnus Thor <magnus@xsockets.net>"
+  ],
+  "description": "JavaScript API for XSockets.NET",
+  "main": "[\"XSockets.latest.js\",\"XSockets.latest.min.js\",\"XSockets.latest.min.js.map\"]",
+  "keywords": [
+    "WebSockets",
+    "Realtime",
+    "IoT",
+    "XSockets"
+  ],
+  "license": "MIT",
+  "homepage": "http://xsockets.net",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
