@@ -5,7 +5,7 @@
     "Magnus Thor <magnus@xsockets.net>"
   ],
   "description": "JavaScript API for XSockets.NET",
-  "main": "[\"XSockets.latest.js\",\"XSockets.latest.min.js\",\"XSockets.latest.min.js.map\"]",
+  "main": "[\"/src/XSockets.Clients/XSockets.JavaScript/XSockets.latest.js\",\"/src/XSockets.Clients/XSockets.JavaScript/XSockets.latest.min.js\",\"/src/XSockets.Clients/XSockets.JavaScript/XSockets.latest.min.js.map\"]",
   "keywords": [
     "WebSockets",
     "Realtime",
