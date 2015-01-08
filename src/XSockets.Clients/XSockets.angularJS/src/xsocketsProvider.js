@@ -21,6 +21,9 @@
                         if (cb) cb(t, d);
                         return this;
                     };
+
+                   var controllerName = c;
+
                     var on = function (t, fn) {
                         controllerInstance.on(t, function (msg) {
                             $rootScope.$apply(function (evt) {
@@ -109,6 +112,7 @@
                     };
 
                     return {
+                        controllerName: controllerName,
                         on: on,
                         invoke: invoke,
                         publish: publish,
@@ -147,3 +151,49 @@
     }
 
 ]);
+
+
+angular.module("xsockets").factory("xsDataSync", [function () {
+
+    var dataSync = function (controller) {
+        var syncName = controller.controllerName;
+        var self = this;
+        this.oninit = function () {
+            throw "You need to add an oninit event handler";
+        };
+        this.onupdated = function () {
+            throw "You need to add an onupdated event handler";
+        };
+        this.ondeleted = function () {
+            throw "You need to add an ondeleted event handler";
+        };
+        controller.on("init:" + syncName, function (d) {
+            self.oninit(d);
+        });
+        controller.subscribe("update:" + syncName, function (d) {
+            self.onupdated(d);
+        });
+        controller.subscribe("add:" + syncName, function (d) {
+
+            self.onupdated(d);
+        });
+        controller.subscribe("delete:" + syncName, function (d) {
+
+            self.ondeleted(d);
+        });
+        this.addItem = function (f) {
+            controller.invoke('update', { Topic: syncName, Object: f });
+        };
+        this.updateItem = function (f) {
+            controller.invoke('update', f);
+        };
+        this.deleteItem = function (f) {
+            controller.invoke('delete', { Id: f.Id });
+        };
+        return this;
+    }
+
+    return dataSync;
+
+
+}]);
