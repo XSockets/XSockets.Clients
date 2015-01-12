@@ -1,4 +1,29 @@
-﻿var forceFallback = forceFallback || (window.WebSocket.CLOSED > 2 ? false : true);
+﻿var forceFallback = forceFallback || (window.WebSocket && window.WebSocket.CLOSED > 2 ? false : true);
+if (!Array.prototype.forEach) {
+    Array.prototype.forEach = function (callback, thisArg) {
+        var T, k;
+        if (this == null) {
+            throw new TypeError('this is null or not defined');
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + ' is not a function');
+        }
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        k = 0;
+        while (k < len) {
+            var kValue;
+            if (k in O) {
+                kValue = O[k];
+                callback.call(T, kValue, k, O);
+            }
+            k++;
+        }
+    };
+}
 if (forceFallback === true) {
     window.WebSocket = (function () {
         function WebSocket(url, subprotocol, controllers) {
@@ -415,7 +440,8 @@ XSockets.Controller = (function () {
         this.promises = {};
         this.webSocket = webSocket;
         this.instanceId = XSockets.Utils.guid();
-        this.subscriptions = new XSockets.Subscriptions(subscriptions), this.clientInfo = new XSockets.ClientInfo(name);
+        this.subscriptions = new XSockets.Subscriptions(subscriptions);
+        this.clientInfo = new XSockets.ClientInfo(name);
         this.name = name.toLowerCase();
     };
     instance.prototype.close = function (cb) {
