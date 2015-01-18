@@ -104,8 +104,9 @@ namespace XSockets.ClientAndroid
 
             this.OnHandshakeCompleted += XSocketClient_OnHandshakeCompleted;
 
-            var uri = new Uri(url);
-            var instanceController = uri.AbsolutePath.Remove(0, 1).ToLower();
+            this._uri = new Uri(url);
+            this._isSecure = (_uri.Scheme == "wss");
+            var instanceController = _uri.AbsolutePath.Remove(0, 1).ToLower();
 
             this.Controllers = new RepositoryInstance<string, IController>();
 
@@ -190,7 +191,7 @@ namespace XSockets.ClientAndroid
                 foreach (var controller in this.Controllers.GetAll())
                 {
                     controller.FireClosed();
-                    controller.Close();     
+                    controller.Close();                        
                 }                
 
                 if (this.Socket != null)
@@ -289,7 +290,7 @@ namespace XSockets.ClientAndroid
 
         private void SetRemoteEndpoint()
         {
-            _uri = new Uri(this.Url);
+            //_uri = new Uri(this.Url);
 
             IPAddress ipAddress;
             if (!IPAddress.TryParse(_uri.Host, out ipAddress))
@@ -312,7 +313,7 @@ namespace XSockets.ClientAndroid
                 socket.Connect(_remoteEndPoint);
 
                 if (this._isSecure)
-                    Socket = new SocketWrapper(socket, this._certificate);
+                    Socket = new SocketWrapper(socket, this._certificate, this._uri);
                 else
                     Socket = new SocketWrapper(socket);
 

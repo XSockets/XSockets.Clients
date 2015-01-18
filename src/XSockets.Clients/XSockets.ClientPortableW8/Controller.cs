@@ -156,7 +156,7 @@ namespace XSockets.ClientPortableW8
         {
             var m = new Message(new { Init = true }, Constants.Events.Controller.Init, this.ClientInfo.Controller);
             var f = GetDataFrame(m).ToBytes();
-            await this.XSocketClient.Communication.SendAsync(f);
+            await this.XSocketClient.Communication.SendAsync(f, ()=>{});
         }
 
         private void Opened(IMessage message)
@@ -197,7 +197,7 @@ namespace XSockets.ClientPortableW8
                 var frame = GetDataFrame(payload).ToBytes();
                 this._queuedFrames.AddRange(frame);
             }
-            await this.XSocketClient.Communication.SendAsync(_queuedFrames.ToArray());             
+            await this.XSocketClient.Communication.SendAsync(_queuedFrames.ToArray(), () => { });             
             this._queuedFrames.Clear();
         }
         public void FireClosed()

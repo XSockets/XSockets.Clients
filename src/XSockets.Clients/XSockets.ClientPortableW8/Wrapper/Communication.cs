@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +21,7 @@ namespace XSockets.ClientPortableW8.Wrapper
 {
     public class Communication
     {
+        private static object Locker = new object();
         private StreamSocket _clientSocket;
         private DataWriter _writer;
         private DataReader _reader;
@@ -39,22 +39,26 @@ namespace XSockets.ClientPortableW8.Wrapper
         public bool Connected { get; private set; }
         private readonly string _host;
         private readonly string _port;
-        //private const string HandshakeResponse = "Welcome to JsonProtocol";
+        private readonly Uri _uri;
+        //For future implementation of SSL in this client
+        private bool IsSecure { get { return this._uri.Scheme == "wss"; } }
+        
         private IXSocketClient Client { get; set; }
         protected IXFrameHandler FrameHandler { get; set; }
 
-        public Communication(IXSocketClient client, string host, string port)
+        public Communication(IXSocketClient client, Uri uri)
         {
             Client = client;
-            this._host = host;
-            this._port = port;
+            this._uri = uri;
+            this._host = uri.Host;
+            this._port = uri.Port.ToString();
             readState = new ReadState();
-            SocketConnected += Dohandshake;
+            SocketConnected += OnSocketConnected;
         }
 
         private string GetConnectionstring()
         {
-            var connectionstring = string.Format("ws://{0}:{1}",this._host, this._port);
+            var connectionstring = string.Format("{0}://{1}:{2}", this._uri.Scheme, this._host, this._port);
 
             if (this.Client.PersistentId != Guid.Empty)
             {
@@ -67,57 +71,64 @@ namespace XSockets.ClientPortableW8.Wrapper
             return connectionstring;
         }
 
-        private void Dohandshake(object sender, EventArgs eventArgs)
+        private void OnSocketConnected(object sender, EventArgs eventArgs)
         {
-            _writer = new DataWriter(_clientSocket.OutputStream);
-
-            var connectionstring = GetConnectionstring();
-
-            var handshake = new Rfc6455Handshake(connectionstring, this.Client.Origin, this.Client);
-
-            _writer.WriteString(handshake.ToString());
-            _writer.StoreAsync();
-
-            //read handshake
-            _reader = new DataReader(_clientSocket.InputStream);
-            _reader.InputStreamOptions = InputStreamOptions.Partial;
-            var data = _reader.LoadAsync(1024);
-
-            data.Completed = (info, status) =>
+            try
             {
-                switch (status)
+
+
+                _writer = new DataWriter(_clientSocket.OutputStream);
+
+                var connectionstring = GetConnectionstring();
+
+                var handshake = new Rfc6455Handshake(connectionstring, this.Client.Origin, this.Client);
+
+                _writer.WriteString(handshake.ToString());
+                _writer.StoreAsync();
+
+                //read handshake
+                _reader = new DataReader(_clientSocket.InputStream);
+                _reader.InputStreamOptions = InputStreamOptions.Partial;
+
+                var data = _reader.LoadAsync(1024);
+
+                data.Completed = (info, status) =>
                 {
-                    case AsyncStatus.Completed:
-                        //read complete message
-                        uint byteCount = _reader.UnconsumedBufferLength;
+                    switch (status)
+                    {
+                        case AsyncStatus.Completed:
+                            //read complete message
+                            uint byteCount = _reader.UnconsumedBufferLength;
 
-                        byte[] bytes = new byte[byteCount];
-                        _reader.ReadBytes(bytes);
+                            byte[] bytes = new byte[byteCount];
+                            _reader.ReadBytes(bytes);
 
-                        var r = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-                        Debug.WriteLine(r);
+                            var r = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+                            //Debug.WriteLine(r);
 
-                        Connected = true;
-                        //Start receive thread
-                        FrameHandler = CreateFrameHandler();
-                        Task.Factory.StartNew(Read);
+                            Connected = true;
+                            //Start receive thread
+                            FrameHandler = CreateFrameHandler();
+                            Task.Factory.StartNew(Read);
 
-                        if (this.OnConnected != null)
-                            this.OnConnected.Invoke(this, null);
+                            if (this.OnConnected != null)
+                                this.OnConnected.Invoke(this, null);
 
-                        return;
+                            return;
 
-                    case AsyncStatus.Error:
-                        if (this.OnError != null) this.OnError.Invoke(this, new Exception("Error when doing handshake"));
-                        this.Disconnect();
-                        break;
-                    case AsyncStatus.Canceled:
-                        this.Disconnect();
-                        break;
-                }
-            };
-
-
+                        case AsyncStatus.Error:
+                            if (this.OnError != null) this.OnError.Invoke(this, new Exception("Error when doing handshake"));
+                            this.Disconnect();
+                            break;
+                        case AsyncStatus.Canceled:
+                            this.Disconnect();
+                            break;
+                    }
+                };
+            }
+            catch
+            {
+            }
         }
 
         public void Connect()
@@ -127,6 +138,8 @@ namespace XSockets.ClientPortableW8.Wrapper
                 if (Connected) return;
                 _clientSocket = new StreamSocket();
                 _serverHost = new HostName(_host);
+                //var secLevel = (this.IsSecure) ? SocketProtectionLevel.Ssl : SocketProtectionLevel.PlainSocket;
+                
                 var op = _clientSocket.ConnectAsync(_serverHost, _port);
 
                 op.Completed = (info, status) =>
@@ -160,10 +173,10 @@ namespace XSockets.ClientPortableW8.Wrapper
                 switch (op)
                 {
                     case FrameType.Text:
-                        this.Client.FireOnMessage(this.Client.Deserialize<Message>(Encoding.UTF8.GetString(payload.ToArray())));                        
+                        this.Client.FireOnMessage(this.Client.Deserialize<Message>(Encoding.UTF8.GetString(payload.ToArray())));
                         break;
                     case FrameType.Binary:
-                        this.Client.FireOnBlob(new Message(payload, MessageType.Binary));                        
+                        this.Client.FireOnBlob(new Message(payload, MessageType.Binary));
                         break;
                     case FrameType.Ping:
 
@@ -171,7 +184,7 @@ namespace XSockets.ClientPortableW8.Wrapper
                         if (this.OnPing != null)
                             this.OnPing(this, new Message(payload, MessageType.Ping));
                         break;
-                    case FrameType.Pong:                        
+                    case FrameType.Pong:
                         this.Client.SendControlFrame(FrameType.Ping, payload.ToArray());
                         if (this.OnPong != null)
                             this.OnPong(this, new Message(payload, MessageType.Pong));
@@ -185,7 +198,7 @@ namespace XSockets.ClientPortableW8.Wrapper
         }
 
         private IXFrameHandler Create(Action<IList<byte>, FrameType> onCompleted)
-        {            
+        {
             return new Rfc6455FrameHandler()
             {
                 ReceiveData =
@@ -215,7 +228,7 @@ namespace XSockets.ClientPortableW8.Wrapper
                             this.Disconnect();
                         else
                         {
-                            FrameHandler.Receive(new ArraySegment<byte>(buffer, 0, (int)byteCount));                            
+                            FrameHandler.Receive(new ArraySegment<byte>(buffer, 0, (int)byteCount));
                             Read();
                         }
                         break;
@@ -344,19 +357,18 @@ namespace XSockets.ClientPortableW8.Wrapper
 
                 if (!readState.FrameType.HasValue)
                 {
-                    this.FatalError(new Exception("FrameType unknown"));
-                    return;
+                    throw new Exception("FrameType unknown");                    
                 }
                 processFrame(readState.FrameBytes, readState.FrameType.Value);
 
                 readState.Clear();
-            }            
+            }
         }
 
-        private void FatalError(Exception ex)
-        {
-            //
-        }        
+        //private void FatalError(Exception ex)
+        //{
+        //    //
+        //}
 
         public Rfc6455DataFrame GetDataFrame(FrameType frameType, byte[] payload)
         {
@@ -374,44 +386,59 @@ namespace XSockets.ClientPortableW8.Wrapper
         {
             return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(payload));
         }
-
-        //private Rfc6455DataFrame GetDataFrame(IMessage message)
-        //{
-        //    if (message.MessageType == MessageType.Text)
-        //        return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(message.ToString()));
-        //    return GetDataFrame(FrameType.Binary, message.ToBytes());
-        //}
-
-        public async void Disconnect()
+       
+        public void Disconnect()
         {
-            await _writer.FlushAsync();
-            _writer.DetachStream();
-            _writer.Dispose();
+            try
+            {
+                lock (Locker)
+                {
+                    if (!this.Connected) return;
 
-            _clientSocket.Dispose();
-            _clientSocket = null;
+                    _writer.StoreAsync();
+                    _writer.DetachStream();
+                    _writer.Dispose();
+                    _writer = null;
+            
+                    _reader.Dispose();
+                    _reader = null;
 
-            this.Connected = false;
+                    _clientSocket.Dispose();
+                    _clientSocket = null;
 
-            if (this.OnDisconnected != null)
-                this.OnDisconnected.Invoke(this, null);
+                    this.Connected = false;
+
+                    if (this.OnDisconnected != null)
+                        this.OnDisconnected.Invoke(this, null);
+                }
+            }
+            catch
+            {
+                this.Connected = false;
+                if (this.OnDisconnected != null)
+                    this.OnDisconnected.Invoke(this, null);
+            }
         }
 
-        public async Task SendAsync(string json)
+        public async Task SendAsync(string json, Action callback)
         {
             if (!Connected) return;
 
-            var frame = GetDataFrame(json);            
-            _writer.WriteBytes(frame.ToBytes());            
+            var frame = GetDataFrame(json);
+            _writer.WriteBytes(frame.ToBytes());
             await _writer.StoreAsync();
+
+            callback();
         }
 
-        public async Task SendAsync(byte[] data)
+        public async Task SendAsync(byte[] data, Action callback)
         {
             if (!Connected) return;
 
-            _writer.WriteBytes(data);            
+            _writer.WriteBytes(data);
             await _writer.StoreAsync();
+
+            callback();
         }
     }
 }

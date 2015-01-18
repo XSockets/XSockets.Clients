@@ -94,7 +94,10 @@
     <Compile Include="Utility\Storage\RepositoryInstance.cs" />
     <Compile Include="Wrapper\SocketWrapper.cs" />
     <Compile Include="Wrapper\SslStreamWrapper.cs" />
-    <Compile Include="XSocketClient.cs" />
+    <Compile Include="XSocketClient.cs">
+      <SubType>
+      </SubType>
+    </Compile>
     <Compile Include="XSocketClient.frames.cs" />
     <Compile Include="XSocketClient.network.cs" />
   </ItemGroup>

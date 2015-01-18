@@ -220,7 +220,7 @@ namespace XSockets.ClientPortableW8
                 return;
             }
 
-            await this.XSocketClient.Communication.SendAsync(frame);
+            await this.XSocketClient.Communication.SendAsync(frame, () => { });
         }
 
         public virtual async Task Publish(string payload, Action callback)
@@ -235,7 +235,7 @@ namespace XSockets.ClientPortableW8
                 this._queuedFrames.AddRange(frame);
                 return;
             }
-            await this.XSocketClient.Communication.SendAsync(frame);
+            await this.XSocketClient.Communication.SendAsync(frame, () => { });
         }
 
         public virtual async Task Publish(IMessage payload)
@@ -252,7 +252,7 @@ namespace XSockets.ClientPortableW8
                 return;
             }
 
-            await this.XSocketClient.Communication.SendAsync(frame);
+            await this.XSocketClient.Communication.SendAsync(frame, () => { });
         }
 
         public virtual async Task Publish(string topic)

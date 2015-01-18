@@ -82,15 +82,16 @@ namespace XSockets.ClientPortableW8
         //    this._proxySocket = temp;
         //}
 
-        public XSocketClient(string host, string port, string origin, params string[] controllers)
+        public XSocketClient(string url, string origin, params string[] controllers)//(string host, string port, string origin, params string[] controllers)
         {
+            var uri = new Uri(url);
 
             this.Origin = origin;
             this.Headers = new NameValueCollection();
             this.QueryString = new NameValueCollection();
             this.Cookies = new CookieCollection();
 
-            this.Communication = new Communication(this, host,port);
+            this.Communication = new Communication(this, uri);
             this.Communication.OnPing += (sender, message) =>
             {
                 if (this.OnPing != null)
@@ -102,6 +103,7 @@ namespace XSockets.ClientPortableW8
                     this.OnPong.Invoke(this, message);
             };
             this.Communication.OnConnected += OnSocketConnected;
+            this.Communication.OnDisconnected += OnSocketDisconnected;
 
             //this.OnHandshakeCompleted += XSocketClient_OnHandshakeCompleted;
 
@@ -125,6 +127,11 @@ namespace XSockets.ClientPortableW8
             {
                 this.Controllers.AddOrUpdate(controller.ToLower(), new Controller(this, controller));
             }
+        }
+
+        private void OnSocketDisconnected(object sender, EventArgs eventArgs)
+        {
+            FireOnDisconnected();
         }
 
         //void XSocketClient_OnHandshakeCompleted(object sender, EventArgs e)
@@ -157,7 +164,7 @@ namespace XSockets.ClientPortableW8
             {
                 var pongFrame = this.Communication.GetDataFrame(frameType, data);
 
-                await Communication.SendAsync(pongFrame.ToBytes());
+                await Communication.SendAsync(pongFrame.ToBytes(), () => { });
             }
             catch
             {
@@ -205,14 +212,16 @@ namespace XSockets.ClientPortableW8
 
                 if (this.AutoReconnect)
                 {
-                    Task.Factory.StartNew(() =>
+                    //TODO: Rewrite this to use 4.5 async/await...
+                    Task.Factory.StartNew(async() =>
                     {
                         while (!this.IsConnected && this.AutoReconnect)
                         {
-                            Task.Delay(this._autoReconnectTimeout);
+                            await Task.Delay(this._autoReconnectTimeout);
                             try
                             {
-                                this.Reconnect();
+                                if (!this.IsConnected)
+                                    this.Reconnect();
                             }
                             catch
                             {
@@ -227,8 +236,9 @@ namespace XSockets.ClientPortableW8
 
         public virtual async void Disconnect()
         {
+            //this.Communication.Disconnect();
             var frame = this.Communication.GetDataFrame(FrameType.Close, Encoding.UTF8.GetBytes(""));
-            await Communication.SendAsync(frame.ToBytes());
+            await Communication.SendAsync(frame.ToBytes(), ()=> { this.Communication.Disconnect(); });//.ConfigureAwait(false);
         }
 
 
@@ -258,6 +268,7 @@ namespace XSockets.ClientPortableW8
         
         private void Connected()
         {
+            this.IsHandshakeDone = true;
             if (this.OnConnected != null)
                 this.OnConnected.Invoke(this, null);
         }

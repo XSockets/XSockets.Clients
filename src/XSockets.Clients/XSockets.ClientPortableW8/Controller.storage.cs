@@ -13,25 +13,6 @@ namespace XSockets.ClientPortableW8
         {
             return new Task<XStorage>(() =>
             {
-                //var token = cts.Token;
-                //var data = default(XStorage);
-                //var topic = (s + ":" + o.Key).ToLower();
-
-                //var listener = new Listener(topic, message => { data = this.XSocketClient.Serializer.DeserializeFromString<XStorage>(message.Data); }, SubscriptionType.One);
-
-                //this.Listeners.AddOrUpdate(topic, listener);
-
-                //this.Invoke(s, o);
-
-                //while (data == null)
-                //{
-                //    if (token.IsCancellationRequested)
-                //        return data;
-                //    Thread.Sleep(1);
-                //}
-                //return data;
-
-
                 var data = default(XStorage);
                 var topic = (s + ":" + o.Key).ToLower();
                 var working = true;
@@ -87,8 +68,6 @@ namespace XSockets.ClientPortableW8
 
         public T StorageGet<T>(string key)
         {
-            //var v = this.Invoke<XStorage>(Constants.Events.Storage.Get, new XStorage {Key = key}).Result;
-            //return this.XSocketClient.Serializer.DeserializeFromString<T>(v.Value.ToString());
             var result = this.StorageWaitFor(Constants.Events.Storage.Get, new XStorage { Key = key }, new CancellationTokenSource()).Result;
             if (result.Value == null)
             {

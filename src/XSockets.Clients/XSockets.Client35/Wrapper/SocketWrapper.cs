@@ -8,7 +8,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using XSockets.Client35.Common.Interfaces;
-using XSockets.Client35.Helpers;
 
 namespace XSockets.Client35.Wrapper
 {
@@ -16,7 +15,7 @@ namespace XSockets.Client35.Wrapper
     {
         private readonly CancellationTokenSource _tokenSource;
         private readonly TaskFactory _taskFactory;
-
+        private readonly Uri _uri;
         public string RemoteIpAddress
         {
             get
@@ -41,8 +40,9 @@ namespace XSockets.Client35.Wrapper
                 Stream = new NetworkStream(Socket);
         }
 
-        public SocketWrapper(Socket socket, X509Certificate2 certificate2)
+        public SocketWrapper(Socket socket, X509Certificate2 certificate2, Uri uri)
         {
+            this._uri = uri;
             _tokenSource = new CancellationTokenSource();
             _taskFactory = new TaskFactory(_tokenSource.Token);
             Socket = socket;
@@ -50,26 +50,50 @@ namespace XSockets.Client35.Wrapper
             if (Socket.Connected)
                 Stream = new NetworkStream(Socket);
 
-            this.AuthenticateAsClient(certificate2).Wait();
+            if (certificate2 == null)
+            {
+                this.AuthenticateAsClient().Wait();
+            }
+            else
+            {
+                this.AuthenticateAsClient(certificate2).Wait();
+            }                
+        }
+
+        public Task AuthenticateAsClient()
+        {
+            var ssl = new SslStream(Stream, false, (sender, x509Certificate, chain, errors) =>
+            {
+                if (errors == SslPolicyErrors.None)
+                    return true;
+
+                return false;
+            }, null);
+
+            var tempStream = new SslStreamWrapper(ssl);
+            Stream = tempStream;            
+            Func<AsyncCallback, object, IAsyncResult> begin =
+                (cb, s) => ssl.BeginAuthenticateAsClient(this._uri.Host, cb, s);
+
+            var task = Task.Factory.FromAsync(begin, ssl.EndAuthenticateAsClient, null);
+
+            return task;            
         }
 
         public Task AuthenticateAsClient(X509Certificate2 certificate)
         {
             var ssl = new SslStream(Stream, false, (sender, x509Certificate, chain, errors) =>
             {
-                if (errors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch))
-                {
+                if (errors == SslPolicyErrors.None)
                     return true;
-                }
-
-                return true;
+                
+                return false;
             }, null);
 
             var tempStream = new SslStreamWrapper(ssl);
-            Stream = tempStream;
-
+            Stream = tempStream;            
             Func<AsyncCallback, object, IAsyncResult> begin =
-                (cb, s) => ssl.BeginAuthenticateAsClient(this.RemoteIpAddress,
+                (cb, s) => ssl.BeginAuthenticateAsClient(this._uri.Host,
                     new X509Certificate2Collection(certificate),SslProtocols.Tls, false, cb, s);
 
             var task = Task.Factory.FromAsync(begin, ssl.EndAuthenticateAsClient, null);
@@ -135,8 +159,7 @@ namespace XSockets.Client35.Wrapper
         {
             _tokenSource.Cancel();           
             _tokenSource.Dispose();
-            if (Stream != null) Stream.Dispose();
-            //if (Socket != null) Socket.Dispose();
+            if (Stream != null) Stream.Dispose();            
         }
 
         public virtual void Close()

@@ -88,7 +88,7 @@ namespace XSockets.ClientPortableW8
                 return;
             }
 
-            await this.XSocketClient.Communication.SendAsync(frame);            
+            await this.XSocketClient.Communication.SendAsync(frame, () => { });            
         }
 
         public virtual async Task Invoke(string target)
