@@ -1,9 +1,9 @@
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\obj\Release\XSockets.ClientPortableW8.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\bin\Release\XSockets.ClientPortableW8.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\bin\Release\XSockets.ClientPortableW8.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\bin\Release\XSockets.ClientPortableW8.pri
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\bin\Release\Newtonsoft.Json.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\bin\Release\Newtonsoft.Json.xml
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\obj\Release\XSockets.ClientPortableW8.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\obj\Release\XSockets.ClientPortableW8.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\obj\Release\XSockets.ClientPortableW8.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientPortableW8\obj\Release\priconfig.xml

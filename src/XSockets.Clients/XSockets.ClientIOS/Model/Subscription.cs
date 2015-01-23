@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using XSockets.ClientIOS.Common.Interfaces;
 
 namespace XSockets.ClientIOS.Model
