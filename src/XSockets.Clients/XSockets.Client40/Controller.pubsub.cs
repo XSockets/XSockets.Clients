@@ -142,7 +142,7 @@ namespace XSockets.Client40
         public virtual void Subscribe(string topic, SubscriptionType subscriptionType, uint limit = 0)
         {
             var subscription = new Subscription(topic, subscriptionType, limit);
-            this.Subscriptions.AddOrUpdate(topic, subscription);
+            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
 
             if (this.XSocketClient.IsConnected)
             {
@@ -155,7 +155,7 @@ namespace XSockets.Client40
         public virtual void Subscribe(string topic, Action<IMessage> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
         {
             var subscription = new Subscription(topic, callback, subscriptionType, limit);
-            this.Subscriptions.AddOrUpdate(topic, subscription);
+            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
 
             if (this.XSocketClient.IsConnected)
             {
@@ -168,9 +168,9 @@ namespace XSockets.Client40
         public virtual void Subscribe(string topic, Action<IMessage> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0)
         {
             var subscription = new Subscription(topic, callback, subscriptionType, limit, true);
-            this.Subscriptions.AddOrUpdate(topic, subscription);
+            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
 
-            AddConfirmCallback(confirmCallback, topic);
+            AddConfirmCallback(confirmCallback, subscription.Topic);
             if (this.XSocketClient.IsConnected)
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = true, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
@@ -180,8 +180,8 @@ namespace XSockets.Client40
         public virtual void Subscribe<T>(string topic, Action<T> callback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {
             var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);
-            
-            this.Subscriptions.AddOrUpdate(topic, subscription);
+
+            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
             if (this.XSocketClient.IsConnected)
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = false, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
@@ -190,10 +190,10 @@ namespace XSockets.Client40
 
         public virtual void Subscribe<T>(string topic, Action<T> callback, Action<IMessage> confirmCallback, SubscriptionType subscriptionType = SubscriptionType.All, uint limit = 0) //where T : class
         {            
-            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);            
-            
-            this.Subscriptions.AddOrUpdate(topic, subscription);
-            AddConfirmCallback(confirmCallback, topic);
+            var subscription = new Subscription(topic, message => callback(this.XSocketClient.Serializer.DeserializeFromString<T>(message.Data)), subscriptionType, limit);
+
+            this.Subscriptions.AddOrUpdate(subscription.Topic, subscription);
+            AddConfirmCallback(confirmCallback, subscription.Topic);
             if (this.XSocketClient.IsConnected)
             {
                 Publish(this.AsMessage(Constants.Events.PubSub.Subscribe, new XSubscription { Topic = subscription.Topic, Ack = true, Controller = this.ClientInfo.Controller }), () => subscription.IsBound = true);
