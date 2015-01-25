@@ -76,7 +76,7 @@ if (forceFallback === (("WebSocket" in window && window.WebSocket.CLOSED > 2 ? t
     })();
 }
 var XSockets = {
-    Version: "4.0.1",
+    Version: "4.0.4",
     Events: {
         onError: "0x1f4",
         onOpen: "0xc8",
