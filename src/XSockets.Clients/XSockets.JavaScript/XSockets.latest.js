@@ -1,5 +1,54 @@
-﻿var forceFallback = forceFallback || false;
-if (forceFallback === (("WebSocket" in window && window.WebSocket.CLOSED > 2 ? true : false))) {
+﻿var forceFallback = forceFallback || (window.WebSocket && window.WebSocket.CLOSED > 2 ? false : true);
+
+if (!Array.prototype.forEach) {
+    Array.prototype.forEach = function (callback, thisArg) {
+        var T, k;
+        if (this == null) {
+            throw new TypeError('this is null or not defined');
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + ' is not a function');
+        }
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        k = 0;
+        while (k < len) {
+            var kValue;
+            if (k in O) {
+                kValue = O[k];
+                callback.call(T, kValue, k, O);
+            }
+            k++;
+        }
+    };
+};
+
+(function () {
+    if (!Object.defineProperty ||
+        !(function () { try { Object.defineProperty({}, 'x', {}); return true; } catch (e) { return false; } }())) {
+        var orig = Object.defineProperty;
+        Object.defineProperty = function (o, prop, desc) {
+            // In IE8 try built-in implementation for defining properties on DOM prototypes.
+            if (orig) { try { return orig(o, prop, desc); } catch (e) { } }
+            if (o !== Object(o)) { throw TypeError("Object.defineProperty called on non-object"); }
+            if (Object.prototype.__defineGetter__ && ('get' in desc)) {
+                Object.prototype.__defineGetter__.call(o, prop, desc.get);
+            }
+            if (Object.prototype.__defineSetter__ && ('set' in desc)) {
+                Object.prototype.__defineSetter__.call(o, prop, desc.set);
+            }
+            if ('value' in desc) {
+                o[prop] = desc.value;
+            }
+            return o;
+        };
+    }
+}());
+
+if (forceFallback === true) {
     window.WebSocket = (function () {
         function WebSocket(url, subprotocol, controllers) {
             var that = this;
