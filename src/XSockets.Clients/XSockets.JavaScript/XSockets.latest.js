@@ -77,7 +77,6 @@ if (forceFallback === true) {
         WebSocket.prototype.listener = function (persistentId) {
             var that = this;
             this.http.post("/API/XSocketsWebApi?persistentId=" + persistentId, {}, function (result) {
-                console.log(result);
                 (JSON.parse(result) || []).forEach(function (message) {
                     that.onmessage(new that.MessageWrapper(message));
                 });
@@ -125,7 +124,7 @@ if (forceFallback === true) {
     })();
 }
 var XSockets = {
-    Version: "4.0.4",
+    Version: "4.0.3",
     Events: {
         onError: "0x1f4",
         onOpen: "0xc8",
@@ -275,6 +274,7 @@ XSockets.BinaryMessage = (function () {
         return c.buffer;
     };
     binaryMessage.prototype.extractMessage = function (message, cb) {
+        if ((message instanceof ArrayBuffer) === false) throw "binaryType of the underlaying WebSocket must be set to arraybuffer.";
         var ab2str = function (buf) {
             return String.fromCharCode.apply(null, new Uint16Array(buf));
         }
@@ -297,7 +297,8 @@ XSockets.BinaryMessage = (function () {
     }
     binaryMessage.prototype.createBuffer = function (payload, buffer) {
         this.header = new Uint8Array(XSockets.Utils.longToByteArray(payload.length));
-        this.buffer = this.appendBuffer(this.appendBuffer(this.header, this.stringToBuffer(payload)), buffer);
+        var tmpBuffer = this.appendBuffer(this.header, this.stringToBuffer(payload));
+        this.buffer = this.appendBuffer(tmpBuffer, buffer);
         return this;
     };
     return binaryMessage;
@@ -405,7 +406,6 @@ XSockets.Communcation = (function () {
         try {
             webSocket = new window.WebSocket(url, subprotocol, controllers);
         } catch (err) {
-            console.log('KAKA');
             webSocket = new window.WebSocket(url, subprotocol);
         }
         webSocket.binaryType = "arraybuffer";
@@ -464,7 +464,8 @@ XSockets.Controller = (function () {
         this.promises = {};
         this.webSocket = webSocket;
         this.instanceId = XSockets.Utils.guid();
-        this.subscriptions = new XSockets.Subscriptions(subscriptions), this.clientInfo = new XSockets.ClientInfo(name);
+        this.subscriptions = new XSockets.Subscriptions(subscriptions);
+        this.clientInfo = new XSockets.ClientInfo(name);
         this.name = name.toLowerCase();
     };
     instance.prototype.close = function (cb) {
@@ -560,9 +561,10 @@ XSockets.Controller = (function () {
     instance.prototype.onclose = undefined;
     instance.prototype.onmessage = undefined;
     instance.prototype.onerror = undefined;
-    instance.prototype.invokeBinary = function (topic, arrayBuffer, data) {
+    instance.prototype.invokeBinary = function (topic, ab, data) {
         topic = topic.toLowerCase();
-        var bm = new XSockets.BinaryMessage(new XSockets.Message(topic, data || {}, this.name), arrayBuffer);
+        var xm = new XSockets.Message(topic, data || {}, this.name);
+        var bm = new XSockets.BinaryMessage(xm, ab);
         this.publish(bm);
         return this;
     };
@@ -650,6 +652,11 @@ XSockets.WebSocket = (function () {
         this.uri = XSockets.Utils.parseUri(url);
         var params = XSockets.Utils.extend(self.uri.query, parameters ? parameters : {});
         this.settings = XSockets.Utils.extend({
+            autoReconnect: {
+                enabled: false,
+                timeOut: 5000,
+                interval: 0,
+            },
             parameters: params,
             subprotocol: "XSocketsNET",
             queryString: function () {
@@ -670,6 +677,7 @@ XSockets.WebSocket = (function () {
                     if (typeof messageEvent.data === "string") {
                         var msg = (new XSockets.Message()).parse(messageEvent.data);
                         if (msg.topic === XSockets.Events.onError) {
+                            if (msg.controller === "") self.onerror(msg.data);
                             self.dispatchMessage(XSockets.Events.onError, msg, msg.controller);
                         } else {
                             self.dispatchMessage(msg.topic, msg.data, msg.controller);
@@ -686,14 +694,19 @@ XSockets.WebSocket = (function () {
                 onopen: function (connection) {
                     if (self.onconnected) self.onconnected(connection);
                     self.controllerInstances.forEach(function (ctrl) {
-                        var json = new XSockets.Message(XSockets.Events.init, {
+                        self.webSocket.send(new XSockets.Message(XSockets.Events.init, {
                             init: true
-                        }, ctrl).toString();
-                        self.webSocket.send(json);
+                        }, ctrl).toString());
                     });
                 },
                 onclose: function (reason) {
                     if (self.ondisconnected) self.ondisconnected(reason);
+                    if (self.settings.autoReconnect.enabled && self.settings.autoReconnect.interval === 0) {
+                        self.settings.autoReconnect.interval = window.setTimeout(function () {
+                            self.settings.autoReconnect.interval = 0;
+                            self.reconnect();
+                        }, self.settings.autoReconnect.timeOut);
+                    };
                 },
                 onerror: function (error) {
                     if (self.onerror) self.onerror(error);
@@ -720,9 +733,11 @@ XSockets.WebSocket = (function () {
                         self[ctrl].onerror = delagates[ctrl].onerror || new Function();
                     }
                 } else {
+
                     self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
                     self[ctrl].addListener(XSockets.Events.controller.onClose, function (connection) {
                         var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                        self.settings.parameters["persistentId"] = connection.PI;
                         if (self.hasOwnProperty(clientInfo.controller)) {
                             if (self[clientInfo.controller].onclose) self[clientInfo.controller].onclose(clientInfo);
                         }
@@ -732,6 +747,7 @@ XSockets.WebSocket = (function () {
                             connection = connection.ClientInfo;
                         }
                         var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                        self.settings.parameters["persistentId"] = connection.PI;
                         self[ctrl].clientInfo = clientInfo;
                         if (self.hasOwnProperty(clientInfo.controller)) {
                             if (self[clientInfo.controller].onopen) self[clientInfo.controller].onopen(clientInfo);
@@ -759,14 +775,43 @@ XSockets.WebSocket = (function () {
                     onerror: self[p].onerror
                 }
             });
+
             self.webSocket = self.getInstace(this.uri.absoluteUrl + this.settings.queryString(), this.settings.subprotocol, true);
             registerContollers(self.controllerInstances, subscriptions, delegates);
             if (fn) fn();
         };
         this.controller = function (controller) {
-            var find = controller.toLowerCase();
-            if (!self.hasOwnProperty(find)) throw "The controller you specified '" + find + "',can not be found.";
-            return self[find];
+            var ctrl = controller.toLowerCase();
+            if (!self.hasOwnProperty(ctrl)) {
+
+                self[ctrl] = new XSockets.Controller(ctrl, self.webSocket);
+                self[ctrl].addListener(XSockets.Events.controller.onClose, function (connection) {
+                    var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                    if (self.hasOwnProperty(clientInfo.controller)) {
+                        if (self[clientInfo.controller].onclose) self[clientInfo.controller].onclose(clientInfo);
+                    }
+                }, ctrl);
+                self[ctrl].addListener(XSockets.Events.controller.onOpen, function (connection) {
+                    if (connection.hasOwnProperty("ClientInfo")) {
+                        connection = connection.ClientInfo;
+                    }
+                    var clientInfo = new XSockets.ClientInfo(connection.CI, connection.PI, connection.C);
+                    self[ctrl].clientInfo = clientInfo;
+                    if (self.hasOwnProperty(clientInfo.controller)) {
+                        if (self[clientInfo.controller].onopen) self[clientInfo.controller].onopen(clientInfo);
+                    }
+                    localStorage.setItem(self.uri.absoluteUrl, clientInfo.persistentId);
+                }, ctrl);
+                self[ctrl].addListener(XSockets.Events.controller.onError, function (error) {
+                    if (self.hasOwnProperty(error.controller) && self[error.controller].onerror) {
+                        self[error.controller].onerror(error.data);
+                    }
+                    if (self.onerror) self.onerror(error);
+                }, ctrl);
+                self.controllerInstances.push(ctrl);
+            }
+
+            return self[ctrl];
         };
         this.dispatchMessage = function (eventName, message, controller) {
             if (!controller) return;
@@ -789,7 +834,17 @@ XSockets.WebSocket = (function () {
         registerContollers(controllers || [(this.uri.controller).toLowerCase()]);
     }
     instance.prototype.onconnected = function () { }
-    instance.prototype.onconnected = function () { }
+    instance.prototype.ondisconnected = function () { }
+    instance.prototype.onerror = function () { };
+    instance.prototype.autoReconnect = function (isEnabled) {
+        this.settings.autoReconnect.enabled = isEnabled || !this.settings.autoReconnect.enabled;
+        return this;
+    };
+    instance.prototype.setAutoReconnect = function (timeout) {
+        this.settings.autoReconnect.timeOut = timeout || 5000;
+        this.settings.autoReconnect.enabled = true;
+        return this;
+    };
     return instance;
 })();
 XSockets.Promise = (function () {
@@ -841,12 +896,24 @@ XSockets.Subscription = (function () {
     }
     return subscription;
 })();
-XSockets.HttpFallback = (function () {
+var fallbackBaseUrl = fallbackBaseUrl || "";
+XSockets.HttpFallback = (function (virtualPath) {
+    var baseUrl = virtualPath;
     var ajax = function () {
         var self = this;
+        if (baseUrl.length > 1)
+            baseUrl = baseUrl + "/";
+        if ("jQuery" in window) {
+
+            $.ajaxSetup({
+                beforeSend: function () {
+                    this.url = baseUrl + this.url;
+                }
+            });
+        };
         this.getJSON = "jQuery" in window ? jQuery.getJSON : function (url, data, cb) {
             var request = new XMLHttpRequest();
-            request.open("GET", url + self.createQueryString(data), true);
+            request.open("GET", baseUrl + url + self.createQueryString(data), true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onreadystatechange = function () {
                 if (request.status == 200 && request.readyState === 4) {
@@ -858,7 +925,7 @@ XSockets.HttpFallback = (function () {
         }
         this.post = "jQuery" in window ? jQuery.post : function (url, data, cb) {
             var request = new XMLHttpRequest();
-            request.open("POST", url, true);
+            request.open("POST", baseUrl + url, true);
             request.setRequestHeader('Content-Type', 'application/json');
             request.onreadystatechange = function () {
                 if (request.status == 200 && request.readyState === 4) {
@@ -879,4 +946,41 @@ XSockets.HttpFallback = (function () {
         this.onerror = function () { };
     };
     return ajax;
-})();
+})(fallbackBaseUrl);
+
+XSockets.ReadFile = (function () {
+    var file = function () {
+        this.read = function (f, fn) {
+            var reader = new FileReader();
+            reader.onload = (function (tf) {
+                return function (e) {
+                    fn(tf, e.target.result);
+                };
+            })(f);
+            reader.readAsArrayBuffer(f);
+        }
+        this.readChunks = function (f, chunkSize, fn) {
+            var reader = new FileReader();
+            var fileSize = (f.size);
+            var bytesRead = 0;
+            var chunks = Math.ceil(fileSize / chunkSize);
+            var nextChunk = (function (d, chunk) {
+                var start = chunk * chunkSize;
+                var end = start + chunkSize >= fileSize ? fileSize : start + chunkSize;
+                var blob = d.slice(start, end);
+                reader.onload = (function (tf) {
+                    return function (e) {
+                        bytesRead += e.total;
+                        fn(tf, e.target.result, bytesRead == tf.size, bytesRead);
+                        if (++chunk < chunks) {
+                            nextChunk(tf, chunk);
+                        }
+                    };
+                })(d);
+                reader.readAsArrayBuffer(blob);
+            });
+            nextChunk(f, 0);
+        };
+    }
+    return file;
+}());
