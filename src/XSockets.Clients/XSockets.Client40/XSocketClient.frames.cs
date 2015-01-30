@@ -162,7 +162,7 @@ namespace XSockets.Client40
             {
                 data.AddRange(buffer.Take(r));
                 if (data.Count > 2)
-                {                    
+                {                               
                     this.OnHandshakeCompleted.Invoke(this, new EventArgs());
                     Read(new List<byte>(), new byte[ReadSize]);
                 }

@@ -124,7 +124,7 @@ if (forceFallback === true) {
     })();
 }
 var XSockets = {
-    Version: "4.0.3",
+    Version: "4.0.4.2",
     Events: {
         onError: "0x1f4",
         onOpen: "0xc8",

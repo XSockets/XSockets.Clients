@@ -350,7 +350,7 @@ namespace XSockets.Client35
 
                 });
 
-                return SpinWait.SpinUntil(() => IsHandshakeDone, 3000);
+                return SpinWait.SpinUntil(() => IsHandshakeDone, 10000);
             });
         }
 
