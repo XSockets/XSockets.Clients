@@ -1,4 +1,4 @@
-namespace XSockets.ClientIOS.Protocol
+﻿namespace XSockets.ClientIOS.Protocol
 {
     public enum FrameType
     {

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using XSockets.ClientIOS.Common.Interfaces;
@@ -10,7 +10,7 @@ namespace XSockets.ClientIOS
 {
     /// <summary>    
     /// Acts as a wrapper and abstraction for XSocketClient.
-    /// If you are only publishing this is the class to use
+    /// If you are only publishing/sending this is the class to use
     /// </summary>
     public class ClientPool
     {
@@ -44,7 +44,7 @@ namespace XSockets.ClientIOS
                         foreach (var v in x._textQueue.GetConsumingEnumerable())
                         {
                             var ctrl =
-    Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller);
+                                Repository<string, ClientPool>.GetById(x._conn)._websocket.Controller(v.Controller);
                             if (ctrl.ClientInfo.ConnectionId == Guid.Empty)
                             {
                                 ctrl.ClientInfo.ConnectionId = Guid.NewGuid();
@@ -52,6 +52,7 @@ namespace XSockets.ClientIOS
                             ctrl.Publish(v);
                         }
                     });
+                    
                     x._websocket.OnDisconnected += (sender, args) => Repository<string, ClientPool>.Remove(x._conn);
                     x._websocket.Open();
                     Repository<string, ClientPool>.AddOrUpdate(conn, x);

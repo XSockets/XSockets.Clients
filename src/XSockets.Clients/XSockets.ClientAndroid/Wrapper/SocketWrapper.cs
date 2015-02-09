@@ -87,7 +87,7 @@ namespace XSockets.ClientAndroid.Wrapper
                 if (errors == SslPolicyErrors.None)
                     return true;
                 
-                return false;
+                return certificate.Equals(x509Certificate);                
             }, null);
 
             var tempStream = new SslStreamWrapper(ssl);

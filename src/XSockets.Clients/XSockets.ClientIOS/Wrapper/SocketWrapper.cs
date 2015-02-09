@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Net.Security;
@@ -87,7 +87,7 @@ namespace XSockets.ClientIOS.Wrapper
                 if (errors == SslPolicyErrors.None)
                     return true;
                 
-                return false;
+                return certificate.Equals(x509Certificate);                
             }, null);
 
             var tempStream = new SslStreamWrapper(ssl);

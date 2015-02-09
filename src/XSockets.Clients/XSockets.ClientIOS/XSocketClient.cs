@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
@@ -42,6 +42,8 @@ namespace XSockets.ClientIOS
         public event EventHandler<OnErrorArgs> OnError;
         public event EventHandler<Message> OnPing;
         public event EventHandler<Message> OnPong;
+
+        public int ConnectionTimeout { get; set; }
 
         public bool IsConnected
         {
@@ -96,6 +98,7 @@ namespace XSockets.ClientIOS
 
         public XSocketClient(string url, string origin, params string[] controllers)
         {
+            this.ConnectionTimeout = 10000;
             this.Headers = new NameValueCollection();
             this.QueryString = new NameValueCollection();
             this.Cookies = new CookieCollection();
@@ -225,10 +228,13 @@ namespace XSockets.ClientIOS
         public virtual void Disconnect()
         {
             var frame = GetDataFrame(FrameType.Close, Encoding.UTF8.GetBytes(""));
-            Socket.Send(frame.ToBytes(), this.FireOnDisconnected, err => { });
+            Socket.Send(frame.ToBytes(), this.FireOnDisconnected, err => this.FireOnDisconnected());
         }
 
-
+        /// <summary>
+        /// Note that the reconnect timeout will be timeoutinms + connectiontimeout
+        /// </summary>
+        /// <param name="timeoutInMs"></param>
         public virtual void SetAutoReconnect(int timeoutInMs = 5000)
         {
             if (timeoutInMs <= 0)
@@ -238,8 +244,8 @@ namespace XSockets.ClientIOS
             }
             else
             {
-                AutoReconnect = true;
-                _autoReconnectTimeout = timeoutInMs;
+                AutoReconnect = true;                
+                _autoReconnectTimeout = timeoutInMs + ConnectionTimeout;
             }
         }
 
@@ -350,7 +356,7 @@ namespace XSockets.ClientIOS
 
                 });
 
-                return SpinWait.SpinUntil(() => IsHandshakeDone, 10000);
+                return SpinWait.SpinUntil(() => IsHandshakeDone, ConnectionTimeout);
             });
         }
 

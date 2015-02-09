@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -162,7 +162,7 @@ namespace XSockets.ClientIOS
             {
                 data.AddRange(buffer.Take(r));
                 if (data.Count > 2)
-                {                    
+                {                               
                     this.OnHandshakeCompleted.Invoke(this, new EventArgs());
                     Read(new List<byte>(), new byte[ReadSize]);
                 }

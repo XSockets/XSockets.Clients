@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -34,6 +34,10 @@ namespace XSockets.ClientIOS.Common.Interfaces
         ISocketWrapper Socket { get; }
         string Url { get; }
 
+        /// <summary>
+        /// Timeout in MS
+        /// </summary>
+        int ConnectionTimeout { get; set; }
 
         void Disconnect();
         void Open();

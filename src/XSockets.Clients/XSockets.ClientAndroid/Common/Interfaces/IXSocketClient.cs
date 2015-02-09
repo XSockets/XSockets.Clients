@@ -34,6 +34,10 @@ namespace XSockets.ClientAndroid.Common.Interfaces
         ISocketWrapper Socket { get; }
         string Url { get; }
 
+        /// <summary>
+        /// Timeout in MS
+        /// </summary>
+        int ConnectionTimeout { get; set; }
 
         void Disconnect();
         void Open();

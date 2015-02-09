@@ -1,4 +1,4 @@
-namespace XSockets.ClientIOS.Globals
+﻿namespace XSockets.ClientIOS.Globals
 {
     public static class Constants
     {
