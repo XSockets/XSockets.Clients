@@ -1,4 +1,4 @@
-﻿var xsockets = require('./tcpClient.js');
+﻿var xsockets = require('./xsockets4node.js');
 
 var c = new xsockets.TcpClient('127.0.0.1', 4502, ['animal','car']);
 c.controller('animal').on('cat', function(d) {
