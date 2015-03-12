@@ -1,0 +1,10 @@
+{
+  "name": "XSockets.NET4node",
+  "version": "0.0.1",
+  "description": "XSockets.NET4node",
+  "main": "xsockets4node.js",
+  "author": {
+    "name": "Team XSockets Sweden AB",
+    "email": "contact@xsockets.net"
+  }
+}
