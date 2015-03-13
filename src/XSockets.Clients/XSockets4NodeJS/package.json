@@ -1,10 +1,10 @@
 {
-  "name": "XSockets.NET4node",
-  "version": "0.0.1",
-  "description": "XSockets.NET4node",
-  "main": "xsockets4node.js",
+  "name": "xsockets.net",
+  "version": "0.0.2",
+  "description": "Basic TCP-client for communication between NodeJS and XSockets.NET",
+  "main": "xsockets.net.js",
   "author": {
-    "name": "Team XSockets Sweden AB",
+    "name": "codeplanner",
     "email": "contact@xsockets.net"
   }
 }

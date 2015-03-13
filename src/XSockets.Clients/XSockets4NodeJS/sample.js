@@ -1,4 +1,4 @@
-﻿var xsockets = require('./xsockets4node.js');
+﻿var xsockets = require('./xsockets.net');
 
 var c = new xsockets.TcpClient('127.0.0.1', 4502, ['animal','car']);
 c.controller('animal').on('cat', function(d) {
@@ -6,19 +6,17 @@ c.controller('animal').on('cat', function(d) {
 });
 
 c.controller('car').on('bmw', function (d) {
-    console.log('bmw', d);
+    console.log('bmw', d.says);
 });
 
 c.controller('animal').onopen = function(ci) {
-    console.log('connected controller', ci);
-    
+    console.log('connected controller animal');    
     c.controller('animal').send('cat', {says:'mjau'});
 }
 
 c.controller('car').onopen = function (ci) {
-    console.log('connected controller', ci);
-    
-    c.controller('car').send('bmw', 'wrroooom');//{says:'wroom'}
+    console.log('connected controller car');    
+    c.controller('car').send('bmw', { says: 'wroom' });
 }
 
 c.onconnected = function(d) {
