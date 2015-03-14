@@ -103,42 +103,101 @@ namespace XSockets.ClientPortableW8
 
         public virtual async Task Invoke(string target, IList<byte> blob)
         {
-            await this.Invoke(new Message(blob, MessageType.Binary));
+            await this.Invoke(target, blob, string.Empty);
+        }
+
+        public virtual async Task Invoke(string target, byte[] data)
+        {
+            await this.Invoke(target, data, string.Empty);
+        }
+
+        public virtual async Task Invoke(string target, IList<byte> data, object metadata)
+        {
+            await this.Invoke(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
 
         public virtual async Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000)
         {
-            return await _Target<T>(target, timeoutMilliseconds);        
+            return await _Target<T>(target, timeoutMilliseconds);
         }
 
         public virtual async Task<T> Invoke<T>(IMessage message, int timeoutMilliseconds = 30000)
         {
-            return await _Target<T>(message, timeoutMilliseconds);           
+            return await _Target<T>(message, timeoutMilliseconds);
         }
         public virtual async Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000)
         {
-            return await _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);            
+            return await _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);
         }
 
         public virtual async Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000)
         {
-            return await this.Invoke<T>(target, new Message(data, MessageType.Binary), timeoutMilliseconds);
+            return await this.Invoke<T>(new Message(data, null, target, this.ClientInfo.Controller));
         }
 
         public virtual async Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000)
         {
-            return await this.Invoke<T>(target, new Message(data, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return await this.Invoke<T>(new Message(data, target, this.ClientInfo.Controller));
         }
 
         public virtual async Task<T> Invoke<T>(string target, IList<byte> data, object metadata, int timeoutMilliseconds = 30000)
         {
-            return await this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return await this.Invoke<T>(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
 
         public virtual async Task<T> Invoke<T>(string target, byte[] data, object metadata, int timeoutMilliseconds = 30000)
         {
-            return await this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return await this.Invoke<T>(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
+
+        //public virtual async Task Invoke(string target)
+        //{
+        //    await this.Invoke(this.AsMessage(target, null));
+        //}
+
+        //public virtual async Task Invoke(string target, object data)
+        //{
+        //    await this.Invoke(this.AsMessage(target, data));
+        //}
+
+        //public virtual async Task Invoke(string target, IList<byte> blob)
+        //{
+        //    await this.Invoke(new Message(blob, MessageType.Binary));
+        //}
+
+        //public virtual async Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000)
+        //{
+        //    return await _Target<T>(target, timeoutMilliseconds);        
+        //}
+
+        //public virtual async Task<T> Invoke<T>(IMessage message, int timeoutMilliseconds = 30000)
+        //{
+        //    return await _Target<T>(message, timeoutMilliseconds);           
+        //}
+        //public virtual async Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000)
+        //{
+        //    return await _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);            
+        //}
+
+        //public virtual async Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000)
+        //{
+        //    return await this.Invoke<T>(target, new Message(data, MessageType.Binary), timeoutMilliseconds);
+        //}
+
+        //public virtual async Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000)
+        //{
+        //    return await this.Invoke<T>(target, new Message(data, target, this.ClientInfo.Controller), timeoutMilliseconds);
+        //}
+
+        //public virtual async Task<T> Invoke<T>(string target, IList<byte> data, object metadata, int timeoutMilliseconds = 30000)
+        //{
+        //    return await this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+        //}
+
+        //public virtual async Task<T> Invoke<T>(string target, byte[] data, object metadata, int timeoutMilliseconds = 30000)
+        //{
+        //    return await this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+        //}
 
         public virtual IListener On<T>(string target, Action<T> action)
         {
@@ -173,16 +232,6 @@ namespace XSockets.ClientPortableW8
         public virtual void DisposeListener(IListener listener)
         {
             this._listeners.Remove(listener.Topic.ToLower());
-        }
-
-        public virtual async Task Invoke(string target, byte[] data)
-        {
-            await this.Invoke(target, data, "");
-        }
-
-        public virtual async Task Invoke(string target, IList<byte> data, object metadata)
-        {
-            await this.Invoke(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
     }
 }

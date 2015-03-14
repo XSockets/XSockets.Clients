@@ -38,7 +38,7 @@ namespace XSockets.ClientAndroid.Model
 
             //if (typeof (T).IsBuiltIn())
             //    return (dynamic)this.Data;
-            
+
             return this.serializer.DeserializeFromString<T>(this.Data);
         }
 
@@ -55,7 +55,7 @@ namespace XSockets.ClientAndroid.Model
         /// <summary>
         /// For newtonsoft.json
         /// </summary>
-        public Message(){}
+        public Message() { }
 
         public Message(IList<byte> blob, MessageType messageType, string controller = "")
         {
@@ -65,7 +65,7 @@ namespace XSockets.ClientAndroid.Model
                 this.Controller = data.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
                     this.Controller = controller.ToLower();
-                this.Topic = data.Topic;
+                this.Topic = data.Topic.ToLower();
                 this.Data = data.Data;
                 this.MessageType = messageType;
                 this.Blob = null;
@@ -81,21 +81,21 @@ namespace XSockets.ClientAndroid.Model
                 this.Controller = eventInfo.Controller.ToLower();
                 if (string.IsNullOrEmpty(this.Controller))
                     this.Controller = controller.ToLower();
-                this.Topic = eventInfo.Topic;
+                this.Topic = eventInfo.Topic.ToLower();
                 this.MessageType = messageType;
             }
             else if (messageType == MessageType.Ping)
             {
                 this.Blob = blob;
-                this.MessageType = messageType;                
+                this.MessageType = messageType;
             }
             else if (messageType == MessageType.Pong)
             {
                 this.Blob = blob;
                 this.MessageType = messageType;
             }
-        }        
-        
+        }
+
         /// <summary>
         /// Ctor for Blob + Object
         /// </summary>
@@ -116,17 +116,17 @@ namespace XSockets.ClientAndroid.Model
             this.Data = this.serializer.SerializeToString(new Message(jsonMeta, topic, controller));
 
             ////Set the metadata as header in the binary message
-            var ms = new List<byte>();            
+            var ms = new List<byte>();
             ms.AddRange(blob);
 
             this.Blob = ms;
-            this.Topic = topic;
+            this.Topic = topic.ToLower();
             this.MessageType = MessageType.Binary;
 
             this.Controller = controller.ToLower();
         }
 
-        public Message(IList<byte> blob, string topic, string controller):this(blob,topic,controller,new XSocketJsonSerializer()){}
+        public Message(IList<byte> blob, string topic, string controller) : this(blob, topic, controller, new XSocketJsonSerializer()) { }
         public Message(IList<byte> blob, string topic, string controller, IXSocketJsonSerializer serializer)
         {
             this._serializer = serializer;
@@ -144,7 +144,7 @@ namespace XSockets.ClientAndroid.Model
             this.Blob = ms;
 
             this.Controller = controller.ToLower();
-            this.Topic = topic;
+            this.Topic = topic.ToLower();
             this.MessageType = MessageType.Binary;
         }
 

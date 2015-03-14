@@ -103,41 +103,51 @@ namespace XSockets.ClientIOS
 
         public virtual void Invoke(string target, IList<byte> blob)
         {
-            this.Invoke(new Message(blob, MessageType.Binary));
+            this.Invoke(target, blob, string.Empty);
+        }
+
+        public virtual void Invoke(string target, byte[] data)
+        {
+            this.Invoke(target, data, string.Empty);
+        }
+
+        public virtual void Invoke(string target, IList<byte> data, object metadata)
+        {
+            this.Invoke(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
 
         public virtual Task<T> Invoke<T>(string target, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(target, timeoutMilliseconds);        
+            return _Target<T>(target, timeoutMilliseconds);
         }
 
         public virtual Task<T> Invoke<T>(IMessage message, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(message, timeoutMilliseconds);           
+            return _Target<T>(message, timeoutMilliseconds);
         }
         public virtual Task<T> Invoke<T>(string target, object data, int timeoutMilliseconds = 30000)
         {
-            return _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);            
+            return _Target<T>(this.AsMessage(target, data), timeoutMilliseconds);
         }
 
         public virtual Task<T> Invoke<T>(string target, IList<byte> data, int timeoutMilliseconds = 30000)
         {
-            return this.Invoke<T>(target, new Message(data, MessageType.Binary), timeoutMilliseconds);
+            return this.Invoke<T>(new Message(data, null, target, this.ClientInfo.Controller));
         }
 
         public virtual Task<T> Invoke<T>(string target, byte[] data, int timeoutMilliseconds = 2000)
         {
-            return this.Invoke<T>(target, new Message(data, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return this.Invoke<T>(new Message(data, target, this.ClientInfo.Controller));
         }
 
         public virtual Task<T> Invoke<T>(string target, IList<byte> data, object metadata, int timeoutMilliseconds = 30000)
         {
-            return this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return this.Invoke<T>(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
 
         public virtual Task<T> Invoke<T>(string target, byte[] data, object metadata, int timeoutMilliseconds = 30000)
         {
-            return this.Invoke<T>(target, new Message(data, metadata, target, this.ClientInfo.Controller), timeoutMilliseconds);
+            return this.Invoke<T>(new Message(data, metadata, target, this.ClientInfo.Controller));
         }
 
         public virtual IListener On<T>(string target, Action<T> action)
@@ -173,16 +183,6 @@ namespace XSockets.ClientIOS
         public virtual void DisposeListener(IListener listener)
         {
             this.Listeners.Remove(listener.Topic.ToLower());
-        }
-
-        public virtual void Invoke(string target, byte[] data)
-        {
-            this.Invoke(target, data, "");
-        }
-
-        public virtual void Invoke(string target, IList<byte> data, object metadata)
-        {
-            this.Invoke(new Message(data, metadata, target, this.ClientInfo.Controller));
-        }
+        }        
     }
 }
