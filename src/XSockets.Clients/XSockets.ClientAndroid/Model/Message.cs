@@ -154,7 +154,7 @@ namespace XSockets.ClientAndroid.Model
         /// <param name="obj"></param>
         /// <param name="topic"></param>
         /// <param name="controller"></param>                
-        public Message(object obj, string topic, string controller = "") : this(obj, topic, controller, new XSocketJsonSerializer()) { }
+        public Message(object obj, string topic, string controller) : this(obj, topic, controller, new XSocketJsonSerializer()) { }
 
         public Message(object obj, string topic, string controller, IXSocketJsonSerializer serializer)
         {
@@ -165,7 +165,7 @@ namespace XSockets.ClientAndroid.Model
             this.MessageType = MessageType.Text;
         }
 
-        public Message(string json, string topic, string controller = "")
+        public Message(string json, string topic, string controller)
         {
             this.Blob = null;
             this.Data = json;

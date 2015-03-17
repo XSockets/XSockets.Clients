@@ -52,7 +52,7 @@ namespace XSockets.ClientPortableW8
 
         public virtual IMessage AsMessage(string topic, object o)
         {
-            return new Message(o, topic);
+            return new Message(o, topic, this.ClientInfo.Controller);
         }
 
         public virtual async Task One(string topic, Action<IMessage> callback)

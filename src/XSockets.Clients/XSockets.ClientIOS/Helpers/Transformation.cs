@@ -6,33 +6,10 @@ using XSockets.ClientIOS.Common.Interfaces;
 using XSockets.ClientIOS.Model;
 
 namespace XSockets.ClientIOS.Helpers
-{    
+{
     public static class XSocketHelper
     {
         #region "Transformation Methods - XSocketEvents & JSON"
-
-        /// <summary>
-        /// If possible use the extension-method ToTextArgs for the controller instead
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="obj"></param>
-        /// <param name="eventname"></param>
-        /// <returns></returns>
-        public static IMessage AsMessage(this IXSocketClient client, object obj, string eventname)
-        {
-            return new Message(obj,eventname);
-        }
-
-        /// <summary>
-        /// Builds a ITextArgs object from a JSON string and a event name
-        /// </summary>
-        /// <param name="json"></param>
-        /// <param name="eventname"></param>
-        /// <returns></returns>
-        public static IMessage AsTextArgsForJson(this string json, string eventname)
-        {
-            return new Message(json,eventname);
-        }
 
         /// <summary>
         /// Use when sending binary data
@@ -41,8 +18,8 @@ namespace XSockets.ClientIOS.Helpers
         /// <param name="topic"></param>
         /// <param name="controller"></param>
         /// <returns></returns>
-        public static IMessage AsMessage(this byte[] obj, string topic, string controller ="")
-        {            
+        public static IMessage AsMessage(this byte[] obj, string topic, string controller)
+        {
             return new Message(obj, topic, controller);
         }
 
@@ -103,7 +80,7 @@ namespace XSockets.ClientIOS.Helpers
             foreach (string name in parameters)
                 items.Add(String.Concat(name, "=", parameters[name].UrlEncode()));
 
-            return "?"+String.Join("&", items.ToArray());
+            return "?" + String.Join("&", items.ToArray());
         }
 
         public static string UrlEncode(this string s)
@@ -111,7 +88,7 @@ namespace XSockets.ClientIOS.Helpers
             return Uri.EscapeDataString(s).Replace("%20", "+");
         }
 
-        private static readonly ConcurrentDictionary<string, bool> TypeDictionary = new ConcurrentDictionary<string, bool>(); 
+        private static readonly ConcurrentDictionary<string, bool> TypeDictionary = new ConcurrentDictionary<string, bool>();
 
         internal static bool IsBuiltIn(this Type type)
         {

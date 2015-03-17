@@ -52,7 +52,7 @@ namespace XSockets.Client40
 
         public virtual IMessage AsMessage(string topic, object o)
         {
-            return new Message(o, topic);
+            return new Message(o, topic,this.ClientInfo.Controller);
         }
 
         public virtual void One(string topic, Action<IMessage> callback)

@@ -82,7 +82,7 @@ namespace XSockets.Client35
             payload.Controller = this.ClientInfo.Controller;
             var frame = GetDataFrame(payload).ToBytes();  
             //If controller not yet open... Queue message
-            if (this.ClientInfo.ConnectionId == Guid.Empty)
+            if (!this.XSocketClient.IsHandshakeDone)
             {
                 this.queuedFrames.AddRange(frame);
                 return;

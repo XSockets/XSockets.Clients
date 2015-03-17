@@ -12,36 +12,13 @@ namespace XSockets.Client40.Helpers
         #region "Transformation Methods - XSocketEvents & JSON"
 
         /// <summary>
-        /// If possible use the extension-method ToTextArgs for the controller instead
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="obj"></param>
-        /// <param name="eventname"></param>
-        /// <returns></returns>
-        public static IMessage AsMessage(this IXSocketClient client, object obj, string eventname)
-        {
-            return new Message(obj,eventname);
-        }
-
-        /// <summary>
-        /// Builds a ITextArgs object from a JSON string and a event name
-        /// </summary>
-        /// <param name="json"></param>
-        /// <param name="eventname"></param>
-        /// <returns></returns>
-        public static IMessage AsTextArgsForJson(this string json, string eventname)
-        {
-            return new Message(json,eventname);
-        }
-
-        /// <summary>
         /// Use when sending binary data
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="topic"></param>
         /// <param name="controller"></param>
         /// <returns></returns>
-        public static IMessage AsMessage(this byte[] obj, string topic, string controller ="")
+        public static IMessage AsMessage(this byte[] obj, string topic, string controller)
         {            
             return new Message(obj, topic, controller);
         }
