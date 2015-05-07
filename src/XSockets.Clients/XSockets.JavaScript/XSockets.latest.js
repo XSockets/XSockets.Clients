@@ -833,12 +833,12 @@ XSockets.WebSocket = (function () {
                 return c;
             });
             self.webSocket = self.getInstace(this.uri.absoluteUrl + this.settings.queryString(), this.settings.subprotocol, true, controllersRegistred);
-
+            var temp = self.controllerFactory.registeredControllers;
             self.controllerFactory.registeredControllers = [];
-            controllersRegistred.forEach(function (a) {
-                self.controllerFactory.registeredControllers.push(a);
-                a.ctrl.addSubscriptions(subscriptions[a.name]);
-                a.ctrl.webSocket = self.webSocket;
+            temp.forEach(function (a) {
+                var b = self.controller(a.name);
+                b.addSubscriptions(subscriptions[a.name]);
+                b.webSocket = self.webSocket;
             });
             if (fn) fn.apply(this);
         };
