@@ -430,7 +430,8 @@ XSockets.Communcation = (function () {
         var queue = [];
         var webSocket;
         // detect if we are running on a native WebSocket.
-        if (window.WebSocket.toString().indexOf('[native code]') > -1) {
+        var websocketTest = window.WebSocket.toString();
+        if (websocketTest.indexOf('[native code]') > -1 || websocketTest.indexOf('[object WebSocketConstructor]') > -1) {
             webSocket = new window.WebSocket(url, subprotocol);
         } else {
 
