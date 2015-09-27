@@ -95,12 +95,18 @@ void PhotonSocketClient::setOnDisconnectedDelegate(OnDisconnectedDelegate onDisc
 	_onDisconnectedDelegate = onDisconnectedDelegate;
 }
 
+void PhotonSocketClient::setOnConnectedDelegate(OnConnectedDelegate onConnectedDelegate) {
+	_onConnectedDelegate = onConnectedDelegate;
+}
+
 
 void PhotonSocketClient::sendHandshake() {
 
-	_client.print(HANDSHAKE);
-	//if(clientId != "")
-	//	_client.print("?PersistentId="+clientId);
+ 	if(clientId == NULL)
+		_client.print(HANDSHAKE);
+	else{
+		_client.print(HANDSHAKE + "?PersistentId=" + clientId);
+	}
 	_client.flush();
 }
 
@@ -122,6 +128,11 @@ bool PhotonSocketClient::readHandshake() {
 		Serial.println("handshake bad");
 		_client.stop();
 		return false;
+	}
+	else{
+		if (_onConnectedDelegate != NULL) {
+			_onConnectedDelegate();
+		}
 	}
 	//Serial.println("handshake ok");
 	return true;

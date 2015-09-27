@@ -1,6 +1,6 @@
 #pragma SPARK_NO_PREPROCESSOR
 #include <PhotonSocketClient.h>
-#define SERVER_IP "192.168.254.154"//"hackzurich.cloudapp.net"
+#define SERVER_IP "192.168.254.154"
 #define SERVER_PORT 4502
 
 char json[64];

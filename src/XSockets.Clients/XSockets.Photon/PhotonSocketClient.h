@@ -6,6 +6,7 @@ class PhotonSocketClient {
 	public:
 		typedef void (*OnMessageDelegate)(PhotonSocketClient client, String data);
 		typedef void (*OnDisconnectedDelegate)();
+		typedef void (*OnConnectedDelegate)();
 		void SetClientId(String guid);
 		bool connect(char hostname[], int port = 80);
         bool connected();
@@ -13,6 +14,7 @@ class PhotonSocketClient {
 		void receiveData();
 		void setOnMessageDelegate(OnMessageDelegate onMessageDelegate);
 		void setOnDisconnectedDelegate(OnDisconnectedDelegate onDisconnectedDelegate);
+		void setOnConnectedDelegate(OnConnectedDelegate onConnectedDelegate);
 
 		void send(String controller, String topic, String data);
 
@@ -32,9 +34,10 @@ class PhotonSocketClient {
 				void dispatch(String data);
         void sendHandshake();
         TCPClient _client;
-				String clientId = "";
+				String clientId = NULL;
         OnMessageDelegate _onMessageDelegate;
 				OnDisconnectedDelegate _onDisconnectedDelegate;
+				OnConnectedDelegate _onConnectedDelegate;
         bool readHandshake();
         String readHandshakeLine();
 };
