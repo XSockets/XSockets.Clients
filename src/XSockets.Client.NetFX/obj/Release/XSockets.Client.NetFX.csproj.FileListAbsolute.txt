@@ -1,0 +1,6 @@
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\bin\Release\Newtonsoft.Json.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\bin\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\bin\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\obj\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\obj\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.NetFX\obj\Release\XSockets.Client.NetFX.csprojResolveAssemblyReference.cache

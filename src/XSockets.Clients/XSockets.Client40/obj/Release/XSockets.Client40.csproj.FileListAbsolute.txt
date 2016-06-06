@@ -1,5 +1,0 @@
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\bin\Release\XSockets.Client40.dll
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\bin\Release\XSockets.Client40.pdb
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\obj\Release\XSockets.Client40.dll
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\obj\Release\XSockets.Client40.pdb
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\obj\Release\XSockets.Client40.csprojResolveAssemblyReference.cache

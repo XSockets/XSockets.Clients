@@ -1,1 +1,0 @@
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.Client40\obj\Release-Net45\XSockets.Client40.csprojResolveAssemblyReference.cache

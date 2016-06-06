@@ -1,0 +1,9 @@
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\XSockets.Client.Net35.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\XSockets.Client.Net35.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\System.Threading.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.Net35\bin\Debug\System.Threading.xml

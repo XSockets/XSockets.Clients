@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>0c230fc9-e5b6-4b83-99df-2bc0489382f3</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>XSockets.Shared.Client</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ClientPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Event\Arguments\MessageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Event\Arguments\OnClientConnectArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Event\Arguments\OnClientDisconnectArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Event\Arguments\OnErrorArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IClientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\ISubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IXSocketClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IXSocketJsonSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IXSocketObservable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Interfaces\IXSocketObserver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.qos.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.pubsub.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.rpc.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controller.storage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Globals\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Endian.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\NameValueCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Transformation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\XSocketJsonSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\ClientInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Listener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Message.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\QoS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\Subscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\SubscriptionType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\XStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Model\XSubscription.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\FrameBuilders\Rfc6455DataFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\FrameType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\Handshake\Builder\Rfc6455Hanshake.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\IFrameHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\IReadState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\Readers\ReadState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\Readers\Rfc6455FrameHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Protocol\Readers\XFrameHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SharedAssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Observables\XSocketsObserverPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Storage\Repository.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utility\Storage\RepositoryInstance.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.uwp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.default.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Wrapper\SslStreamWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Heartbeat.wp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Heartbeat.Default.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.wp.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.Default.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.iOS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.Android.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.cs" />
+  </ItemGroup>
+</Project>

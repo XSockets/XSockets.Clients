@@ -1,0 +1,11 @@
+﻿{
+  "dependencies": {
+    "Newtonsoft.Json": "8.0.3"
+  },
+  "frameworks": {
+    "Xamarin.iOS,Version=v1.0": { },
+    "MonoTouch,Version=v1.0": { }
+  },
+  "supports": {
+  }
+}

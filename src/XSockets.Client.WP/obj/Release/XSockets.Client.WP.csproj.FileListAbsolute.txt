@@ -1,0 +1,17 @@
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\bin\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\bin\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\bin\Release\XSockets.Client.pri
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\priconfig.xml
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\priconfig.xml.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\layout.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\layout.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\resources.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\resources.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\pri.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\pri.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\qualifiers.txt
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\qualifiers.txt.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\MultipleQualifiersPerDimensionFound.txt
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\XSockets.Client.WP.csprojResolveAssemblyReference.cache

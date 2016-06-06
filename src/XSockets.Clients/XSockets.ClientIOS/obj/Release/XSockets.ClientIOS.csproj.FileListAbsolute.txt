@@ -1,5 +1,0 @@
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientIOS\bin\iPhone\Release\XSockets.ClientIOS.dll
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientIOS\bin\iPhone\Release\Newtonsoft.Json.dll
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientIOS\bin\iPhone\Release\Newtonsoft.Json.xml
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientIOS\obj\Release\XSockets.ClientIOS.dll
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Clients\XSockets.ClientIOS\obj\Release\XSockets.ClientIOS.csprojResolveAssemblyReference.cache

@@ -1,0 +1,17 @@
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\priconfig.xml
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\priconfig.xml.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\layout.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\layout.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\resources.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\resources.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\pri.resfiles
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\pri.resfiles.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\qualifiers.txt
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\qualifiers.txt.intermediate
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\MultipleQualifiersPerDimensionFound.txt
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\bin\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\bin\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\bin\Release\XSockets.Client.pri
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\XSockets.Client.dll
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\XSockets.Client.pdb
+C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.UWP\obj\Release\XSockets.Client.UWP.csprojResolveAssemblyReference.cache
