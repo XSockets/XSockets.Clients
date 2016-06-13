@@ -23,7 +23,6 @@ namespace XSockets.Wrapper
     {        
         private static object Locker = new object();         
         private ReadState readState;
-        //private event EventHandler SocketConnected;
         public event EventHandler OnConnected;
         public event EventHandler<Exception> OnError;
         public event EventHandler OnDisconnected;
@@ -47,7 +46,6 @@ namespace XSockets.Wrapper
             this._host = uri.Host;
             this._port = uri.Port.ToString();
             readState = new ReadState();
-            //SocketConnected += async (s, e) => { await OnSocketConnected(s, e); };
         }
         
         private string GetConnectionstring()

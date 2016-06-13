@@ -12,12 +12,13 @@ namespace XSockets.Wrapper
     using System.Security.Cryptography.X509Certificates;
     using System.Text;
     using System.Threading.Tasks;
-    using XSockets.Protocol.Handshake.Builder;
+    using Protocol.Handshake.Builder;
 
     public partial class Communication
     {
         private Stream Stream;
         private Socket Socket;
+        private byte[] ReadBuffer;
 
         private async Task OnSocketConnected(object sender, EventArgs eventArgs)
         {
@@ -62,6 +63,7 @@ namespace XSockets.Wrapper
                 Task.Run(() => {
                     try
                     {
+                        this.ReadBuffer = new byte[1024 * 320];
                         Read();
                     }
                     catch { }
@@ -154,13 +156,14 @@ namespace XSockets.Wrapper
 
             await Task.Factory.FromAsync(begin, ssl.EndAuthenticateAsClient, null);
         }
+
         public void Read()
         {
             try
             {
                 if (!Connected) return;
-                var b = new byte[1024*320];
-                var l = Stream.Read(b, 0, b.Length);
+                
+                var l = Stream.Read(this.ReadBuffer, 0, this.ReadBuffer.Length);
 
                 if (l <= 0)
                 {
@@ -168,7 +171,8 @@ namespace XSockets.Wrapper
                     return;
                 }
 
-                FrameHandler.Receive(new ArraySegment<byte>(b, 0, (int)l));
+                FrameHandler.Receive(new ArraySegment<byte>(this.ReadBuffer, 0, (int)l));
+                Array.Clear(this.ReadBuffer, 0, l);
                 Read();
             }
             catch
@@ -176,6 +180,7 @@ namespace XSockets.Wrapper
                 this.Disconnect();
             }
         }
+
         public async Task Disconnect()
         {
             try
