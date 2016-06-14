@@ -5,18 +5,18 @@ namespace XSockets
     using System;
     using System.Linq;
     using System.Text;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
     using System.Timers;
     public partial class XSocketClient : IXSocketClient
     {
-        private Timer HearbeatTimer;
+        private Timer _hearbeatTimer;
 
         private void StopHeartbeat()
         {
-            if (this.HearbeatTimer != null && this.HearbeatTimer.Enabled)
+            if (this._hearbeatTimer != null && this._hearbeatTimer.Enabled)
             {
-                this.HearbeatTimer.Stop();
-                this.HearbeatTimer.Dispose();
+                this._hearbeatTimer.Stop();
+                this._hearbeatTimer.Dispose();
             }
         }
         /// <summary>
@@ -43,11 +43,11 @@ namespace XSockets
             if (!this.IsConnected)
                 throw new Exception("You can't start the hearbeat before you have a connection.");
 
-            LastPong = DateTime.Now;
+            ((XSocketClient) this)._lastPong = DateTime.Now;
             this.OnPong += async (s, m) =>
             {
                 //Got a pong back... set time for received pong.
-                this.LastPong = DateTime.Now;
+                ((XSocketClient) this)._lastPong = DateTime.Now;
 
                 if (Encoding.UTF8.GetString(m.Blob.ToArray()) != this.PersistentId.ToString())
                 {
@@ -56,20 +56,20 @@ namespace XSockets
             };
             //Call ping on interval...
 
-            this.HearbeatTimer = new System.Timers.Timer(intervallMs);
-            this.HearbeatTimer.Elapsed += async (s, d) =>
+            this._hearbeatTimer = new Timer(intervallMs);
+            this._hearbeatTimer.Elapsed += async (s, d) =>
             {
-                if (LastPong < DateTime.Now.AddMilliseconds(-(intervallMs * 2)))
+                if (((XSocketClient) this)._lastPong < DateTime.Now.AddMilliseconds(-(intervallMs * 2)))
                 {
                     await this.Disconnect();
-                    this.HearbeatTimer.Stop();
-                    this.HearbeatTimer.Dispose();
+                    this._hearbeatTimer.Stop();
+                    this._hearbeatTimer.Dispose();
                     return;
                 }
 
                 await this.Ping(Encoding.UTF8.GetBytes(this.PersistentId.ToString()));
             };
-            this.HearbeatTimer.Start();
+            this._hearbeatTimer.Start();
         }
     }
 }

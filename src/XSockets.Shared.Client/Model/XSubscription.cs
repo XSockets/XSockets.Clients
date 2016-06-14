@@ -2,7 +2,6 @@
 namespace XSockets.Model
 {
     using System;
-    using System.Runtime.Serialization;
     using Newtonsoft.Json;
 
     /// <summary>

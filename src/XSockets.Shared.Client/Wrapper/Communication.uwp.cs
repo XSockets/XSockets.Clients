@@ -21,7 +21,8 @@ namespace XSockets.Wrapper
         private DataWriter _writer;
         private DataReader _reader;
         private HostName _serverHost;
-        private async Task OnSocketConnected(object sender, EventArgs eventArgs)
+        private byte[] _readBuffer;
+        private async Task OnSocketConnected()
         {
             try
             {
@@ -58,6 +59,7 @@ namespace XSockets.Wrapper
                             //Start receive thread
                             FrameHandler = CreateFrameHandler();
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                            ((Communication) this)._readBuffer = new byte[1024 * 320];
                             Task.Factory.StartNew(Read);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
@@ -92,7 +94,7 @@ namespace XSockets.Wrapper
 
                 await _clientSocket.ConnectAsync(_serverHost, _port);
 
-                await this.OnSocketConnected(this, null);
+                await this.OnSocketConnected();
                 return true;
             }
             catch (Exception)
@@ -105,36 +107,39 @@ namespace XSockets.Wrapper
         {
             try
             {
-                if (!Connected) return;
-
-                var op = _reader.LoadAsync(1024);
-
-                op.Completed = async (info, status) =>
+                while(true)
                 {
-                    switch (status)
+                    if (!Connected) return;
+
+                    var op = _reader.LoadAsync(1024 * 320);
+
+                    op.Completed = async (info, status) =>
                     {
-                        case AsyncStatus.Completed:
-                            uint byteCount = _reader.UnconsumedBufferLength;
+                        switch (status)
+                        {
+                            case AsyncStatus.Completed:
+                                uint byteCount = _reader.UnconsumedBufferLength;
 
-                            byte[] buffer = new byte[byteCount];
-                            _reader.ReadBytes(buffer);
+                                //byte[] buffer = new byte[byteCount];
+                                _reader.ReadBytes(((Communication) this)._readBuffer);
 
-                            if (byteCount <= 0)
+                                if (byteCount <= 0)
+                                    await this.Disconnect();
+                                else
+                                {
+                                    FrameHandler.Receive(new ArraySegment<byte>(((Communication) this)._readBuffer, 0, (int)byteCount));
+                                    Array.Clear(((Communication) this)._readBuffer, 0, (int)byteCount);                                  
+                                }
+                                break;
+                            case AsyncStatus.Error:
                                 await this.Disconnect();
-                            else
-                            {
-                                FrameHandler.Receive(new ArraySegment<byte>(buffer, 0, (int)byteCount));
-                                Read();
-                            }
-                            break;
-                        case AsyncStatus.Error:
-                            await this.Disconnect();
-                            break;
-                        case AsyncStatus.Canceled:
-                            await this.Disconnect();
-                            break;
-                    }
-                };
+                                break;
+                            case AsyncStatus.Canceled:
+                                await this.Disconnect();
+                                break;
+                        }
+                    };
+                }
             }
             catch
             {

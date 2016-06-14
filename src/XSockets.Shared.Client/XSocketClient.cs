@@ -15,15 +15,13 @@
     using Model;
     using Protocol;
     using Utility.Storage;
-    using Wrapper;
+    using Wrapper;   
 
     /// <summary>
     /// A client for communicating with XSockets over pub/sub and rpc
     /// </summary>
     public partial class XSocketClient : IXSocketClient
-    {
-        private static readonly object Locker = new object();
-
+    {        
         public int QoSRetryInterval { get; set; }
 
         /// <summary>
@@ -38,7 +36,7 @@
         public bool AutoHeartbeat { get; set; }
         private int _autoHeartbeatTimeout;
 
-        private DateTime LastPong;
+        private DateTime _lastPong;
 #if !WINDOWS_UWP && !WINDOWS_PHONE_APP
         private X509Certificate2 _certificate;
 
@@ -454,7 +452,6 @@
                             return true;
                             //await this.Communication.SendAsync(.Invoke(m, Constants.Events.QoS.MsgAck);
                         }
-                        break;
                         //case QoS.ExactlyOnce:
                         //    throw new Exception("QoS with level 2 is not yet supported");
                         //    //QoS = 2

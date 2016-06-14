@@ -11,22 +11,11 @@ namespace XSockets.Protocol.Handshake.Builder
     {
         public NameValueCollection Handshake { get; set; }
 
-        private IXSocketClient _client;
-        //private const string Handshake =
-        //    "GET {0} HTTP/1.1\r\n" +
-        //    //"Connection: Upgrade\r\n" +            
-        //    "Host: {2}\r\n" +
-        //    "Origin: {1}\r\n" +
-        //    "Upgrade: websocket\r\n" +
-        //    "Connection: Upgrade,Keep-Alive\r\n" +
-        //    "Sec-WebSocket-Key: {3}\r\n" +
-        //    "Sec-WebSocket-Version: 13\r\n" +
-        //    "Sec-WebSocket-Protocol: XSocketsNET\r\n\r\n";//+
-        //    //"{4}";
+        private IXSocketClient _client;        
 
-        private readonly string _host = String.Empty;
-        private readonly string _origin = String.Empty;
-        private readonly string _path = String.Empty;
+        private readonly string _host = string.Empty;
+        private readonly string _origin = string.Empty;
+        private readonly string _path = string.Empty;
         private string Key { get; set; }
 
         public Rfc6455Handshake(string url, string origin, IXSocketClient client)
@@ -47,21 +36,13 @@ namespace XSockets.Protocol.Handshake.Builder
                 foreach (Cookie cookie in client.Cookies)
                 {                    
                     if (ii + 1 == client.Cookies.Count)
-                        csb.Append(string.Format("{0}={1}", cookie.Name, cookie.Value));
+                        csb.Append($"{cookie.Name}={cookie.Value}");
                     else
-                        csb.Append(string.Format("{0}={1}; ", cookie.Name, cookie.Value));
+                        csb.Append($"{cookie.Name}={cookie.Value}; ");
                     ii++;
                 }
-
-                //for (var i = 0; i < client.Cookies.Count; i++)
-                //{
-                //    var cookie = client.Cookies[i];
-                //    if (i + 1 == client.Cookies.Count)
-                //        csb.Append(string.Format("{0}={1}", cookie.Name, cookie.Value));
-                //    else
-                //        csb.Append(string.Format("{0}={1}; ", cookie.Name, cookie.Value));
-                //}
-                this.Handshake.Add("COOKIE", string.Format("Cookie: {0}", csb.ToString()));
+                
+                this.Handshake.Add("COOKIE", $"Cookie: {csb}");
             }
 
             this.Handshake.Add("SEC-WEBSOCKET-KEY", "Sec-WebSocket-Key: {0}");
@@ -70,7 +51,7 @@ namespace XSockets.Protocol.Handshake.Builder
 
             var uri = new Uri(url);
             this._origin = origin;
-            this._host = string.Format("{0}:{1}", uri.Host, uri.Port);
+            this._host = $"{uri.Host}:{uri.Port}";
 
             this._path = uri.PathAndQuery;
 
@@ -98,23 +79,15 @@ namespace XSockets.Protocol.Handshake.Builder
             sb.Append(this.Handshake["CONNECTION"] + "\r\n");
             foreach (var header in _client.Headers)
             {
-                
-                //var header = _client.Headers.GetKey(i);
-                sb.Append(string.Format("{0}: {1}\r\n", header.Key,header.Value));
-            }
-            //for (var i = 0; i < _client.Headers.Count; i++)
-            //{
-            //    var header = _client.Headers.GetKey(i);
-            //    sb.Append(string.Format("{0}: {1}\r\n", header, _client.Headers.Get(header)));
-            //}
-            if (this.Handshake.ContainsKey("COOKIE"))// .Get("COOKIE")))
+                sb.Append($"{header.Key}: {header.Value}\r\n");
+            }           
+            if (this.Handshake.ContainsKey("COOKIE"))
                 sb.Append(this.Handshake["COOKIE"] + "\r\n");
             sb.Append(string.Format(this.Handshake["SEC-WEBSOCKET-KEY"] + "\r\n", Key));
             sb.Append(this.Handshake["SEC-WEBSOCKET-VERSION"] + "\r\n");
             sb.Append(this.Handshake["SEC-WEBSOCKET-PROTOCOL"] + "\r\n\r\n");
 
             return sb.ToString();
-            //return string.Format(Handshake, _path, _origin, _host, Key /*, "\r\n" + @"^n:ds[4U"*/);
         }
     }
 }

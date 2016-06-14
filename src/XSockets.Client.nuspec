@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>XSockets.Client</id>
-    <version>6.0.8</version>
+    <version>6.0.9</version>
     <title>XSockets.Client</title>
     <authors>Team XSockets Sweden AB</authors>
     <owners>Team XSockets Sweden AB</owners>
@@ -10,10 +10,10 @@
     <projectUrl>http://xsockets.net</projectUrl>
     <iconUrl>http://xsocketswp.azurewebsites.net/wp-content/uploads/2015/09/x_blue.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Supports: .NET 4.5+, Xamarin iOS x64, MonoTouch (iOS), MonoDroid (Android), WinPhone, WinStore, Universal</description>
+    <description>Supports: .NET 4.5+, Xamarin iOS x64, MonoTouch (iOS), MonoDroid (Android), WinPhone, WinStore, Universal, .NET 3.5</description>
     <summary />
     <releaseNotes>
-      Added .NET 3.5 support back to support the Unity3D community
+      Fix - Xamarin Android memory leak
     </releaseNotes>
     <copyright>Team XSockets Sweden AB</copyright>
     <tags>XSockets, Websockets, Realtime, IoT</tags>

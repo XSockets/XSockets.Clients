@@ -4,7 +4,7 @@ namespace XSockets.Helpers
     using System;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public class XSocketJsonSerializer : IXSocketJsonSerializer
     {

@@ -5,10 +5,10 @@ namespace XSockets
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using XSockets.Common.Interfaces;
-    using XSockets.Helpers;
-    using XSockets.Model;
-    using XSockets.Utility.Storage;
+    using Common.Interfaces;
+    using Helpers;
+    using Model;
+    using Utility.Storage;
 
     /// <summary>    
     /// Acts as a wrapper and abstraction for XSocketClient.
@@ -33,7 +33,7 @@ namespace XSockets
         /// <param name="conn">server location ws://server</param>
         /// <param name="port">the port to use, for example 8080</param>
         /// <param name="origin">the origin of this clients, http://example.com</param>
-        /// <param name="Querystring parameters">Parameters to pass in with the connection</param>
+        /// <param name="querystringParameters">Parameters to pass in with the connection</param>
         /// <returns></returns>
         public static ClientPool GetInstance(string conn, string port, string origin, IDictionary<string,string> querystringParameters = null)
         {
@@ -51,7 +51,7 @@ namespace XSockets
                         _textQueue = new BlockingCollection<IMessage>(),
                         _jsonSerializer = new XSocketJsonSerializer()
                     };
-                    x._websocket = new XSocketClient(string.Format("{0}:{1}",x._conn, x._port), origin);
+                    x._websocket = new XSocketClient($"{x._conn}:{x._port}", origin);
                     if(x._querystringParameters != null)
                         foreach(var q in x._querystringParameters)
                             x._websocket.QueryString.Add(q.Key, q.Value);

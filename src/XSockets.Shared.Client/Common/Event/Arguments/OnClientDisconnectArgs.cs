@@ -2,7 +2,7 @@
 namespace XSockets.Common.Event.Arguments
 {
     using System;
-    using XSockets.Common.Interfaces;
+    using Interfaces;
 
     public class OnClientDisconnectArgs : EventArgs
     {

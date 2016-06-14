@@ -10,19 +10,18 @@ namespace XSockets.Wrapper
 #endif
     using System.Text;
     using System.Threading.Tasks;
-    using XSockets.Common.Event.Arguments;
-    using XSockets.Common.Interfaces;
-    using XSockets.Globals;
-    using XSockets.Helpers;
-    using XSockets.Model;
-    using XSockets.Protocol;
-    using XSockets.Protocol.FrameBuilders;
-    using XSockets.Protocol.Readers;
+    using Common.Event.Arguments;
+    using Common.Interfaces;
+    using Globals;
+    using Helpers;
+    using Model;
+    using Protocol;
+    using Protocol.FrameBuilders;
+    using Protocol.Readers;
 
     public partial class Communication
-    {        
-        private static object Locker = new object();         
-        private ReadState readState;
+    {                
+        private readonly ReadState readState;
         public event EventHandler OnConnected;
         public event EventHandler<Exception> OnError;
         public event EventHandler OnDisconnected;
@@ -50,7 +49,7 @@ namespace XSockets.Wrapper
         
         private string GetConnectionstring()
         {            
-            var connectionstring = string.Format("{0}://{1}:{2}", this._uri.Scheme, this._host, this._port);
+            var connectionstring = $"{this._uri.Scheme}://{this._host}:{this._port}";
 
             if (this.Client.PersistentId != Guid.Empty)
             {

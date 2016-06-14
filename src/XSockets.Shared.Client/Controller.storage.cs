@@ -3,9 +3,9 @@ namespace XSockets
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using XSockets.Common.Interfaces;
-    using XSockets.Globals;
-    using XSockets.Model;
+    using Common.Interfaces;
+    using Globals;
+    using Model;
 
     public partial class Controller : IController
     {

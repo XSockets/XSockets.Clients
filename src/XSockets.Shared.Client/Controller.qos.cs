@@ -2,7 +2,7 @@ namespace XSockets
 {
     using System;
     using System.Threading;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public partial class Controller : IController
     {

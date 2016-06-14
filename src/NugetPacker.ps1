@@ -2,7 +2,7 @@ try
 {
 	$path = "C:\Users\Uffe\Desktop\XSockets.Client"
 	$outputdir = "nuget\builds"
-	$version = "6.0.8"
+	$version = "6.0.9"
 	$deploy = $true;
 
 	$file= "xsockets.client.nuspec"

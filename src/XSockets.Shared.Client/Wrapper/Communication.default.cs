@@ -16,11 +16,11 @@ namespace XSockets.Wrapper
 
     public partial class Communication
     {
-        private Stream Stream;
-        private Socket Socket;
-        private byte[] ReadBuffer;
+        private Stream _stream;
+        private Socket _socket;
+        private byte[] _readBuffer;
 
-        private async Task OnSocketConnected(object sender, EventArgs eventArgs)
+        private async Task OnSocketConnected()
         {
             try
             {
@@ -29,7 +29,7 @@ namespace XSockets.Wrapper
                 var handshake = new Rfc6455Handshake(connectionstring, this.Client.Origin, this.Client);
 
                 var b = Encoding.UTF8.GetBytes(handshake.ToString());
-                await this.Stream.WriteAsync(b, 0, b.Length);
+                await this._stream.WriteAsync(b, 0, b.Length);
 
 
                 Connected = true;
@@ -51,7 +51,7 @@ namespace XSockets.Wrapper
 
         private void ReadHandshake(List<byte> data, byte[] buffer)
         {
-            var l = this.Stream.Read(buffer, 0, buffer.Length);
+            var l = this._stream.Read(buffer, 0, buffer.Length);
 
             data.AddRange(buffer.Take(l));
 
@@ -60,10 +60,11 @@ namespace XSockets.Wrapper
                 if (this.OnConnected != null)
                     this.OnConnected.Invoke(this, null);
                 //TODO: Managed thread instead of Task.Run?
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     try
                     {
-                        this.ReadBuffer = new byte[1024 * 320];
+                        this._readBuffer = new byte[1024 * 320];
                         Read();
                     }
                     catch { }
@@ -82,12 +83,12 @@ namespace XSockets.Wrapper
                 if (Connected) return true;
 
 
-                this.Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                this._socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 //this.Socket.Connect(GetRemoteEndpoint());
                 // Connect using a timeout (5 seconds)
 
-                IAsyncResult result = this.Socket.BeginConnect(GetRemoteEndpoint(), null, null);
+                IAsyncResult result = this._socket.BeginConnect(GetRemoteEndpoint(), null, null);
                 bool success = result.AsyncWaitHandle.WaitOne(5000, true);
 
                 if (!success)
@@ -97,7 +98,7 @@ namespace XSockets.Wrapper
                 }
 
 
-                this.Stream = new NetworkStream(this.Socket);
+                this._stream = new NetworkStream(this._socket);
 
                 if (this.IsSecure)
                 {
@@ -111,9 +112,9 @@ namespace XSockets.Wrapper
                         await this.AuthenticateAsClient();
                     }
                 }
-                
-                await this.OnSocketConnected(this,null);
-                
+
+                await this.OnSocketConnected();
+
                 return true;
             }
             catch
@@ -124,23 +125,24 @@ namespace XSockets.Wrapper
         }
         public async Task AuthenticateAsClient()
         {
-            var ssl = new SslStream(Stream, false, (sender, x509Certificate, chain, errors) =>
+            var ssl = new SslStream(_stream, false, (sender, x509Certificate, chain, errors) =>
             {
                 if (errors == SslPolicyErrors.None)
                     return true;
 
                 return false;
             }, null);
-            
-            Stream = ssl;
+
+            _stream = ssl;
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => ssl.BeginAuthenticateAsClient(this._uri.Host, cb, s);
 
             await Task.Factory.FromAsync(begin, ssl.EndAuthenticateAsClient, null);
         }
+
         public async Task AuthenticateAsClient(X509Certificate2 certificate)
         {
-            var ssl = new SslStream(Stream, false, (sender, x509Certificate, chain, errors) =>
+            var ssl = new SslStream(_stream, false, (sender, x509Certificate, chain, errors) =>
             {
                 if (errors == SslPolicyErrors.None)
                     return true;
@@ -149,7 +151,7 @@ namespace XSockets.Wrapper
             }, null);
 
             //var tempStream = new SslStreamWrapper(ssl);
-            Stream = ssl;//tempStream;
+            _stream = ssl;//tempStream;
             Func<AsyncCallback, object, IAsyncResult> begin =
                 (cb, s) => ssl.BeginAuthenticateAsClient(this._uri.Host,
                     new X509Certificate2Collection(certificate), SslProtocols.Tls, false, cb, s);
@@ -161,19 +163,21 @@ namespace XSockets.Wrapper
         {
             try
             {
-                if (!Connected) return;
-                
-                var l = Stream.Read(this.ReadBuffer, 0, this.ReadBuffer.Length);
-
-                if (l <= 0)
+                while (true)
                 {
-                    this.Disconnect();
-                    return;
-                }
+                    if (!Connected) return;
 
-                FrameHandler.Receive(new ArraySegment<byte>(this.ReadBuffer, 0, (int)l));
-                Array.Clear(this.ReadBuffer, 0, l);
-                Read();
+                    var l = _stream.Read(this._readBuffer, 0, this._readBuffer.Length);
+
+                    if (l <= 0)
+                    {
+                        this.Disconnect();
+                        return;
+                    }
+
+                    FrameHandler.Receive(new ArraySegment<byte>(this._readBuffer, 0, (int)l));
+                    Array.Clear(this._readBuffer, 0, l);
+                }
             }
             catch
             {
@@ -188,10 +192,10 @@ namespace XSockets.Wrapper
 
                 if (!this.Connected) return;
                 this.Connected = false;
-                await Stream.FlushAsync();
-                Stream.Close();
-                Stream.Dispose();
-                Socket.Dispose();
+                await _stream.FlushAsync();
+                _stream.Close();
+                _stream.Dispose();
+                _socket.Dispose();
 
                 if (this.OnDisconnected != null)
                     this.OnDisconnected.Invoke(this, EventArgs.Empty);
@@ -209,8 +213,8 @@ namespace XSockets.Wrapper
             if (!Connected) return;
 
             var frame = GetDataFrame(json).ToBytes();
-            await this.Stream.WriteAsync(frame, 0, frame.Length);
-            await this.Stream.FlushAsync();
+            await this._stream.WriteAsync(frame, 0, frame.Length);
+            await this._stream.FlushAsync();
             if (callback != null)
                 callback();
         }
@@ -218,8 +222,8 @@ namespace XSockets.Wrapper
         {
             if (!Connected) return;
 
-            await this.Stream.WriteAsync(data, 0, data.Length);
-            await this.Stream.FlushAsync();
+            await this._stream.WriteAsync(data, 0, data.Length);
+            await this._stream.FlushAsync();
             if (callback != null)
                 callback();
         }

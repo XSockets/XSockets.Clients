@@ -55,7 +55,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.uwp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Wrapper\Communication.default.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Wrapper\SslStreamWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Heartbeat.wp.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Heartbeat.Default.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)XSocketClient.Network.wp.cs" />

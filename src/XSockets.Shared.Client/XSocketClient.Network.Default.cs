@@ -3,7 +3,7 @@
 namespace XSockets
 {
     using System.Net.NetworkInformation;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public partial class XSocketClient : IXSocketClient
     {                       

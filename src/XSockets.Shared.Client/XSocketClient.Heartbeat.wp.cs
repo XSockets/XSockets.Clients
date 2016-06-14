@@ -34,13 +34,13 @@ namespace XSockets
     }
     public partial class XSocketClient : IXSocketClient
     {
-        internal DispatcherTimer HeartbeatTimer;        
+        internal DispatcherTimer _heartbeatTimer;        
 
         private void StopHeartbeat()
         {
-            if (this.HeartbeatTimer != null)
+            if (this._heartbeatTimer != null)
             {
-                this.HeartbeatTimer.Dispose();
+                this._heartbeatTimer.Dispose();
             }
         }
         public virtual void SetAutoHeartbeat(int timeoutInMs = 30000)
@@ -63,11 +63,11 @@ namespace XSockets
             if (!this.IsConnected)
                 throw new Exception("You can't start the hearbeat before you have a connection.");
 
-            LastPong = DateTime.Now;
+            _lastPong = DateTime.Now;
             this.OnPong += async (s, m) =>
             {
                 //Got a pong back... set time for received pong.
-                this.LastPong = DateTime.Now;
+                this._lastPong = DateTime.Now;
 
                 var b = m.Blob.ToArray();
                 if (Encoding.UTF8.GetString(b,0,b.Length) != this.PersistentId.ToString())
@@ -76,12 +76,12 @@ namespace XSockets
                 }
             };
             //Call ping on interval...
-            this.HeartbeatTimer = new DispatcherTimer(async () =>
+            this._heartbeatTimer = new DispatcherTimer(async () =>
             {
-                if (LastPong < DateTime.Now.AddMilliseconds(-(intervallMs * 2)))
+                if (this._lastPong < DateTime.Now.AddMilliseconds(-(intervallMs * 2)))
                 {
                     await this.Disconnect();                    
-                    this.HeartbeatTimer.Dispose();
+                    this._heartbeatTimer.Dispose();
                     return;
                 }
 

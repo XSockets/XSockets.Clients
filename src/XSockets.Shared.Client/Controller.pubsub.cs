@@ -5,9 +5,9 @@ namespace XSockets
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using XSockets.Common.Interfaces;
-    using XSockets.Globals;
-    using XSockets.Model;
+    using Common.Interfaces;
+    using Globals;
+    using Model;
 
     public partial class Controller : IController
     {        
@@ -21,16 +21,16 @@ namespace XSockets
             this._subscriptions.AddOrUpdate(Constants.Events.Controller.Closed, onClose);
         }
 
-        private void ResetSubscriptions()
-        {
-            foreach (var s in this._subscriptions.GetAllWithKeys())
-            {
-                if(s.Key == Constants.Events.Controller.Closed || s.Key == Constants.Events.Controller.Opened || s.Key == Constants.Events.Error) continue;
+        //private void ResetSubscriptions()
+        //{
+        //    foreach (var s in this._subscriptions.GetAllWithKeys())
+        //    {
+        //        if(s.Key == Constants.Events.Controller.Closed || s.Key == Constants.Events.Controller.Opened || s.Key == Constants.Events.Error) continue;
 
-                s.Value.IsBound = false;
-                this._subscriptions.AddOrUpdate(s.Key, s.Value);
-            }
-        }
+        //        s.Value.IsBound = false;
+        //        this._subscriptions.AddOrUpdate(s.Key, s.Value);
+        //    }
+        //}
 
         public virtual void BindUnboundSubscriptions()
         {
@@ -98,12 +98,12 @@ namespace XSockets
 
         private void AddConfirmCallback(Action<IMessage> confirmCallback, string @event)
         {
-            var e = string.Format("__{0}", @event);
+            var e = $"__{@event}";
 
             if (@event.Contains("."))
             {
                 var info = @event.Split('.');
-                e = string.Format("{0}.__{1}", info[0], info[1]);
+                e = $"{info[0]}.__{info[1]}";
             }
             if (this._subscriptions.ContainsKey(e)) return;
 

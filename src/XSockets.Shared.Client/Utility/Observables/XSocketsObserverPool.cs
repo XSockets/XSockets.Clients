@@ -4,7 +4,7 @@ namespace XSockets.Utility.Observables
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     /// <summary>
     /// Generic observer that needs a GUID to monitor objects.

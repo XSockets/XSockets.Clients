@@ -3,7 +3,7 @@ namespace XSockets.Model
 {
     using System;
     using Newtonsoft.Json;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public class ClientInfo : IClientInfo
     {

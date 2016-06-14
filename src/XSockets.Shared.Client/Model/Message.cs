@@ -6,9 +6,9 @@ namespace XSockets.Model
     using System.Linq;
     using System.Text;
     using Newtonsoft.Json;
-    using XSockets.Common.Event.Arguments;
-    using XSockets.Common.Interfaces;
-    using XSockets.Helpers;
+    using Common.Event.Arguments;
+    using Common.Interfaces;
+    using Helpers;
 
     public class Message : EventArgs, IMessage
     {

@@ -2,7 +2,7 @@
 namespace XSockets.Model
 {
     using System;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public class Subscription : ISubscription
     {

@@ -5,13 +5,13 @@ namespace XSockets
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-    using XSockets.Common.Event.Arguments;
-    using XSockets.Common.Interfaces;
-    using XSockets.Globals;
-    using XSockets.Model;
-    using XSockets.Protocol;
-    using XSockets.Protocol.FrameBuilders;
-    using XSockets.Utility.Storage;
+    using Common.Event.Arguments;
+    using Common.Interfaces;
+    using Globals;
+    using Model;
+    using Protocol;
+    using Protocol.FrameBuilders;
+    using Utility.Storage;
 
     public partial class Controller : IController
     {
@@ -211,7 +211,7 @@ namespace XSockets
                 this.ClientInfo.ConnectionId = Guid.Empty;                
             }
         }
-        public async virtual void Close()
+        public virtual async void Close()
         {
             try
             {
@@ -234,10 +234,11 @@ namespace XSockets
             };
             return frame;
         }
-        private Rfc6455DataFrame GetDataFrame(string payload)
-        {
-            return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(payload));
-        }
+
+        //private Rfc6455DataFrame GetDataFrame(string payload)
+        //{
+        //    return GetDataFrame(FrameType.Text, Encoding.UTF8.GetBytes(payload));
+        //}
 
         private Rfc6455DataFrame GetDataFrame(IMessage message)
         {
@@ -263,15 +264,15 @@ namespace XSockets
             //}
         }
 
-        private static bool IsBuiltIn(Type type)
-        {            
-            //TODO: Have better check here
+        //private static bool IsBuiltIn(Type type)
+        //{            
+        //    //TODO: Have better check here
             
-            if (type.Namespace != null && (type.Namespace.StartsWith("System")))// && (type.Module.ScopeName == "CommonLanguageRuntimeLibrary" || type.Module.ScopeName == "mscorlib.dll")))
-            {
-                return true;
-            }
-            return false;
-        }
+        //    if (type.Namespace != null && (type.Namespace.StartsWith("System")))// && (type.Module.ScopeName == "CommonLanguageRuntimeLibrary" || type.Module.ScopeName == "mscorlib.dll")))
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
     }
 }

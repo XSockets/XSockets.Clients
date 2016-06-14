@@ -2,7 +2,7 @@
 namespace XSockets
 {
     using System;
-    using XSockets.Common.Interfaces;
+    using Common.Interfaces;
 
     public enum NetworkState
     {

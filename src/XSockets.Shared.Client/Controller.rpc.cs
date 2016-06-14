@@ -4,8 +4,8 @@ namespace XSockets
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using XSockets.Common.Interfaces;
-    using XSockets.Model;
+    using Common.Interfaces;
+    using Model;
 
     public partial class Controller : IController
     {

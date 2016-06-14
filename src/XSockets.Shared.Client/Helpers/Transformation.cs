@@ -6,8 +6,8 @@ namespace XSockets.Helpers
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using XSockets.Common.Interfaces;
-    using XSockets.Model;
+    using Common.Interfaces;
+    using Model;
 
     public static class XSocketHelper
     {
