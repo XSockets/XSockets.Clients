@@ -1,0 +1,28 @@
+﻿{
+  "version": "1.0.0-*",
+  "title": "XSockets.Client",
+  "description": "C# Client API for communicating with a XSockets.NET server",
+  "language": "en-US",
+  "authors": [ "Team XSockets Sweden AB" ],
+  "packOptions": {
+    "projectUrl": "https://xsockets.net",
+    "tags": [ "realtime, iot, websockets, xsockets, integration, sockets, full-duplex" ],
+    "licenseUrl": "",
+    "iconUrl": "http://xsocketswp.azurewebsites.net/wp-content/uploads/2015/09/x_blue.png",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/XSockets/XSockets.Clients"
+    }
+  },
+  "frameworks": {    
+    "dotnet5.4": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.11-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Runtime": "4.0.21-beta-23516",
+        "System.Threading": "4.0.11-beta-23516"
+      }
+    }
+  }
+}

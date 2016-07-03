@@ -5,7 +5,8 @@
     "nuspec.referencegenerator": "1.4.2"
   },
   "frameworks": {
-    "uap10.0": {}
+    "uap10.0": {
+    } 
   },
   "runtimes": {
     "win10-arm": {},

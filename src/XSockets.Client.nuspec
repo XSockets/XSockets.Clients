@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>XSockets.Client</id>
-    <version>6.0.9</version>
+    <version>6.2.0</version>
     <title>XSockets.Client</title>
     <authors>Team XSockets Sweden AB</authors>
     <owners>Team XSockets Sweden AB</owners>
@@ -13,7 +13,7 @@
     <description>Supports: .NET 4.5+, Xamarin iOS x64, MonoTouch (iOS), MonoDroid (Android), WinPhone, WinStore, Universal, .NET 3.5</description>
     <summary />
     <releaseNotes>
-      Fix - Xamarin Android memory leak
+      Added autoreconnect to first call to Open and introduced a new event for OnConnectAttempt
     </releaseNotes>
     <copyright>Team XSockets Sweden AB</copyright>
     <tags>XSockets, Websockets, Realtime, IoT</tags>
@@ -37,6 +37,9 @@
         <dependency id="System.Threading" version="4.0.10" />
         <dependency id="System.Threading.Tasks" version="4.0.10" />
       </group>
+      <!--<group targetFramework="netstandard1.5">
+        <dependency id="NETStandard.Library" version="1.5.0-rc2-24027" />
+      </group>-->
       <group>
         <dependency id="Newtonsoft.Json" version="8.0.3" />
       </group>
@@ -62,10 +65,10 @@
     <!-- UWP -->
     <file src="XSockets.Client.UWP\bin\ARM\Release\XSockets.Client.dll" target="runtimes\win10-arm\lib\uap10.0" />
     <file src="XSockets.Client.UWP\bin\ARM\Release\XSockets.Client.pdb" target="runtimes\win10-arm\lib\uap10.0" />
-    <file src="XSockets.Client.UWP\bin\x64\Release\XSockets.Client.dll" target="runtimes\win10-x64\lib\uap10.0" />
-    <file src="XSockets.Client.UWP\bin\x64\Release\XSockets.Client.pdb" target="runtimes\win10-x64\lib\uap10.0" />
-    <file src="XSockets.Client.UWP\bin\x86\Release\XSockets.Client.dll" target="runtimes\win10-x86\lib\uap10.0" />
-    <file src="XSockets.Client.UWP\bin\x86\Release\XSockets.Client.pdb" target="runtimes\win10-x86\lib\uap10.0" />
+    <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.dll" target="runtimes\win10-x64\lib\uap10.0" />
+    <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.pdb" target="runtimes\win10-x64\lib\uap10.0" />
+    <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.dll" target="runtimes\win10-x86\lib\uap10.0" />
+    <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.pdb" target="runtimes\win10-x86\lib\uap10.0" />
     <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.dll" target="ref\uap10.0" />
     <file src="XSockets.Client.UWP\bin\Release\XSockets.Client.pri" target="ref\uap10.0" />
     <!-- WP -->

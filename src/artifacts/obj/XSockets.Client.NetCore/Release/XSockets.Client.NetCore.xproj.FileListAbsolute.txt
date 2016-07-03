@@ -1,0 +1,1 @@
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\artifacts\obj\XSockets.Client.NetCore\Release\XSockets.Client.NetCore.xprojResolveAssemblyReference.cache

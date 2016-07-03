@@ -17,7 +17,8 @@ namespace XSockets.Common.Interfaces
     public interface IXSocketClient
     {
         string Origin { get; set; }
-        //bool AutoReconnect { get; set; }
+        bool AutoReconnect { get; }
+        int AutoReconnectTimeout { get;  }
         IXSocketJsonSerializer Serializer { get; set; }
         RepositoryInstance<string, IController> Controllers { get; set; }
         RepositoryInstance<int, byte[]> QoSRepository { get; set; }
@@ -27,8 +28,9 @@ namespace XSockets.Common.Interfaces
         NameValueCollection QueryString { get; set; }
         NameValueCollection Headers { get; set; }
         CookieCollection Cookies { get; set; }
-        bool IsHandshakeDone { get; }
+        //bool IsHandshakeDone { get; }
         Communication Communication { get; }
+        event EventHandler OnConnectAttempt;
         event EventHandler OnAutoReconnectFailed;
         event EventHandler OnConnected;
         event EventHandler OnDisconnected;

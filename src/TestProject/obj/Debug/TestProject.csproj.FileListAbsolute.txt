@@ -1,0 +1,9 @@
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\TestProject.exe.config
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\TestProject.exe
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\TestProject.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\XSockets.Client.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Debug\XSockets.Client.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Debug\TestProject.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Debug\TestProject.exe
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Debug\TestProject.pdb

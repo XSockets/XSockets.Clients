@@ -6,3 +6,11 @@ C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.iOS\obj\Debug\XSockets.Cli
 C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.iOS\obj\Debug\XSockets.Client.pdb
 C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.iOS\obj\Debug\XSockets.Client.dll.mdb
 C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.iOS\bin\iPhone\Debug\XSockets.Client.dll.mdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\bin\iPhone\Debug\XSockets.Client.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\bin\iPhone\Debug\XSockets.Client.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\obj\Debug\optimized\
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\obj\Debug\XSockets.Client.iOS.csprojResolveAssemblyReference.cache
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\obj\Debug\XSockets.Client.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\obj\Debug\XSockets.Client.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\obj\Debug\XSockets.Client.dll.mdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.iOS\bin\iPhone\Debug\XSockets.Client.dll.mdb

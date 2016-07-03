@@ -93,8 +93,15 @@ namespace XSockets.Wrapper
 
                 if (!success)
                 {
-                    await this.Disconnect();
-                    return false;
+                    if(this.Client.AutoReconnect)
+                    {
+                        await Task.Delay(this.Client.AutoReconnectTimeout);                    
+                        return await this.Client.Open(); //false;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
 
 
@@ -119,8 +126,15 @@ namespace XSockets.Wrapper
             }
             catch
             {
-                await this.Disconnect();
-                return false;
+                if(this.Client.AutoReconnect)
+                {
+                    await Task.Delay(this.Client.AutoReconnectTimeout);                    
+                    return await this.Client.Open(); //false;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
         public async Task AuthenticateAsClient()
@@ -190,13 +204,15 @@ namespace XSockets.Wrapper
             try
             {
 
-                if (!this.Connected) return;
+                //if (!this.Connected) return;
                 this.Connected = false;
+                if(_stream != null) { 
                 await _stream.FlushAsync();
-                _stream.Close();
-                _stream.Dispose();
-                _socket.Dispose();
-
+                    _stream.Close();
+                    _stream.Dispose();
+                    _socket.Dispose();
+                }
+                await this.Client.FireOnDisconnected();
                 if (this.OnDisconnected != null)
                     this.OnDisconnected.Invoke(this, EventArgs.Empty);
 

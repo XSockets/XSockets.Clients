@@ -1,2 +1,2 @@
 ﻿using System.Reflection;
-[assembly: AssemblyTitle("XSockets.Client.Android")]
+[assembly: AssemblyTitle("XSockets.Client")]

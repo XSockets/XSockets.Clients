@@ -27,8 +27,8 @@
         /// <summary>
         /// When true the client will try to reconnect when the connection is closed
         /// </summary>
-        private bool AutoReconnect { get; set; }
-        private int _autoReconnectTimeout;
+        public bool AutoReconnect { get; private set; }
+        public int AutoReconnectTimeout { get; private set; }
 
         /// <summary>
         /// If true the client will ping the server and close the connection if a pong is not received
@@ -52,6 +52,7 @@
 
         public Guid PersistentId { get; set; }
 
+        public event EventHandler OnConnectAttempt;
         public event EventHandler OnAutoReconnectFailed;
         public event EventHandler OnConnected;
         public event EventHandler OnAuthenticationFailed;
@@ -246,7 +247,7 @@
                 {
                     while (!this.IsConnected && this.AutoReconnect)
                     {
-                        await Task.Delay(this._autoReconnectTimeout);
+                        await Task.Delay(this.AutoReconnectTimeout);
                         try
                         {
                             if (!this.IsConnected)
@@ -303,18 +304,24 @@
             if (timeoutInMs <= 0)
             {
                 AutoReconnect = false;
-                _autoReconnectTimeout = 0;
+                AutoReconnectTimeout = 0;
             }
             else
             {
                 AutoReconnect = true;
-                _autoReconnectTimeout = timeoutInMs;
+                AutoReconnectTimeout = timeoutInMs;
             }
         }
 
         public virtual async Task<bool> Reconnect()
         {
-            return await this.Open();
+
+#if (!WINDOWS_UWP && !WINDOWS_PHONE_APP)
+            return await Communication.Connect(this._certificate);
+#else
+            return await Communication.Connect();
+#endif
+            //return await this.Open();
         }
 
         /// <summary>
@@ -341,6 +348,8 @@
             this.Communication.OnError += (s, e) => { this.FireError(e); };
             this.Communication.OnConnected += OnSocketConnected;
             this.Communication.OnDisconnected += OnSocketDisconnected;
+            if (this.OnConnectAttempt != null)
+                this.OnConnectAttempt.Invoke(this, null);
 #if (!WINDOWS_UWP && !WINDOWS_PHONE_APP)
             return await Communication.Connect(this._certificate);
 #else

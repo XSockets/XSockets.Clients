@@ -99,8 +99,15 @@ namespace XSockets.Wrapper
             }
             catch (Exception)
             {
-                await this.Disconnect();
-                return false;
+                if (this.Client.AutoReconnect)
+                {
+                    await Task.Delay(this.Client.AutoReconnectTimeout);
+                    return await this.Client.Open(); //false;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
         public void Read()

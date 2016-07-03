@@ -1,0 +1,8 @@
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\TestProject.exe.config
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\TestProject.exe
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\TestProject.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\Newtonsoft.Json.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\XSockets.Client.dll
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\XSockets.Client.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Release\TestProject.exe
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Release\TestProject.pdb

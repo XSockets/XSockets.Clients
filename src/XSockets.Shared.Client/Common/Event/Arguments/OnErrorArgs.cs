@@ -23,7 +23,7 @@ namespace XSockets.Common.Event.Arguments
 
         #region Properties
 
-        public Exception Exception { get; private set; }
+        public Exception Exception { get; private set; }        
 
         #endregion Properties
     }
