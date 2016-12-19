@@ -14,6 +14,7 @@ namespace XSockets
 
         public void UpdateAndroidNetworkStatus()
         {
+            var currentState = _state;
             _state = NetworkState.Unknown;
 
             // Retrieve the connectivity manager service
@@ -35,7 +36,19 @@ namespace XSockets
             else
             {
                 _state = NetworkState.Offline;
-            }            
+            }
+            
+            //Check if the state has changed.
+            //if it has we want to update the network state and disconnect if state is now offline
+            if (currentState != _state)
+            {
+                if(this.Communication != null)
+                    this.Communication.UpdateNetworkState(_state);
+                if (currentState != _state && OnNetworkStatusChanged != null)
+                {
+                    OnNetworkStatusChanged(this, _state);
+                }
+            }       
         }
 
         public void AndroidNetworkWatcher()
@@ -60,18 +73,7 @@ namespace XSockets
 
         void NetworkStatusChanged(object sender, EventArgs e)
         {
-            var currentState = _state;
-            UpdateAndroidNetworkStatus();          
-
-            if (currentState != _state)
-            {
-                if(this.Communication != null)
-                    this.Communication.UpdateNetworkState(_state);
-                if (currentState != _state && OnNetworkStatusChanged != null)
-                {
-                    OnNetworkStatusChanged(this, _state);
-                }
-            }           
+            UpdateAndroidNetworkStatus();              
         }
     }
 
