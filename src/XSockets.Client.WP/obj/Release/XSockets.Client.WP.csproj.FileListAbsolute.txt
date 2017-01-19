@@ -18,7 +18,6 @@ C:\Users\Uffe\Desktop\XSockets.Client\XSockets.Client.WP\obj\Release\XSockets.Cl
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\bin\Release\XSockets.Client.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\bin\Release\XSockets.Client.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\bin\Release\XSockets.Client.pri
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\obj\Release\XSockets.Client.WP.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\obj\Release\XSockets.Client.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\obj\Release\XSockets.Client.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.WP\obj\Release\priconfig.xml

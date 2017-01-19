@@ -91,17 +91,9 @@ namespace XSockets.Wrapper
                 IAsyncResult result = this._socket.BeginConnect(GetRemoteEndpoint(), null, null);
                 bool success = result.AsyncWaitHandle.WaitOne(5000, true);
 
-                if (!success)
+                if (!success || !this._socket.Connected)
                 {
-                    if(this.Client.AutoReconnect)
-                    {
-                        await Task.Delay(this.Client.AutoReconnectTimeout);                    
-                        return await this.Client.Open(); //false;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
                 }
 
 

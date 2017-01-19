@@ -11,7 +11,6 @@ C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\bin\De
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\bin\Debug\XSockets.Client.Net35.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\bin\Debug\System.Threading.xml
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.csprojResolveAssemblyReference.cache
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.dll
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\XSockets.Client.Net35\obj\Debug\XSockets.Client.Net35.pdb

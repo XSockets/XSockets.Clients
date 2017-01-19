@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>XSockets.Client</id>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <title>XSockets.Client</title>
     <authors>Team XSockets Sweden AB</authors>
     <owners>Team XSockets Sweden AB</owners>

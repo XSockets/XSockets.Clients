@@ -6,3 +6,4 @@ C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\XSoc
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\bin\Release\XSockets.Client.pdb
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Release\TestProject.exe
 C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Release\TestProject.pdb
+C:\Users\Uffe\Documents\GitHub\XSockets.Clients\src\TestProject\obj\Release\TestProject.csprojResolveAssemblyReference.cache
