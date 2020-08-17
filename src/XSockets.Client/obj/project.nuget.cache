@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "l5s8bb2teh5+DK+LOmp+wZO8kagaP7WIalOxWtH+cI7for70/rF641sW+cqSzi0eRyA6ULFLky3gm5A9P0TAAQ==",
+  "success": true,
+  "projectFilePath": "/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/XSockets.Client/XSockets.Client.csproj",
+  "expectedPackageFiles": [
+    "/home/uffe/.nuget/packages/microsoft.netcore.platforms/1.1.0/microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "/home/uffe/.nuget/packages/netstandard.library/2.0.3/netstandard.library.2.0.3.nupkg.sha512",
+    "/home/uffe/.nuget/packages/newtonsoft.json/12.0.3/newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
