@@ -17,6 +17,7 @@ $RECYCLE.BIN/
 *.pdb
 
 **/bin
+**/obj
 
 # =========================
 # Operating System Files

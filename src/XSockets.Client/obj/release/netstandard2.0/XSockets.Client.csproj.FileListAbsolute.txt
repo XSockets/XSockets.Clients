@@ -1,9 +1,0 @@
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/bin/release/netstandard2.0/XSockets.Client.deps.json
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/bin/release/netstandard2.0/XSockets.Client.dll
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/bin/release/netstandard2.0/XSockets.Client.pdb
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.csprojAssemblyReference.cache
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.AssemblyInfoInputs.cache
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.AssemblyInfo.cs
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.csproj.CoreCompileInputs.cache
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.dll
-/home/uffe/Repositories/XSocketsClient/XSockets.Clients/src/dotnetcore/XSockets.Client/obj/release/netstandard2.0/XSockets.Client.pdb
